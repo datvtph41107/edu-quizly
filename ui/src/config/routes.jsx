@@ -1,7 +1,10 @@
 // routes.js
 
 // Routes cho Client
-export const routes = {};
+export const routes = {
+    home: '/',
+    admin: '/admin',
+};
 
 // Routes cho Admin
-export const routeAdmin = {};
+export const routePrivate = {};

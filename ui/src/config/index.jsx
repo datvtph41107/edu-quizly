@@ -1,9 +1,9 @@
 // index.js
-import { routes, routeAdmin } from './routes';
+import { routes, routePrivate } from './routes';
 
 const config = {
     routes,
-    routeAdmin,
+    routePrivate,
 };
 
 export default config;
