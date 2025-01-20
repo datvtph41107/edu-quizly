@@ -1,0 +1,118 @@
+:root {
+    --primary: #e22a19;
+    --black: black;
+    --white: white;
+    --text-color: #161823;
+    --gray: #ccc;
+    --hue: 223;
+    --bg: hsl(var(--hue), 10%, 90%);
+    --fg: hsl(var(--hue), 10%, 10%);
+    --trans-dur: 0.3s;
+
+    --front-family: 'ProximaNova', sans-serif;
+
+    // Default layout
+    --default-layout-header-height: 80px;
+    --default-layout-header-width: 1488px;
+    --default-layout-header-hoizontal: 32px;
+}
+
+* {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+}
+
+html {
+    font-size: 62.5%;
+}
+
+body {
+    font-family: var(--front-family);
+    font-size: 1.6rem;
+    line-height: 1.5;
+    text-rendering: optimizeSpeed;
+    color: var(--text-color);
+}
+
+.react-tabs__tab {
+    list-style: none;
+}
+// scroll
+
+html *::-webkit-scrollbar {
+    border-radius: 0;
+    width: 8px;
+}
+html *::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+    background-color: rgba(22, 24, 35, 0.06);
+}
+html *::-webkit-scrollbar-track {
+    border-radius: 0;
+    background-color: rgba(0, 0, 0, 0);
+}
+
+button,
+input,
+[tabindex] {
+    outline: none;
+    border: none;
+}
+
+a {
+    color: var(--text-color);
+    text-decoration: none;
+}
+
+// FONTS EMBEDED
+// @font-face {
+//     font-family: ProximaNova;
+//     src: url('/src/assets/fonts/Proxima-Nova-Regular.woff2');
+//     font-weight: 400;
+// }
+
+// @font-face {
+//     font-family: ProximaNova;
+//     src: url('/src/assets/fonts/Proxima-Nova-Semibold.woff2');
+//     font-weight: 600;
+// }
+
+// @font-face {
+//     font-family: ProximaNova;
+//     src: url('/src/assets/fonts/Proxima-Nova-Bold.woff');
+//     font-weight: 700;
+// }
+
+// @font-face {
+//     font-family: SofiaPro;
+//     src: url('/src/assets/fonts/sofiapro-semibold.otf');
+//     font-weight: 700;
+// }
+
+// CUSTOM TIPPY TOOLTIP
+body {
+    .tippy-box {
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 1.6rem;
+        line-height: 2.2rem;
+        background-color: rgba(84, 84, 84, 0.92);
+    }
+
+    .tippy-arrow {
+        color: rgba(84, 84, 84, 0.92);
+    }
+
+    .tippy-box[data-placement^='bottom'] > .tippy-arrow:before {
+        top: -8px;
+    }
+}
+
+.reload-bg {
+    color: var(--fg);
+    height: 100vh;
+    display: grid;
+    place-items: center;
+    transition: background-color var(--trans-dur), color var(--trans-dur);
+}
