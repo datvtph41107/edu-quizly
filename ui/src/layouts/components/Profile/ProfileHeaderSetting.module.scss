@@ -1,0 +1,25 @@
+.wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 68px;
+    height: 36px;
+    padding-right: 7px;
+    border: 2px solid rgba(204, 204, 204, 0.781);
+    border-radius: 50px;
+    border-left: 0px;
+
+    &:hover {
+        border-color: rgb(114, 114, 114);
+        cursor: pointer;
+    }
+}
+.left-prf {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.avatar {
+    height: 35px;
+    width: 35px;
+}

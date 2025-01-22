@@ -1,0 +1,105 @@
+.wrapper {
+    width: 100%;
+    height: 100%;
+    background-color: rgba(242, 242, 242, 1);
+}
+
+.container {
+    padding: 40px 24px 0px 24px;
+    background-color: var(--light-hight);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 transparent, 0 0 transparent, 0 0 transparent, 0 0 transparent, 0 1px 3px 0 rgba(0, 0, 0, 0.1),
+        0 1px 2px 0 rgba(0, 0, 0, 0.06);
+}
+
+.title {
+    color: var(--green-hover);
+    font-size: 24px;
+}
+
+.contain {
+    margin-top: 12px;
+    margin-bottom: 46px;
+}
+
+.navigation {
+    gap: 8px;
+    justify-content: center;
+    overflow: hidden;
+    flex-wrap: nowrap;
+    align-items: center;
+    flex-direction: row;
+    list-style-type: none;
+    position: relative;
+    display: flex;
+}
+
+.nav-item {
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px;
+    flex-shrink: 0;
+    justify-content: center;
+    cursor: pointer;
+    border-radius: 8px;
+    &.active:hover {
+        background-color: rgba(211, 211, 211, 0.233);
+    }
+}
+
+.text {
+    font-size: 16px;
+    font-weight: 500;
+    color: #222325;
+}
+
+.icon {
+    border-radius: 50px;
+    padding: 4px;
+    width: 22px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    &.heart {
+        color: white;
+        background-color: purple;
+    }
+
+    &.assessment {
+        color: white;
+        background-color: #2d9da6;
+    }
+
+    &.lesson {
+        color: white;
+        background-color: #efa929;
+    }
+
+    &.interactive {
+        color: white;
+        background-color: #d5546d;
+    }
+
+    &.passage {
+        color: white;
+        background-color: #2d70ae;
+    }
+}
+
+.progress-nav {
+    height: 4px;
+    left: 0;
+    bottom: 0;
+    position: absolute;
+    background: var(--primary-bg);
+    transition-property: all;
+    transition-duration: 0.2s;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}

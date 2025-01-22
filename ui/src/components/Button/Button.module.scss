@@ -24,17 +24,15 @@
 
 // BUTTONS TYPES
 .rounded {
-    padding: 0 8px;
-    min-width: 90px;
-    height: 32px;
-    line-height: 32px;
+    min-width: 34px !important;
+    min-height: 34px !important;
+    padding: 4px;
     text-align: center;
     font-weight: 700;
     font-size: 1.4rem;
     border-radius: 52px;
     &:hover {
-        border-color: rgba(22, 24, 35, 0.2);
-        background-color: rgba(255, 255, 255, 1);
+        background-color: rgb(63, 62, 62);
     }
 }
 
@@ -48,13 +46,21 @@
     // }
 }
 
+.margin {
+    margin-right: 18px;
+}
+
 .primary {
+    border-radius: 10px;
+    font-size: 16px;
+    height: 48px;
     color: white;
-    background-color: var(--primary);
-    border-color: var(--primary);
+    border-color: var(--main-light);
+    background: var(--primary-bg);
+    font-weight: bold;
 
     &:hover {
-        background: linear-gradient(0deg, rgba(0, 0, 0, 0.06), rgba(0, 0, 0, 0.06)), #fe2c55;
+        background: var(--main-light);
     }
 }
 
@@ -63,17 +69,7 @@
     color: var(--primary);
 
     &:hover {
-        background-color: rgba(254, 44, 85, 0.06);
-    }
-}
-
-.text {
-    border: none;
-    color: black;
-    font-weight: 700;
-    background-color: transparent;
-    &:hover {
-        text-decoration: underline;
+        background-color: rgba(241, 252, 241, 0.753);
     }
 }
 
