@@ -26,7 +26,7 @@ const items = [
 ];
 
 function SidebarAdmin() {
-    const [isModalOpen, setModalOpen] = useState(false);
+    const [isModalOpen, setModalOpen] = useState(true);
 
     useEffect(() => {
         if (isModalOpen) {

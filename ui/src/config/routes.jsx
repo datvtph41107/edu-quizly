@@ -2,8 +2,8 @@
 
 // Routes cho Client
 export const routes = {
-    home: '',
-    admin: 'admin',
+    home: '/',
+    admin: '/admin',
     adminCreateLesson: '/admin/create-lesson',
     createPresentSlide: '/presentation/make',
 };
