@@ -1,15 +1,22 @@
 :root {
-    --primary: #e22a19;
-    --black: black;
+    --primary: #025c1e;
+    --main-shadow: #003912;
+    --main-light: #00732e;
+    --green-hover: #1dbf73;
+    --light-hight: #e8faf4;
+    --tw-bg-opacity: 1;
+    --opacity-layer: rgb(243, 255, 240, 1);
     --white: white;
+    --backgroud: linear-gradient(180deg, #003912 36.72%, #19aa64 141.43%);
     --text-color: #161823;
     --gray: #ccc;
+    --primary-bg: linear-gradient(0deg, rgba(0, 0, 0, 0.06), rgba(0, 0, 0, 0.06)), var(--main-light);
     --hue: 223;
     --bg: hsl(var(--hue), 10%, 90%);
     --fg: hsl(var(--hue), 10%, 10%);
     --trans-dur: 0.3s;
 
-    --front-family: 'ProximaNova', sans-serif;
+    --front-family: Open Sans, sans-serif, Helvetica, Arial, Symbola;
 
     // Default layout
     --default-layout-header-height: 80px;
@@ -35,9 +42,6 @@ body {
     color: var(--text-color);
 }
 
-.react-tabs__tab {
-    list-style: none;
-}
 // scroll
 
 html *::-webkit-scrollbar {
