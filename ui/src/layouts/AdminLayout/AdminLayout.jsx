@@ -1,5 +1,6 @@
 import HeaderV2 from '../components/HeaderV2';
 import SidebarAdmin from '../components/SidebarAdmin/SidebarAdmin';
+import Footer from '../Footer';
 import style from './AdminLayout.module.scss';
 import classNames from 'classnames/bind';
 
@@ -16,7 +17,8 @@ function AdminLayout({ children }) {
                     <div className={cx('header')}>
                         <HeaderV2 />
                     </div>
-                    <div>{children}</div>
+                    <div className={cx('bg')}>{children}</div>
+                    <Footer />
                 </div>
             </div>
         </div>
