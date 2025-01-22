@@ -51,8 +51,6 @@ function Search() {
         }
     };
 
-    console.log(inputRef);
-
     return (
         <div className={cx('wrapper')}>
             <div className={cx('search', { focus: isFocused })}>
