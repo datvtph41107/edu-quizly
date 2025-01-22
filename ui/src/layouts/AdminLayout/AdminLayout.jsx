@@ -1,6 +1,6 @@
 import HeaderV2 from '../components/HeaderV2';
 import SidebarAdmin from '../components/SidebarAdmin/SidebarAdmin';
-import Footer from '../Footer';
+import Footer from '../components/Footer';
 import style from './AdminLayout.module.scss';
 import classNames from 'classnames/bind';
 

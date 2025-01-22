@@ -6,7 +6,7 @@ import Button from '~/components/Button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBook, faChartPie, faHome, faPlus } from '@fortawesome/free-solid-svg-icons';
 import SideItem from './SideItem';
-import ModalCreate from './ModalCreate'; // Import modal component
+import ModalCreate from './ModalCreate';
 
 const cx = classNames.bind(style);
 
@@ -68,7 +68,6 @@ function SidebarAdmin() {
                 </div>
             </div>
 
-            {/* Hiển thị modal khi isModalOpen là true */}
             {isModalOpen && <ModalCreate onClose={handleCloseModal} isModalOpen={isModalOpen} />}
         </div>
     );
