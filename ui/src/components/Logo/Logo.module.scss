@@ -2,12 +2,12 @@
     display: flex;
     width: 100%;
     align-items: center;
+    color: var(--primary);
+    font-size: 24px;
 }
 
 .logo {
-    font-size: 24px;
     font-weight: bold;
-    color: var(--primary);
     display: inline-block;
     padding-right: 6px;
 }

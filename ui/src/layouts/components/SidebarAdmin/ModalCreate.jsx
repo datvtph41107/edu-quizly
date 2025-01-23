@@ -54,7 +54,7 @@ function ModalCreate({ onClose, isModalOpen }) {
         setTimeout(() => {
             hideLoading();
             navigate(routes.adminCreateLesson);
-        }, 1500);
+        }, 500);
     };
 
     return (

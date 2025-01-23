@@ -16,7 +16,7 @@ function CreateLesson() {
         setTimeout(() => {
             hideLoading();
             navigate(routes.createPresentSlide);
-        }, 1500);
+        }, 500);
     };
     return (
         <div className={cx('wrapper')}>
