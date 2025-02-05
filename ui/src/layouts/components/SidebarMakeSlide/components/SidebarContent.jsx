@@ -1,31 +1,38 @@
-import styles from './SidebarPreview.module.scss';
+import styles from './SidebarContent.module.scss';
 import classNames from 'classnames/bind';
 import { faCloudArrowUp, faPlus } from '@fortawesome/free-solid-svg-icons';
-import SidebarPreviewItem from './SidebarPreviewItem';
-import Button from '~/components/Button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useState } from 'react';
+import PreviewItemBlock from './PreviewSlide/PreviewItemBlock';
+import TextBar from './TextBar';
+import Shape from './Shape/Shape';
+import Table from './Table';
 
 const cx = classNames.bind(styles);
 
-function SidebarPreview() {
-    const [selectedItem, setSelectedItem] = useState(null);
-
-    const handleSelect = (id) => {
-        setSelectedItem(id);
+function SidebarContent({ side }) {
+    const renderSide = () => {
+        switch (side) {
+            case 'Slides':
+                return <PreviewItemBlock />;
+            case 'Text':
+                return <TextBar />;
+            case 'Media':
+                return 'Media';
+            case 'Shapes':
+                return <Shape />;
+            case 'Tables':
+                return <Table />;
+            default:
+                return 'Not Found';
+        }
     };
+
     return (
         <div className={cx('sidebar')}>
             <div className={cx('sidebar-container')}>
                 <div className={cx('sidebar-contain')}>
                     <ul className={cx('sidebar-list')}></ul>
-                    <div className={cx('side-preview')}>
-                        <div className={cx('side-preview-wrapper')}>
-                            <SidebarPreviewItem id={1} isSelected={selectedItem === 1} onSelect={handleSelect} />
-                            <SidebarPreviewItem id={2} isSelected={selectedItem === 2} onSelect={handleSelect} />
-                            <SidebarPreviewItem id={3} isSelected={selectedItem === 3} onSelect={handleSelect} />
-                        </div>
-                    </div>
+                    {renderSide()}
                 </div>
             </div>
             <div className={cx('toast-bar')}>
@@ -42,4 +49,4 @@ function SidebarPreview() {
     );
 }
 
-export default SidebarPreview;
+export default SidebarContent;

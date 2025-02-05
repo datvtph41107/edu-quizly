@@ -1,0 +1,37 @@
+.element {
+    width: 150px;
+    height: 100px;
+    border: 1px solid #aaa;
+    background-color: black;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    cursor: move;
+    transition: box-shadow 0.2s ease;
+
+    &:hover {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+}
+
+.content {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.tools {
+    margin-top: 8px;
+    button {
+        font-size: 12px;
+        padding: 4px 8px;
+        cursor: pointer;
+        border: none;
+        background-color: #ccc;
+        border-radius: 4px;
+
+        &:hover {
+            background-color: #bbb;
+        }
+    }
+}

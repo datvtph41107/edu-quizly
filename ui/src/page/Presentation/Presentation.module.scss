@@ -1,11 +1,15 @@
 .wrapper {
     padding: 60px 90px;
     width: 100%;
+    height: 720px;
+    position: relative;
 }
 
 .container {
     background-color: white;
     width: 100%;
-    height: 100vh;
-    overflow-y: auto;
+    height: 100%;
+    position: relative;
+    border: 2px solid #ddd;
+    overflow: hidden;
 }

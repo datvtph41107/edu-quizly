@@ -4,6 +4,7 @@ import SidebarMakeSlide from '../components/SidebarMakeSlide';
 import styles from './MakeSlideLayout.module.scss';
 import classNames from 'classnames/bind';
 import { faLayerGroup } from '@fortawesome/free-solid-svg-icons';
+import React, { useState } from 'react';
 
 const cx = classNames.bind(styles);
 

@@ -1,0 +1,138 @@
+.wrapper {
+    width: 100%;
+    height: auto;
+    margin: 12px 0;
+    padding: 8px 12px;
+    border-radius: 4px;
+    background-color: #fff3;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 0.2s;
+    transition-property: background-color, border-color, color, fill, stroke;
+    cursor: pointer;
+    &:hover {
+        background-color: #ffffff54;
+    }
+
+    &:active {
+        background-color: #fff3;
+    }
+}
+
+.icon {
+    font-size: 16px;
+}
+
+.left-icon {
+    margin-right: 8px;
+}
+
+// TYPES
+.heading {
+    font-weight: bolder;
+    font-size: 20px;
+    &:hover {
+        background-color: rgb(63, 62, 62);
+    }
+}
+
+.box {
+    height: 96px;
+    width: 48%;
+    background-color: #ffffff1a;
+    border-radius: 4px;
+    margin-bottom: 12px !important;
+    margin-top: 0 !important;
+
+    &:hover {
+        background-color: #ffffff0d;
+    }
+}
+
+.box-icon {
+    display: flex;
+    padding-left: 4px;
+    padding-right: 4px;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    font-size: 60px;
+
+    &.rotate {
+        transform: rotate(-45deg);
+    }
+}
+
+// .gray {
+//     color: black;
+//     background-color: var(--gray);
+//     border-color: var(--gray);
+
+//     &:hover {
+//        background: linear-gradient(0deg, rgba(0, 0, 0, 0.06), rgba(0, 0, 0, 0.06)), #fe2c55;
+//     }
+// }
+
+// .margin {
+//     margin-right: 18px;
+// }
+
+// .primary {
+//     border-radius: 10px;
+//     font-size: 16px;
+//     height: 48px;
+//     color: white;
+//     border-color: var(--main-light);
+//     background: var(--primary-bg);
+//     font-weight: bold;
+
+//     &:hover {
+//         background: var(--main-light);
+//     }
+// }
+
+// .outline {
+//     border-color: var(--primary);
+//     color: var(--primary);
+
+//     &:hover {
+//         background-color: rgba(241, 252, 241, 0.753);
+//     }
+// }
+
+// .icon + .title,
+// .title + .icon {
+//     margin-left: 8px;
+// }
+
+// .icon {
+//     display: inline-block;
+//     width: 20px;
+//     margin-right: 8px;
+//     font-weight: 600;
+//     text-align: center;
+// }
+
+// // BUTTON SIZES
+// .small {
+//     min-width: 88px;
+//     padding: 4px 16px;
+// }
+
+// .medium {
+//     padding: 8px 18px;
+// }
+
+// .large {
+//     min-width: 140px;
+//     padding: 14px 16px;
+// }
+
+// .leftIconStyles {
+//     margin: 0 8px;
+// }
+
+// // <Button className={cx('button')} large  onClick={clickMe} >Click Me</Button> button custom
+// .button {
+//     background-color: blueviolet;
+//     color: white;
+// }
