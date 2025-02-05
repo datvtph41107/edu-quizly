@@ -1,0 +1,11 @@
+.wrapper {
+    padding: 16px;
+}
+
+.title {
+    font-size: 16px;
+    font-weight: normal;
+    &.above {
+        margin-top: 24px;
+    }
+}
