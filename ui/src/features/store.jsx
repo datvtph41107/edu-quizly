@@ -1,17 +1,87 @@
 import { create } from 'zustand';
 import { v4 as uuidv4 } from 'uuid';
+import { isArray } from 'lodash';
 
 const slideDefault = 1;
 
 const useStore = create((set) => ({
+    selectedElements: [],
     selectedId: slideDefault,
     items: [
         {
             id: slideDefault,
-            type: 'block',
+            type: 'slide-1',
             elements: [
-                { id: 123, x: 800, y: 500, width: 150, height: 100, content: 'Element 1' },
-                { id: 456, x: 500, y: 0, width: 150, height: 100, content: 'Element 2' },
+                {
+                    id: 1231,
+                    x: 700,
+                    y: 400,
+                    width: 125,
+                    height: 125,
+                    content: 'Element 1',
+                    type: 'block',
+                    tab: 'shape',
+                },
+                {
+                    id: 4561,
+                    x: 400,
+                    y: 200,
+                    width: 125,
+                    height: 4,
+                    content: 'Element 2',
+                    type: 'line',
+                    tab: 'shape',
+                },
+                { id: 6781, x: 500, y: 0, width: 125, height: 50, content: 'Element 3', type: 'arrow', tab: 'shape' },
+                {
+                    id: 7891,
+                    x: 462,
+                    y: 295,
+                    width: 140,
+                    height: 140,
+                    content: 'Element 4',
+                    type: 'circle',
+                    tab: 'shape',
+                },
+                { id: 8101, x: 500, y: 0, width: 125, height: 125, content: 'Element 5', type: 'star', tab: 'shape' },
+                {
+                    id: 9111,
+                    x: 400,
+                    y: 100,
+                    width: 125,
+                    height: 125,
+                    content: 'Element 6',
+                    type: 'triangle',
+                    tab: 'shape',
+                },
+            ],
+        },
+        {
+            id: 11111,
+            type: 'slide-2',
+            elements: [
+                {
+                    id: 1231,
+                    x: 800,
+                    y: 500,
+                    width: 150,
+                    height: 100,
+                    content: 'Element 1',
+                    type: 'heading',
+                    tab: 'text',
+                },
+                { id: 4561, x: 500, y: 0, width: 150, height: 100, content: 'Element 2', type: 'body', tab: 'text' },
+                { id: 6781, x: 500, y: 0, width: 150, height: 100, content: 'Element 3', type: 'list-ul', tab: 'text' },
+                {
+                    id: 7891,
+                    x: 500,
+                    y: 0,
+                    width: 150,
+                    height: 100,
+                    content: 'Element 4',
+                    type: 'list-number',
+                    tab: 'text',
+                },
             ],
         },
     ],
@@ -22,9 +92,26 @@ const useStore = create((set) => ({
             selectedId: id,
         })),
 
+    onSelect: (elementId, arrDf = false) =>
+        set((state) => {
+            const selectedElements = state.selectedElements;
+            if (arrDf) {
+                return { selectedElements: [] };
+            }
+
+            const elementIndex = selectedElements.indexOf(elementId);
+
+            if (elementIndex > -1) {
+                selectedElements.splice(elementIndex, 1);
+            } else {
+                selectedElements.push(elementId);
+            }
+
+            return { selectedElements: [...selectedElements] };
+        }),
+
     updatePositionBlock: (id, updatePosition) =>
         set((state) => {
-            // state.selectedId state was saved before
             const updatedItems = state.items.map((slide) =>
                 slide.id === state.selectedId
                     ? {
