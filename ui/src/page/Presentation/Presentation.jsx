@@ -13,6 +13,9 @@ function Presentation() {
     const [boundingBox, setBoundingBox] = useState(null);
     const [selectedTemp, setSelectedTemp] = useState([]);
     const containerRef = useRef(null);
+    const boudingRef = useRef(null);
+
+    console.log(boudingRef);
 
     const selectedSlide = items.find((slide) => slide.id === selectedId);
     const elements = selectedSlide ? selectedSlide.elements : [];
@@ -86,9 +89,7 @@ function Presentation() {
         }
     };
 
-    const getBoundingBox = (selectedElementsInBox = []) => {
-        console.log('boudinnggg: ', selectedElementsInBox);
-
+    const getBoundingBox = (selectedElementsInBox = [], coordinate = null) => {
         let minX = Infinity,
             minY = Infinity,
             maxX = -Infinity,
@@ -104,8 +105,8 @@ function Presentation() {
         });
 
         return {
-            startX: minX,
-            startY: minY,
+            startX: coordinate ? coordinate.x : minX,
+            startY: coordinate ? coordinate.y : minY,
             width: maxX - minX,
             height: maxY - minY,
         };
@@ -146,6 +147,21 @@ function Presentation() {
                         }}
                     />
                 )}
+                {boundingBox && (
+                    <div
+                        ref={boudingRef}
+                        id="boundingBox"
+                        style={{
+                            position: 'absolute',
+                            left: boundingBox.startX,
+                            top: boundingBox.startY,
+                            width: boundingBox.width,
+                            height: boundingBox.height,
+                            border: '1px solid #aaa',
+                            boxShadow: 'inset 0 0 0 3px #eca766',
+                        }}
+                    />
+                )}
                 {elements.map((el) => (
                     <DraggableElement
                         key={el.id}
@@ -161,20 +177,6 @@ function Presentation() {
                         setBoundingBox={setBoundingBox}
                     />
                 ))}
-                {boundingBox && (
-                    <div
-                        id="boundingBox"
-                        style={{
-                            position: 'absolute',
-                            left: boundingBox.startX,
-                            top: boundingBox.startY,
-                            width: boundingBox.width,
-                            height: boundingBox.height,
-                            border: '1px solid #aaa',
-                            boxShadow: 'inset 0 0 0 3px #eca766',
-                        }}
-                    />
-                )}
             </div>
         </div>
     );

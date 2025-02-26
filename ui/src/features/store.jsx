@@ -6,6 +6,7 @@ const slideDefault = 1;
 
 const useStore = create((set) => ({
     selectedElements: [],
+    getBoundingElements: [],
     selectedId: slideDefault,
     items: [
         {
