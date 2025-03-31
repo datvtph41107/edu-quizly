@@ -9,6 +9,7 @@ import userRouter from "./server/routes/user";
 import orderRouter from "./server/routes/order";
 import authenticateRouter from "./server/routes/authenticate";
 import transactionRouter from "./server/routes/transaction";
+import connectDb from "./server/config/connectDB";
 
 const app = express();
 require("dotenv").config();
@@ -19,6 +20,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "server/public")));
 app.use(helmet());
+connectDb();
 
 app.use((req, res, next) => {
     LOGGER.HTTP.request(req).then((r) => {});

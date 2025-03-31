@@ -8,6 +8,7 @@
 .wrapper {
     transform: rotate(0deg);
     user-select: none;
+    padding: 1px;
     position: absolute;
     z-index: 99;
     &.disable {
@@ -26,6 +27,9 @@
     }
 
     .nav-contain {
+        &.unmoute {
+            display: none;
+        }
         &.disable {
             display: none;
         }
@@ -387,11 +391,13 @@
         .shape-element {
             width: 100%;
             height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
             position: relative;
 
+            &.shape {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
             .cover {
                 // opacity: 0;
             }
@@ -406,52 +412,4 @@
     width: 97%;
     height: 97%;
     display: block;
-}
-
-.content-text {
-    position: absolute;
-    z-index: 90;
-    width: calc(100% - 16px);
-    color: rgb(236, 234, 234);
-    font-size: 16px;
-    height: 20px;
-    cursor: text;
-    user-select: auto;
-    caret-color: #d6d2d2d3;
-
-    .content-text-ce {
-        font-size: 16px;
-        line-height: 1.2em;
-        text-align: center;
-    }
-
-    .content-text-type {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-size: 10px;
-        --tw-text-opacity: 1;
-        width: 100%;
-        height: 100%;
-        position: absolute;
-        pointer-events: none;
-        white-space: nowrap;
-        color: rgba(229, 229, 229, var(--tw-text-opacity));
-    }
-}
-
-.tools {
-    margin-top: 8px;
-    button {
-        font-size: 12px;
-        padding: 4px 8px;
-        cursor: pointer;
-        border: none;
-        background-color: #ccc;
-        border-radius: 4px;
-
-        &:hover {
-            background-color: #bbb;
-        }
-    }
 }

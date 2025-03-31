@@ -1,13 +1,11 @@
 import React, { createContext, useContext, useState } from 'react';
-
 const StateContext = createContext();
 
 export const ContextProvider = ({ children }) => {
     const [loading, setLoading] = useState(false);
-
+    const [editorMoute, setEditorMoute] = useState(false);
+    const [editors, setEditors] = useState({});
     const showLoading = () => {
-        console.log(1);
-
         setLoading(true);
     };
     const hideLoading = () => setLoading(false);
@@ -15,7 +13,11 @@ export const ContextProvider = ({ children }) => {
     return (
         <StateContext.Provider
             value={{
+                editors,
+                setEditors,
                 loading,
+                editorMoute,
+                setEditorMoute,
                 showLoading,
                 hideLoading,
             }}

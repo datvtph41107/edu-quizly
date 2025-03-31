@@ -1,7 +1,10 @@
-import connection from "../config/connectDB";
 import LOGGER from "../utils/logger";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
+import User from "../models/schema/User";
+import UserSecuritySetting from "../models/schema/UserSecuritySetting";
+import Consts from "../utils/consts";
+import RevokedTokens from "../models/schema/RevokeToken";
 
 class AuthMiddleware {
     static async authenticate(req, res, next) {
@@ -9,6 +12,10 @@ class AuthMiddleware {
         const token = authHeader && authHeader.split(" ")[1];
         if (!token) {
             return res.status(401).send("Access token is missing");
+        }
+        const isRevoked = await AuthMiddleware.isTokenRevoked(token);
+        if (isRevoked) {
+            return res.status(401).send("Token has been revoked");
         }
         jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
             if (err) {
@@ -19,13 +26,18 @@ class AuthMiddleware {
         });
     }
 
+    static async isTokenRevoked(token) {
+        const revokedToken = await RevokedTokens.findOne({ token });
+        return revokedToken !== null;
+    }
+
     static async preLoginAccess(req, res, next) {
         try {
             const { email, password } = req.body;
 
-            const user = await connection("users").select().where({ email }).first();
+            const user = await User.findOne({ email, status: Consts.USER_ACTIVE });
             if (!user) {
-                return res.status(422).send("Email not found");
+                return response.WARN(404, "", "User not found!");
             }
 
             const isPasswordValid = bcrypt.compareSync(password, user.password);
@@ -33,15 +45,16 @@ class AuthMiddleware {
                 return res.status(422).send("Invalid password!");
             }
 
-            const setting = await connection("user_security_settings").where({ id: user.id, email_verified: true }).first();
+            const setting = await UserSecuritySetting.findOne({ id: user.id, email_verified: true });
             if (!setting) {
                 return res.status(422).send("Unverified email!");
             }
 
+            req.user = user;
             next();
         } catch (error) {
-            LOGGER.APP.error("Error in preLoginAccess:", JSON.stringify(error));
-            return res.status(500).send("Internal server error");
+            LOGGER.APP.error("Error in preLoginAccess:", error);
+            return res.status(500).send(error.message);
         }
     }
 }

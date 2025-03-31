@@ -33,11 +33,22 @@
     display: flex;
     align-items: center;
     justify-content: flex-end;
+    &.edit {
+        justify-content: space-between !important;
+    }
     color: white;
     font-size: 14px;
     gap: 4px;
     font-weight: bold;
     background-color: var(--main-shadow);
     padding: 0 20px;
-    cursor: pointer;
+    position: sticky;
+    top: 0;
+    z-index: 9999;
+}
+
+.thems {
+    display: flex;
+    align-items: center;
+    gap: 4px;
 }
