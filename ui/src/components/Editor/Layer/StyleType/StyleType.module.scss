@@ -1,0 +1,36 @@
+.box-btn {
+    --tw-text-opacity: 1;
+    color: rgba(255, 255, 255, var(--tw-text-opacity));
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    background-color: transparent;
+    cursor: pointer;
+
+    &.active {
+        --tw-text-opacity: 1;
+        color: rgba(56, 21, 53, var(--tw-text-opacity));
+        --tw-bg-opacity: 1;
+        border-radius: 0.25rem;
+        background-color: rgb(222 228 221) !important;
+    }
+
+    display: flex;
+    width: 32px;
+    height: 32px;
+    border-radius: 4px;
+    &:hover {
+        background-color: #ffffff0d;
+    }
+
+    &.active {
+        background-color: #ffffff0d;
+    }
+    .box-btn-grap {
+        justify-content: center;
+        align-items: center;
+        display: flex;
+        width: 24px;
+        height: 24px;
+    }
+}

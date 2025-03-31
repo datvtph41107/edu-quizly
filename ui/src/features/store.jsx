@@ -1,12 +1,12 @@
 import { create } from 'zustand';
 import { v4 as uuidv4 } from 'uuid';
-import { isArray } from 'lodash';
 
 const slideDefault = 1;
 
 const useStore = create((set) => ({
     selectedElements: [],
     getBoundingElements: [],
+    elementId: null,
     selectedId: slideDefault,
     items: [
         {
@@ -20,8 +20,10 @@ const useStore = create((set) => ({
                     width: 125,
                     height: 125,
                     content: 'Element 1',
+                    textPreview: 'Type...',
                     type: 'block',
                     tab: 'shape',
+                    editor: {},
                 },
                 {
                     id: 4561,
@@ -30,10 +32,23 @@ const useStore = create((set) => ({
                     width: 125,
                     height: 4,
                     content: 'Element 2',
+                    textPreview: null,
                     type: 'line',
                     tab: 'shape',
+                    editor: {},
                 },
-                { id: 6781, x: 500, y: 0, width: 125, height: 50, content: 'Element 3', type: 'arrow', tab: 'shape' },
+                {
+                    id: 6781,
+                    x: 500,
+                    y: 0,
+                    width: 125,
+                    height: 50,
+                    content: 'Element 3',
+                    textPreview: 'Type...',
+                    type: 'arrow',
+                    tab: 'shape',
+                    editor: {},
+                },
                 {
                     id: 7891,
                     x: 462,
@@ -41,10 +56,22 @@ const useStore = create((set) => ({
                     width: 140,
                     height: 140,
                     content: 'Element 4',
+                    textPreview: 'Type...',
                     type: 'circle',
                     tab: 'shape',
+                    editor: {},
                 },
-                { id: 8101, x: 500, y: 0, width: 125, height: 125, content: 'Element 5', type: 'star', tab: 'shape' },
+                {
+                    id: 8101,
+                    x: 500,
+                    y: 0,
+                    width: 125,
+                    height: 125,
+                    content: 'Element 5',
+                    textPreview: 'Type...',
+                    type: 'star',
+                    tab: 'shape',
+                },
                 {
                     id: 9111,
                     x: 400,
@@ -52,8 +79,10 @@ const useStore = create((set) => ({
                     width: 125,
                     height: 125,
                     content: 'Element 6',
+                    textPreview: 'Type...',
                     type: 'triangle',
                     tab: 'shape',
+                    editor: {},
                 },
             ],
         },
@@ -63,26 +92,28 @@ const useStore = create((set) => ({
             elements: [
                 {
                     id: 1231,
-                    x: 800,
-                    y: 500,
-                    width: 150,
-                    height: 100,
-                    content: 'Element 1',
+                    x: 120,
+                    y: 75,
+                    width: 770,
+                    height: 96,
+                    content: 'Enter title here...',
                     type: 'heading',
                     tab: 'text',
+                    tag: 'h1',
+                    editor: {},
                 },
-                { id: 4561, x: 500, y: 0, width: 150, height: 100, content: 'Element 2', type: 'body', tab: 'text' },
-                { id: 6781, x: 500, y: 0, width: 150, height: 100, content: 'Element 3', type: 'list-ul', tab: 'text' },
-                {
-                    id: 7891,
-                    x: 500,
-                    y: 0,
-                    width: 150,
-                    height: 100,
-                    content: 'Element 4',
-                    type: 'list-number',
-                    tab: 'text',
-                },
+                // { id: 4561, x: 400, y: 0, width: 150, height: 100, content: 'Element 2', type: 'body', tab: 'text' },
+                // { id: 6781, x: 500, y: 0, width: 150, height: 100, content: 'Element 3', type: 'list-ul', tab: 'text' },
+                // {
+                //     id: 7891,
+                //     x: 500,
+                //     y: 0,
+                //     width: 150,
+                //     height: 100,
+                //     content: 'Element 4',
+                //     type: 'list-number',
+                //     tab: 'text',
+                // },
             ],
         },
     ],
@@ -91,6 +122,11 @@ const useStore = create((set) => ({
     setSelectedSlide: (id) =>
         set(() => ({
             selectedId: id,
+        })),
+
+    setSelectElementId: (elementId) =>
+        set(() => ({
+            elementId: elementId,
         })),
 
     onSelect: (elementId, arrDf = false) =>

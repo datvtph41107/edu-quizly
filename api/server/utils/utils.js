@@ -35,7 +35,7 @@ class Utils {
     }
 
     static currentMilliseconds() {
-        return Date.now();
+        return new Date().getTime();
     }
 
     static initQueue(queueName, redisConfig = null) {

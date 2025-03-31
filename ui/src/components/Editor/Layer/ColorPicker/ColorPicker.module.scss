@@ -1,0 +1,68 @@
+.color-picker-wrapper {
+    position: relative;
+}
+
+.box-btn {
+    --tw-text-opacity: 1;
+    color: rgba(255, 255, 255, var(--tw-text-opacity));
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    background-color: transparent;
+    cursor: pointer;
+    display: flex;
+    width: 32px;
+    height: 32px;
+    border-radius: 4px;
+    &:hover {
+        background-color: #ffffff0d;
+    }
+
+    &.active {
+        background-color: #ffffff0d;
+    }
+    .box-btn-grap {
+        justify-content: center;
+        align-items: center;
+        display: flex;
+        width: 24px;
+        height: 24px;
+    }
+
+    .box-icc {
+        color: white !important;
+    }
+}
+
+.color-dropdown {
+    position: absolute;
+    top: 40px;
+    left: 0;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+    padding: 12px;
+    width: 324px;
+
+    .color-option {
+        overflow: hidden;
+        display: grid;
+        border-radius: 0.25rem;
+        grid-template-columns: repeat(10, minmax(0, 1fr));
+        cursor: pointer;
+
+        .color-option-item {
+            align-items: center;
+            display: flex;
+            position: relative;
+            height: 24px;
+
+            &:hover {
+                transform: scale(1.25);
+                z-index: 50;
+            }
+        }
+    }
+}

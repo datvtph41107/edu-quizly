@@ -1,8 +1,14 @@
 import response from "../../utils/response";
 import LOGGER from "../../utils/logger";
-import connection from "../../config/connectDB";
-import SendEmailJob from "../../jobs/sendEmailJob";
+// import SendEmailJob from "../../jobs/sendEmailJob";
 import ConfirmEmailService from "./ConfirmEmailService";
+import Consts from "../../utils/consts";
+import Utils from "../../utils/utils";
+import Role from "../../utils/role";
+import User from "../../models/schema/User";
+import UserSecuritySetting from "../../models/schema/UserSecuritySetting";
+import RolePermission from "../../models/schema/RolePermission";
+import RevokedTokens from "../../models/schema/RevokeToken";
 
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -12,27 +18,33 @@ class AuthService {
         try {
             const { email, password } = request;
 
-            const user = await connection.select().from("users").where({ email: email }).first();
+            const user = await User.findOne({ email });
             if (user) {
                 return response.WARN(400, "", "Email already used!");
             }
             const hashedPassword = bcrypt.hashSync(password, 8);
-            const generateGGcode = Utils.randomString(6);
+            const generateCode = Utils.randomString(6);
             const userName = this.randomUsername();
+            const permissionId = await RolePermission.findOne({ name: Role.CLIENT.name });
+            if (permissionId) {
+                console.log(permissionId);
+            } else {
+                console.log("Permission not found!");
+            }
 
             const data = {
                 email: email,
                 username: userName,
                 password: hashedPassword,
-                referrer_code: this.generateUniqueReferrerCode(),
+                role_permission_id: permissionId._id,
             };
-            this.create(data, generateGGcode);
+            this.create(data, generateCode);
             // send Email
-            SendEmailJob.addEmailJob("register", {
-                toEmail: email,
-                username: userName,
-                generateGGcode,
-            });
+            // SendEmailJob.addEmailJob("register", {
+            //     toEmail: email,
+            //     username: userName,
+            //     generateGGcode,
+            // });
 
             return response.SUCCESS(200, "", "User registration successful!");
         } catch (error) {
@@ -43,22 +55,20 @@ class AuthService {
 
     static async login(request) {
         try {
-            const { email, password } = request;
-            const user = await connection.select().from("users").where({ email: email }).first();
-            if (!user) {
-                return response.WARN(404, "", "User not found!");
-            }
+            const { user } = request;
 
             const accessToken = jwt.sign({ user }, process.env.ACCESS_TOKEN_SECRET, {
-                expiresIn: 604800, // 24h x 7
+                expiresIn: "1h", //
             });
 
+            const refreshToken = jwt.sign({ user: user }, process.env.REFRESH_TOKEN_SECRET, {
+                expiresIn: "7d", // 604800 24h x 7
+            });
+
+            // cookie HTTP-only hoặc localStorage
             const data = {
-                id: user.id,
-                username: user.username,
-                email: user.email,
-                create_time: user.create_time,
                 accessToken,
+                refreshToken,
             };
             return response.SUCCESS(200, "Login success", data);
         } catch (error) {
@@ -67,73 +77,130 @@ class AuthService {
         }
     }
 
+    static async refreshToken(req, res) {
+        const { refreshToken } = req.body;
+
+        if (!refreshToken) {
+            return res.status(403).send("Refresh token is required");
+        }
+
+        try {
+            const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+
+            const newAccessToken = jwt.sign({ user: decoded.user }, process.env.ACCESS_TOKEN_SECRET, {
+                expiresIn: "1h",
+            });
+            const data = {
+                newAccessToken,
+            };
+            return response.SUCCESS(200, "refresh Token success", data);
+        } catch (error) {
+            LOGGER.APP.error(JSON.stringify(error));
+            return response.ERROR(403, "Invalid or expired refresh token", error.message);
+        }
+    }
+
+    static async logout(req) {
+        try {
+            const { authorization } = req.headers;
+            const token = authorization && authorization.split(" ")[1];
+            if (!token) {
+                return response.ERROR(400, "Token is required.");
+            }
+
+            const revokedToken = new RevokedTokens({ token });
+            await revokedToken.save();
+            return response.SUCCESS(200, "", "Successfully logged out and token revoked!");
+        } catch (error) {
+            LOGGER.APP.error(JSON.stringify(error));
+            return response.ERROR(500, "Error revoking token.", error.message);
+        }
+    }
+
+    static async sendCodeRegister(request) {
+        try {
+            const { email } = request;
+            if (!email) {
+                return response.ERROR(400, "", "Bad request");
+            }
+            const user = await User.findOne({ email });
+            if (!user) {
+                throw new Error("Email not exist");
+            }
+
+            const generateCode = Utils.randomString(6);
+            await UserSecuritySetting.updateOne(
+                { id: user.id },
+                {
+                    $set: {
+                        email_verification_code: generateCode,
+                        mail_register_created_at: Utils.currentMilliseconds(),
+                        updated_at: new Date(),
+                    },
+                },
+            );
+            return response.SUCCESS(200, "", "Send code successfully!");
+        } catch (error) {
+            LOGGER.APP.error(JSON.stringify(error));
+            return response.ERROR(500, "", error.message);
+        }
+    }
+
     static async confirmCode(request) {
-        const trx = await connection.transaction();
         try {
             const { code } = request;
             if (!code) {
-                return response.WARN(400, "", "code invalid!");
+                return response.WARN(400, "", "Code invalid!");
             }
 
-            const setting = await trx("user_security_settings")
-                .select("*")
-                .where({
-                    email_verification_code: code,
-                    email_verified: 0,
-                })
-                .andWhere("mail_register_created_at", ">=", Utils.currentMilliseconds() + 30 * 1000) // 30s * 1000 cv miliseconds
-                .first();
+            const currentTime = Utils.currentMilliseconds();
+
+            const setting = await UserSecuritySetting.findOne({
+                email_verification_code: code,
+                email_verified: false,
+            });
 
             if (!setting) {
-                throw new Error("mail_registered_expired or email was in used");
+                throw new Error("Email registration expired or email was already in use");
             }
-            const userId = setting.id;
-            await ConfirmEmailService.confirm(code);
+            const timeElapsed = currentTime - setting.mail_register_created_at;
 
-            const user = await trx("users").select("*").where({ id: userId }).first();
-            // if (user) {
-            //     const data = {
-            //         id: user.id,
-            //         username: user.username,
-            //         email: user.email,
-            //         role: "USER",
-            //         status: user.status.toUpperCase(),
-            //     };
-            //     const topic = Consts.TOPIC_PRODUCER_SYNC_USER;
-            //     await Utils.kafkaProducer(topic, data);
-            // }
-            await trx.commit();
-            return response.SUCCESS(200, "Email confirmation successfully!", user);
+            if (timeElapsed > 30 * 1000) {
+                throw new Error("Verification code has expired");
+            }
+
+            const confirm = await ConfirmEmailService.confirm(setting, code);
+            return response.SUCCESS(200, "Email confirmation successfully!", confirm);
         } catch (error) {
-            await trx.rollback();
+            console.log(error.message);
+
             LOGGER.APP.error(JSON.stringify(error));
-            return response.ERROR(500, error.message || "Internal Server Error");
+            return response.ERROR(500, "Internal Server Error", error.message || "An error occurred");
         }
     }
 
     static async create(data, generateCode) {
-        const trx = await connection.transaction();
         try {
-            const [user] = await trx("users").insert(data).returning(["id", "email", "username"]);
+            const user = new User(data);
+            await user.save();
+            console.log(user);
 
-            const existingSettings = await trx("user_security_settings").select("*").where({ id: user.id }).first();
+            let existingSettings = await UserSecuritySetting.findOne({ id: user._id });
             if (existingSettings) {
-                await trx("user_security_settings").where({ id: user.id }).update({
-                    mail_register_created_at: Utils.currentMilliseconds(),
-                    email_verification_code: generateCode,
-                });
+                existingSettings.mail_register_created_at = Utils.currentMilliseconds() - 30 * 1000;
+                existingSettings.email_verification_code = generateCode;
+                await existingSettings.save();
             } else {
-                await trx("user_security_settings").insert({
-                    id: user.id,
-                    mail_register_created_at: Utils.currentMilliseconds(),
+                const newUserSecuritySetting = new UserSecuritySetting({
+                    id: user._id,
+                    mail_register_created_at: Utils.currentMilliseconds() - 30 * 1000,
                     email_verification_code: generateCode,
                 });
+                await newUserSecuritySetting.save();
             }
 
-            await trx.commit();
             return response.SUCCESS(200, "User registration successful!", user);
         } catch (error) {
-            await trx.rollback();
             LOGGER.APP.error(JSON.stringify(error));
             return response.ERROR(500, "", error.message);
         }

@@ -1,10 +1,25 @@
-import LOGGER from "../utils/logger";
+const mongoose = require("mongoose");
+const { dbConfig } = require("./config");
+const LOGGER = require("../utils/logger");
 
-const DB_CONFIG = require("./config").dbConfig;
-const knex = require("knex")(DB_CONFIG);
+const connectDb = async () => {
+    try {
+        const dbURI = `mongodb://${dbConfig.connection.host}:${dbConfig.connection.port}/${dbConfig.connection.database}`;
+        // const options = {
+        //     user: dbConfig.connection.username || undefined,
+        //     pass: dbConfig.connection.password || undefined,
+        // };
 
-knex.on("query", LOGGER.DB.query);
-knex.on("query-error", LOGGER.DB.error.bind(LOGGER.DB));
-knex.on("query-response", LOGGER.DB.query);
+        await mongoose
+            .connect(dbURI)
+            .then((va) => {
+                console.log("connected");
+            })
+            .catch((e) => console.log(e));
+    } catch (err) {
+        LOGGER.DB.error(`Could not connect to MongoDB: ${err.message}`);
+        process.exit(1);
+    }
+};
 
-module.exports = knex;
+module.exports = connectDb;
