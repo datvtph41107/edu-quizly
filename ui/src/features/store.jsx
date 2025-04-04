@@ -23,6 +23,7 @@ const useStore = create((set) => ({
                     textPreview: 'Type...',
                     type: 'block',
                     tab: 'shape',
+                    index: 1,
                     editor: {},
                 },
                 {
@@ -35,6 +36,7 @@ const useStore = create((set) => ({
                     textPreview: null,
                     type: 'line',
                     tab: 'shape',
+                    index: 2,
                     editor: {},
                 },
                 {
@@ -47,6 +49,7 @@ const useStore = create((set) => ({
                     textPreview: 'Type...',
                     type: 'arrow',
                     tab: 'shape',
+                    index: 3,
                     editor: {},
                 },
                 {
@@ -59,6 +62,7 @@ const useStore = create((set) => ({
                     textPreview: 'Type...',
                     type: 'circle',
                     tab: 'shape',
+                    index: 4,
                     editor: {},
                 },
                 {
@@ -70,6 +74,7 @@ const useStore = create((set) => ({
                     content: 'Element 5',
                     textPreview: 'Type...',
                     type: 'star',
+                    index: 5,
                     tab: 'shape',
                 },
                 {
@@ -82,6 +87,7 @@ const useStore = create((set) => ({
                     textPreview: 'Type...',
                     type: 'triangle',
                     tab: 'shape',
+                    index: 6,
                     editor: {},
                 },
             ],
@@ -96,7 +102,9 @@ const useStore = create((set) => ({
                     y: 75,
                     width: 770,
                     height: 96,
+                    index: 1,
                     content: 'Enter title here...',
+                    textPreview: 'Enter title here...',
                     type: 'heading',
                     tab: 'text',
                     tag: 'h1',
@@ -129,19 +137,26 @@ const useStore = create((set) => ({
             elementId: elementId,
         })),
 
-    onSelect: (elementId, arrDf = false) =>
+    onSelect: ({ elementData, arrDf = false, only = false }) =>
         set((state) => {
+            console.log(elementData);
+
+            if (Array.isArray(elementData) || (elementData.length === 0 && only)) {
+                return { selectedElements: [] };
+            }
             const selectedElements = state.selectedElements;
             if (arrDf) {
                 return { selectedElements: [] };
             }
-
-            const elementIndex = selectedElements.indexOf(elementId);
+            if (only) {
+                return { selectedElements: elementData };
+            }
+            const elementIndex = selectedElements.findIndex((el) => el.id === elementData.id);
 
             if (elementIndex > -1) {
                 selectedElements.splice(elementIndex, 1);
             } else {
-                selectedElements.push(elementId);
+                selectedElements.push(elementData);
             }
 
             return { selectedElements: [...selectedElements] };

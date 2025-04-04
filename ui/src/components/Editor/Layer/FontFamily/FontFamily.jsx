@@ -1,10 +1,9 @@
 import classNames from 'classnames/bind';
 import styles from './FontFamily.module.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCaretUp, faCaretDown } from '@fortawesome/free-solid-svg-icons';
+import { faCaretUp } from '@fortawesome/free-solid-svg-icons';
 import { useState } from 'react';
 import { Utils } from '~/utils/Utils';
-import { useStateContext } from '~/context/ContextProvider';
 
 const cx = classNames.bind(styles);
 
@@ -13,11 +12,14 @@ function FontFamily({ editor, elementId, fn }) {
     const [selectedFont, setSelectedFont] = useState('Quicksand');
 
     const toggleDropdown = () => {
+        editor.commands.focus();
+
         setIsDropdownOpen((prev) => !prev);
     };
 
     const handleFontChange = (font) => {
         setSelectedFont(font);
+        editor.chain().focus().setFontFamily(font).run();
         setIsDropdownOpen(false);
     };
 

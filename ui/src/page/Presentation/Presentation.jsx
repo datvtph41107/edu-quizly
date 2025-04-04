@@ -9,7 +9,8 @@ const cx = classNames.bind(styles);
 
 function Presentation() {
     const { setEditorMoute } = useStateContext();
-    const { selectedId, items, updatePositionBlock, onSelect, setSelectElementId, elementId } = useStore();
+    const { selectedId, items, updatePositionBlock, onSelect, setSelectElementId, elementId, selectedElements } =
+        useStore();
     const [isDraggingToSelect, setisDraggingToSelect] = useState(false);
     const [selectedTemp, setSelectedTemp] = useState([]); // store element selected temp
     const [selectionBox, setSelectionBox] = useState(null);
@@ -25,7 +26,6 @@ function Presentation() {
         // Handle bounding select box
         if (e.button !== 0) return;
         const targetElement = e.target;
-        console.log(targetElement);
 
         if (
             (!isDraggingToSelect && (targetElement.id === 'container' || targetElement.id === 'boundingBox')) ||
@@ -35,7 +35,8 @@ function Presentation() {
             setSelectedTemp([]);
             setBoundingBox(null);
         }
-        if (targetElement.id === 'container' && !elementId) {
+
+        if (targetElement.id === 'container' && !selectedElements?.element?.id) {
             console.log('when i touch start pull');
             const rect = containerRef.current.getBoundingClientRect();
 
@@ -48,9 +49,9 @@ function Presentation() {
             setisDraggingToSelect(true);
         }
         // if bouding wrapper not pull move mouse
-        if (targetElement.id === 'container' || (targetElement.id === 'wrapper' && elementId)) {
-            setSelectElementId(null);
+        if (targetElement.id === 'container' || (targetElement.id === 'wrapper' && selectedElements?.element?.id)) {
             setEditorMoute(false);
+            onSelect({ elementData: [], only: true }); // when selected element only
         }
     };
 
@@ -130,15 +131,6 @@ function Presentation() {
     };
 
     useEffect(() => {
-        if (elementId != null) {
-            document.addEventListener('mousedown', function (e) {
-                if (e.target.id !== 'shape') {
-                    console.log(e);
-
-                    console.log(123);
-                }
-            });
-        }
         if (isDraggingToSelect && wrapperRef.current) {
             wrapperRef.current.addEventListener('mousemove', handleMouseMove);
             wrapperRef.current.addEventListener('mouseup', handleMouseUp);
@@ -194,6 +186,7 @@ function Presentation() {
                     <DraggableElement
                         key={index}
                         element={el}
+                        selectedElements={selectedElements}
                         getElementIdSelected={elementId}
                         setSelectElementId={setSelectElementId}
                         storeElementBoundingBox={selectedTemp} // Store bounding select (check to use handledrag)

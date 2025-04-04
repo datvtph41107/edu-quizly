@@ -22,7 +22,8 @@ function MakeSlideLayout({ children }) {
                 </div>
                 <div className={cx('contain')}>
                     <div className={cx('head', { edit: editorMoute })}>
-                        {editorMoute && <Editor />}
+                        {/* {editorMoute && <Editor />} */}
+                        <Editor />
 
                         <div className={cx('thems')}>
                             <FontAwesomeIcon icon={faLayerGroup} />

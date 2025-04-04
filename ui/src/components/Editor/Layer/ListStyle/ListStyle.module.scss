@@ -16,8 +16,13 @@
     }
 
     &.active {
-        background-color: #ffffff0d;
+        --tw-text-opacity: 1;
+        color: rgba(56, 21, 53, var(--tw-text-opacity));
+        --tw-bg-opacity: 1;
+        border-radius: 0.25rem;
+        background-color: rgb(222 228 221) !important;
     }
+
     .box-btn-grap {
         justify-content: center;
         align-items: center;
