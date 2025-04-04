@@ -1,20 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Rnd } from 'react-rnd';
 import styles from './Dragable.module.scss';
 import classNames from 'classnames/bind';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCopy, faFill, faRotate, faTrash, faUnlock } from '@fortawesome/free-solid-svg-icons';
 import { useStateContext } from '~/context/ContextProvider';
-import './drag.css';
 import { useEditor } from '@tiptap/react';
-import StarterKit from '@tiptap/starter-kit';
-import { render } from '../ElementTypes/ElementTypes';
+import { isActiveTypeState, render, updateEditorState, extensions } from '~/components/ElementTypes/ElementTypes';
+import './drag.css';
 
 const cx = classNames.bind(styles);
 
 function DraggableElement({
     className = false,
     element,
+    selectedElements,
     getElementIdSelected,
     setSelectElementId,
     storeElementBoundingBox,
@@ -26,10 +26,9 @@ function DraggableElement({
     isDraggingToSelect,
     setisDraggingToSelect,
 }) {
-    const { editorMoute, setEditorMoute, setEditors } = useStateContext();
+    const { setEditorMoute, setEditor, setChangeEditorType, changeEditorType } = useStateContext();
     const [isEditing, setIsEditing] = useState(false);
     const [openDrag, setOpenDrag] = useState(false);
-
     const classes = cx('content', {
         shape: element.tab === 'shape',
         [className]: className,
@@ -37,36 +36,33 @@ function DraggableElement({
 
     const editor = useEditor(
         {
-            // autofocus: true,
             editable: true,
-            extensions: [StarterKit],
+            extensions: extensions,
             content: element.textPreview,
+            onSelectionUpdate: ({ editor }) => {
+                const { $from, $to } = editor.state.selection;
+
+                const start = $from.pos;
+                const end = $to.pos;
+                if (!editor.isEmpty) {
+                    updateEditorState({ editor: editor, setChangeEditorType: setChangeEditorType });
+                }
+            },
             onUpdate: ({ editor }) => {
                 const editorContent = editor.getHTML();
-                console.log(editorContent);
-            },
-            onBlur: () => {
-                setIsEditing(false);
+
                 if (editor.isEmpty) {
-                    editor.commands.setContent(element.textPreview);
+                    isActiveTypeState({ editor: editor, changeEditorType: changeEditorType });
                 }
-                console.log('Editor lost focus');
+            },
+            onBlur: (e) => {
+                setIsEditing(false);
             },
         },
         [element.content],
     );
 
-    useEffect(() => {
-        return () => {
-            editor?.destroy();
-        };
-    }, [editor]);
-
     const handleDrag = (e, d) => {
-        // if (!editorMoute) {
-        // }
-        // setEditorMoute(true);
-        // setOpenDrag(true);
         setisDraggingToSelect(false);
         if (storeElementBoundingBox.length > 0) {
             setOpenDrag(false);
@@ -96,8 +92,6 @@ function DraggableElement({
                 }
             });
         } else {
-            // open setting
-
             if (element.x !== d.x || element.y !== d.y) {
                 onUpdate(element.id, { x: d.x, y: d.y });
             }
@@ -114,24 +108,17 @@ function DraggableElement({
     };
 
     // open options
-    const handleOpenDragging = () => {
-        // storeElementBoundingBox([]);
-        // editor.commands.focus();
+    const handleOpenDragging = (e) => {
+        const parentElement = e.target.closest('.elementBox-unique-' + element.id);
         if (!getBoundingBox) {
-            // const editor = getEditorById(element.id);
-            // setEditorContext(editor);
-            if (!editorMoute) {
-                setEditorMoute(true);
-            }
-            setEditors(editor); // set state editor to get menu header
-            onSelect(element.id); // get element with id
-            setSelectElementId(element.id); // get id of element
+            setEditor(editor); // set state editor to get menu header
+            onSelect({ elementData: { element: element, target: parentElement }, only: true }); // get element with id
             setEditorMoute(true); // open setting navbar left
         }
     };
 
     const isSelected = storeElementBoundingBox.map((el) => el.id).includes(element.id);
-    const isSelectDisplay = getElementIdSelected === element.id;
+    const isSelectDisplay = selectedElements?.element?.id === element.id;
     // ELEMENT VIEW RENDER
     const renderView = render({
         type: element.type,
@@ -139,15 +126,21 @@ function DraggableElement({
             id: `element-${element.id}`,
             width: element.width,
             height: element.height,
+            // borderStroke: '',
+            // borderColorStroke: '',
             className: classes,
-            style: element.type === 'block' ? { backgroundColor: '#018a38' } : {},
+            style: {
+                ...(element.type === 'block' ? { backgroundColor: '#018a38' } : {}),
+                // zIndex: element.index,
+            },
         },
         props: {
             element: element,
             isSelected: isSelected,
             setIsEditing: setIsEditing,
-            isEditing: isEditing,
             editor: editor,
+            changeEditorType: changeEditorType,
+            selectedElements: selectedElements,
         },
         tab: element.tab,
     });
@@ -155,12 +148,21 @@ function DraggableElement({
     return (
         <Rnd
             id={element.id}
+            onMouseDown={handleOpenDragging}
             className={cx(
                 'wrapper',
                 { disable: isSelectDisplay },
                 { dragging: !isDraggingToSelect },
                 { selected: isSelected },
+                'elementBox-unique-' + element.id,
             )}
+            style={{
+                // pointerEvents: !selectedElements.element
+                //     ? 'auto'
+                //     : selectedElements?.element?.id !== element.id && 'none',
+                zIndex: (isEditing || selectedElements?.element?.id === element.id) && 999,
+                willChange: 'transform',
+            }}
             size={{ width: element.width, height: element.height }}
             position={{ x: element.x, y: element.y }}
             onDrag={handleDrag}
@@ -189,6 +191,7 @@ function DraggableElement({
             minWidth={40}
             minHeight={element.type !== 'line' ? 40 : 5}
             maxHeight={element.type === 'line' ? 16 : undefined}
+            dragGrid={[5, 5]}
         >
             <div className={cx('nav-contain', { disable: !isSelectDisplay })}>
                 <div>
@@ -209,7 +212,10 @@ function DraggableElement({
                 </div>
             </div>
 
-            <div className={cx('slide-element')} onMouseDown={handleOpenDragging}>
+            <div className={cx('slide-element')}>
+                <div className={cx('slide-element-border')}></div>
+                <div className={cx('slide-element-border')}></div>
+
                 <div className={cx('radito-3', { disable: !openDrag })}>
                     <FontAwesomeIcon icon={faRotate} />
                     <div className={cx('radito-stick')}></div>

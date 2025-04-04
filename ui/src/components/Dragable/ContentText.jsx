@@ -1,6 +1,7 @@
 import classNames from 'classnames/bind';
 import styles from './ContentText.module.scss';
 import { EditorContent } from '@tiptap/react';
+import './customStyle.css';
 
 const cx = classNames.bind(styles);
 
@@ -9,19 +10,16 @@ function ContentText({
     isSelected,
     setIsEditing,
     editor,
-    isEditing,
-    contentRef,
-    valueLength,
     onSelect,
     element,
+    changeEditorType,
+    selectedElements,
 }) {
-    // if (!editor) return null;
-    // console.log(editor);
+    if (!editor) return null;
 
     return (
         <div
             id={'contentText' + (isSelected ? '-selected' : '')}
-            ref={contentRef}
             style={{ width: element.width, height: height }}
             className={cx('content-text', { [element.tab]: element.tab })}
             onClick={() => {
@@ -32,23 +30,18 @@ function ContentText({
             }}
         >
             <div className={cx('content-text-ce')}>
-                <EditorContent editor={editor} />
+                <div className={`content-${element?.tab === 'shape' ? 'shape' : 'text'}`}>
+                    <EditorContent
+                        // style={{
+                        //     fontSize:
+                        //         selectedElements?.element?.id === element.id &&
+                        //         changeEditorType.fontSize.active &&
+                        //         changeEditorType.fontSize.value + 'px',
+                        // }}
+                        editor={editor}
+                    />
+                </div>
             </div>
-            {/* {isEditing || valueLength.length >= 1 ? (
-                <div className={cx('content-text-ce')}>
-                    <EditorContent editor={editor.editor} />
-                </div>
-            ) : element.tab === 'shape' ? (
-                <div className={cx('content-text-type')}>
-                    <p>
-                        <span style={{ fontSize: '14px' }}>Type...</span>
-                    </p>
-                </div>
-            ) : (
-                <div className={cx('content-text-type', { [element.tab]: element.tab })}>
-                    <p style={{ width: element.width }}>Enter Text...</p>
-                </div>
-            )} */}
         </div>
     );
 }

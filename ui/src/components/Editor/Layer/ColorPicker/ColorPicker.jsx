@@ -12,11 +12,14 @@ function ColorPicker({ editor, elementId, fn }) {
     const [selectedColor, setSelectedColor] = useState('#fffff');
 
     const toggleDropdown = () => {
+        editor.commands.focus();
+
         setIsDropdownOpen((prev) => !prev);
     };
 
     const handleColorChange = (color) => {
         setSelectedColor(color);
+        editor.chain().focus().setColor(color).run();
         setIsDropdownOpen(false);
     };
 

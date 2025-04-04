@@ -1,10 +1,13 @@
 import React, { createContext, useContext, useState } from 'react';
+import { TypesEditor } from '~/components/ElementTypes/ElementTypes';
 const StateContext = createContext();
 
 export const ContextProvider = ({ children }) => {
     const [loading, setLoading] = useState(false);
     const [editorMoute, setEditorMoute] = useState(false);
-    const [editors, setEditors] = useState({});
+    const [editor, setEditor] = useState({});
+    const [changeEditorType, setChangeEditorType] = useState(TypesEditor);
+
     const showLoading = () => {
         setLoading(true);
     };
@@ -13,9 +16,11 @@ export const ContextProvider = ({ children }) => {
     return (
         <StateContext.Provider
             value={{
-                editors,
-                setEditors,
+                editor,
+                setEditor,
                 loading,
+                setChangeEditorType,
+                changeEditorType,
                 editorMoute,
                 setEditorMoute,
                 showLoading,

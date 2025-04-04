@@ -1,0 +1,32 @@
+.content-shape ol {
+    margin-left: 2em;
+    list-style: decimal;
+    font-size: 28px;
+}
+.content-shape ol li {
+    line-height: 1.5em;
+    font-size: 28px;
+}
+
+.content-shape ol li p {
+    text-align: left;
+    line-height: 1.5em;
+    font-size: 14px;
+    width: 73px;
+}
+
+.content-shape ul {
+    margin-left: 2em;
+    list-style: disc;
+    font-size: 28px;
+}
+.content-shape ul li {
+    line-height: 1.5em;
+    font-size: 28px;
+}
+.content-shape ul li p {
+    text-align: left;
+    line-height: 1.2em;
+    font-size: 14px;
+    width: 73px;
+}

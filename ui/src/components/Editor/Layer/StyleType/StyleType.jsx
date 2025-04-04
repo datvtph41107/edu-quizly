@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import classNames from 'classnames/bind';
 import styles from './StyleType.module.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -13,45 +13,85 @@ import {
     faUnderline,
 } from '@fortawesome/free-solid-svg-icons';
 import { useStateContext } from '~/context/ContextProvider';
+import { handleChangeTypeEditor } from '~/components/ElementTypes/ElementTypes';
+import ModalLink from './ModalLink';
 
 const cx = classNames.bind(styles);
 
-function StyleType({ editor, elementId, fn }) {
-    const [isBold, setIsBold] = useState(false);
-    const [isItalic, setIsItalic] = useState(false);
-    const [isUnderline, setIsUnderline] = useState(false);
-    const [isStrikethrough, setIsStrikethrough] = useState(false);
+function StyleType({ editor }) {
+    const { setChangeEditorType, changeEditorType } = useStateContext();
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedText, setSelectedText] = useState('');
+    // console.log(changeEditorType);
+    const handleSaveLink = useCallback(
+        (url) => {
+            // cancelled
+            if (url === null) {
+                return;
+            }
+
+            if (url === '') {
+                editor.chain().focus().extendMarkRange('link').unsetLink().run();
+                return;
+            }
+            const isSelectionEmpty = editor.state.selection.empty;
+            try {
+                if (isSelectionEmpty) {
+                    editor
+                        .chain()
+                        .focus()
+                        .insertContent(`<a href="${url}" className={cx('link-href')}>${url}</a>`)
+                        .run();
+                } else {
+                    editor.chain().focus().extendMarkRange('link').setLink({ href: url }).run();
+                }
+            } catch (e) {
+                alert(e.message);
+            }
+        },
+        [editor],
+    );
+
+    if (!editor) {
+        return null;
+    }
+
+    const handleOpenLink = () => {
+        setIsModalOpen(true);
+    };
 
     const handleBoldClick = () => {
-        const newBold = !isBold;
-        setIsBold(newBold);
-        editor.chain().focus().toggleBold().run();
-        // fn(elementId, { fontWeight: newBold ? 'bold' : 'normal' });
+        handleChangeTypeEditor({ editor: editor, type: 'bold', setChangeEditorType: setChangeEditorType });
     };
 
     const handleItalicClick = () => {
-        const newItalic = !isItalic;
-        setIsItalic(newItalic);
-        editor.chain().focus().toggleItalic().run();
+        handleChangeTypeEditor({ editor: editor, type: 'italic', setChangeEditorType: setChangeEditorType });
     };
 
     const handleUnderlineClick = () => {
-        const newUnderline = !isUnderline;
-        setIsUnderline(newUnderline);
-        fn(elementId, { textDecoration: newUnderline ? 'underline' : 'none' });
+        handleChangeTypeEditor({ editor: editor, type: 'underline', setChangeEditorType: setChangeEditorType });
     };
 
     const handleStrikethroughClick = () => {
-        const newStrikethrough = !isStrikethrough;
-        setIsStrikethrough(newStrikethrough);
-        fn(elementId, { textDecoration: newStrikethrough ? 'line-through' : 'none' });
+        handleChangeTypeEditor({ editor: editor, type: 'strike', setChangeEditorType: setChangeEditorType });
+    };
+
+    const handleSuperscriptClick = () => {
+        handleChangeTypeEditor({ editor: editor, type: 'superscript', setChangeEditorType: setChangeEditorType });
+    };
+
+    const handleSubscriptClick = () => {
+        handleChangeTypeEditor({ editor: editor, type: 'subscript', setChangeEditorType: setChangeEditorType });
     };
 
     return (
         <>
             <div style={{ position: 'relative' }}>
                 {/* Bold Button */}
-                <button className={cx('box-btn', { active: isBold })} onClick={handleBoldClick}>
+                <button
+                    className={cx('box-btn', { active: changeEditorType['bold']?.active ?? editor.isActive('bold') })}
+                    onClick={handleBoldClick}
+                >
                     <div className={cx('box-btn-grap')}>
                         <FontAwesomeIcon icon={faBold} />
                     </div>
@@ -59,7 +99,12 @@ function StyleType({ editor, elementId, fn }) {
             </div>
             <div style={{ position: 'relative', marginLeft: '2px' }}>
                 {/* Italic Button */}
-                <button className={cx('box-btn', { active: isItalic })} onClick={handleItalicClick}>
+                <button
+                    className={cx('box-btn', {
+                        active: changeEditorType['italic']?.active ?? editor.isActive('italic'),
+                    })}
+                    onClick={handleItalicClick}
+                >
                     <div className={cx('box-btn-grap')}>
                         <FontAwesomeIcon icon={faItalic} />
                     </div>
@@ -67,7 +112,12 @@ function StyleType({ editor, elementId, fn }) {
             </div>
             <div style={{ position: 'relative', marginLeft: '2px' }}>
                 {/* Underline Button */}
-                <button className={cx('box-btn', { active: isUnderline })} onClick={handleUnderlineClick}>
+                <button
+                    className={cx('box-btn', {
+                        active: changeEditorType['underline']?.active ?? editor.isActive('underline'),
+                    })}
+                    onClick={handleUnderlineClick}
+                >
                     <div className={cx('box-btn-grap')}>
                         <FontAwesomeIcon icon={faUnderline} />
                     </div>
@@ -75,7 +125,12 @@ function StyleType({ editor, elementId, fn }) {
             </div>
             <div style={{ position: 'relative', marginLeft: '2px' }}>
                 {/* Strikethrough Button */}
-                <button className={cx('box-btn', { active: isStrikethrough })} onClick={handleStrikethroughClick}>
+                <button
+                    className={cx('box-btn', {
+                        active: changeEditorType['strike']?.active ?? editor.isActive('strike'),
+                    })}
+                    onClick={handleStrikethroughClick}
+                >
                     <div className={cx('box-btn-grap')}>
                         <FontAwesomeIcon icon={faStrikethrough} />
                     </div>
@@ -83,7 +138,12 @@ function StyleType({ editor, elementId, fn }) {
             </div>
             <div style={{ position: 'relative', marginLeft: '2px' }}>
                 {/* Superscript Button */}
-                <button className={cx('box-btn')}>
+                <button
+                    className={cx('box-btn', {
+                        active: changeEditorType['superscript']?.active ?? editor.isActive('superscript'),
+                    })}
+                    onClick={handleSuperscriptClick}
+                >
                     <div className={cx('box-btn-grap')}>
                         <FontAwesomeIcon icon={faSuperscript} />
                     </div>
@@ -91,7 +151,12 @@ function StyleType({ editor, elementId, fn }) {
             </div>
             <div style={{ position: 'relative', marginLeft: '2px' }}>
                 {/* Subscript Button */}
-                <button className={cx('box-btn')}>
+                <button
+                    className={cx('box-btn', {
+                        active: changeEditorType['subscript']?.active ?? editor.isActive('subscript'),
+                    })}
+                    onClick={handleSubscriptClick}
+                >
                     <div className={cx('box-btn-grap')}>
                         <FontAwesomeIcon icon={faSubscript} />
                     </div>
@@ -99,12 +164,15 @@ function StyleType({ editor, elementId, fn }) {
             </div>
             <div style={{ position: 'relative', marginLeft: '2px' }}>
                 {/* Link Button */}
-                <button className={cx('box-btn')}>
+                <button className={cx('box-btn')} onClick={handleOpenLink}>
                     <div className={cx('box-btn-grap')}>
                         <FontAwesomeIcon icon={faLink} />
                     </div>
                 </button>
             </div>
+            {/* START Modal */}
+            <ModalLink isOpen={isModalOpen} onRequestClose={() => setIsModalOpen(false)} onSave={handleSaveLink} />
+            {/* END Modal */}
             <div style={{ position: 'relative', marginLeft: '2px' }}>
                 {/* Florin Button */}
                 <button className={cx('box-btn')}>
