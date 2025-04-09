@@ -1,4 +1,4 @@
-import { ArrowIcon, EllipseIcon, LineIcon, StarIcon, TriangleIcon } from '~/components/Icons';
+import { ArrowIcon, EllipseIcon, LineIcon, StarIcon, TriangleIcon, RectangleIcon } from '~/components/Icons';
 import ContentText from '../Dragable/ContentText';
 import Underline from '@tiptap/extension-underline';
 import Subscript from '@tiptap/extension-subscript';
@@ -18,6 +18,10 @@ import { Node, mergeAttributes } from '@tiptap/core';
 import FontFamily from '@tiptap/extension-font-family';
 import TextStyle from '@tiptap/extension-text-style';
 import Color from '@tiptap/extension-color';
+import Placeholder from '@tiptap/extension-placeholder';
+import { TYPE_SHAPE } from '~/utils/Const';
+import Heading from '@tiptap/extension-heading';
+import ContentTextView from '../Dragable/ContentTextView';
 
 const ElementTypes = {
     arrow: ArrowIcon,
@@ -25,6 +29,7 @@ const ElementTypes = {
     star: StarIcon,
     triangle: TriangleIcon,
     line: LineIcon,
+    rectangle: RectangleIcon,
 };
 
 export const TypesEditor = {
@@ -51,7 +56,6 @@ export const TypesEditor = {
 };
 
 const editorTypes = Object.keys(TypesEditor);
-console.log(editorTypes);
 
 const BringForwardExtension = Extension.create({
     name: 'bringForward',
@@ -144,6 +148,19 @@ export const extensions = [
     // FontFamily.configure({
     //     types: ['textStyle'],
     // }),
+
+    Placeholder.configure({
+        // Use a placeholder:
+        placeholder: 'Write something …',
+        // Use different placeholders depending on the node type:
+        // placeholder: ({ node }) => {
+        //   if (node.type.name === 'heading') {
+        //     return 'What’s the title?'
+        //   }
+
+        //   return 'Can you add some further context?'
+        // },
+    }),
     TextAlign.configure({
         types: ['heading', 'paragraph'],
     }),
@@ -211,7 +228,7 @@ export const render = ({ type, propStyles, props, tab }) => {
         Component = ElementTypes[type];
     }
 
-    if (Component && tab === 'shape') {
+    if (Component && tab === TYPE_SHAPE) {
         return (
             <>
                 <Component {...propStyles} />
@@ -220,6 +237,25 @@ export const render = ({ type, propStyles, props, tab }) => {
         );
     } else {
         return <ContentText {...props} />;
+    }
+};
+
+export const renderView = ({ type, propStyles, props, tab }) => {
+    let Component = 'div';
+
+    if (type !== 'block') {
+        Component = ElementTypes[type];
+    }
+
+    if (Component && tab === TYPE_SHAPE) {
+        return (
+            <>
+                <Component {...propStyles} />
+                {type !== 'line' && type !== 'arrow' && <ContentTextView {...props} />}
+            </>
+        );
+    } else {
+        return <ContentTextView {...props} />;
     }
 };
 

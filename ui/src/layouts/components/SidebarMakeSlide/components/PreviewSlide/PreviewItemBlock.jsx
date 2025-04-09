@@ -6,7 +6,7 @@ import classNames from 'classnames/bind';
 const cx = classNames.bind(styles);
 
 function PreviewItemBlock() {
-    const { selectedId, setSelectedSlide, items, copyNewSlide, removeSlide } = useStore();
+    const { selectedSlideId, setSelectedSlide, items, copyNewSlide, removeSlide } = useStore();
 
     return (
         <>
@@ -17,7 +17,7 @@ function PreviewItemBlock() {
                             key={index}
                             countSlide={index + 1}
                             elements={item.elements}
-                            isSelected={selectedId === item.id}
+                            isSelected={selectedSlideId === item.id}
                             onSelect={() => setSelectedSlide(item.id)}
                             copyNewSlide={() => copyNewSlide(item.id)}
                             removeSlide={() => removeSlide(item.id)}

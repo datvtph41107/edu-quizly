@@ -4,15 +4,12 @@ import styles from './MakeSlideLayout.module.scss';
 import classNames from 'classnames/bind';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLayerGroup } from '@fortawesome/free-solid-svg-icons';
-import { useStateContext } from '~/context/ContextProvider';
 import React from 'react';
 import Editor from '~/components/Editor/Editor';
 
 const cx = classNames.bind(styles);
 
 function MakeSlideLayout({ children }) {
-    const { editorMoute } = useStateContext();
-
     return (
         <div className={cx('wrapper')}>
             <HeaderSlide />
@@ -21,7 +18,8 @@ function MakeSlideLayout({ children }) {
                     <SidebarMakeSlide />
                 </div>
                 <div className={cx('contain')}>
-                    <div className={cx('head', { edit: editorMoute })}>
+                    <div className={cx('head', { edit: true })}>
+                        {/* editorMoute */}
                         {/* {editorMoute && <Editor />} */}
                         <Editor />
 
