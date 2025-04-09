@@ -29,13 +29,13 @@ function SidebarPreviewItem({ isSelected, countSlide, elements, onSelect, copyNe
                                         key={index}
                                         className={cx('preview-item')}
                                         style={{
-                                            left: `${element.x * scale}px`,
-                                            top: `${element.y * scale}px`,
-                                            width: `${element.width * scale}px`,
-                                            height: `${element.height * scale}px`,
+                                            left: `${element.transform.position.x * scale}px`,
+                                            top: `${element.transform.position.y * scale}px`,
+                                            width: `${element.transform.size.width * scale}px`,
+                                            height: `${element.transform.size.height * scale}px`,
                                         }}
                                     >
-                                        {element.content}
+                                        {element.data.html}
                                     </div>
                                 ))}
                             </div>

@@ -4,7 +4,6 @@ const StateContext = createContext();
 
 export const ContextProvider = ({ children }) => {
     const [loading, setLoading] = useState(false);
-    const [editorMoute, setEditorMoute] = useState(false);
     const [editor, setEditor] = useState({});
     const [changeEditorType, setChangeEditorType] = useState(TypesEditor);
 
@@ -21,8 +20,6 @@ export const ContextProvider = ({ children }) => {
                 loading,
                 setChangeEditorType,
                 changeEditorType,
-                editorMoute,
-                setEditorMoute,
                 showLoading,
                 hideLoading,
             }}

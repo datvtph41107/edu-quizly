@@ -1,13 +1,16 @@
 import { create } from 'zustand';
 import { v4 as uuidv4 } from 'uuid';
+import { TYPE_SHAPE, TYPE_TEXT } from '~/utils/Const';
 
 const slideDefault = 1;
 
 const useStore = create((set) => ({
+    editor: null,
+    editorComponents: [],
     selectedElements: [],
     getBoundingElements: [],
     elementId: null,
-    selectedId: slideDefault,
+    selectedSlideId: slideDefault,
     items: [
         {
             id: slideDefault,
@@ -15,81 +18,170 @@ const useStore = create((set) => ({
             elements: [
                 {
                     id: 1231,
-                    x: 700,
-                    y: 400,
-                    width: 125,
-                    height: 125,
-                    content: 'Element 1',
-                    textPreview: 'Type...',
-                    type: 'block',
-                    tab: 'shape',
-                    index: 1,
-                    editor: {},
+                    transform: {
+                        position: {
+                            x: 700,
+                            y: 400,
+                        },
+                        size: {
+                            width: 125,
+                            height: 125,
+                        },
+                        rotation: 0,
+                        zIndex: 0,
+                    },
+                    data: {
+                        html: 'TYPE....',
+                        media: {
+                            type: '',
+                            url: '',
+                        },
+                    },
+                    placeholder: 'Type...',
+                    placeholderSize: 36,
+                    type: 'rectangle',
+                    tab: TYPE_SHAPE,
+                    zIndex: 0,
                 },
-                {
-                    id: 4561,
-                    x: 400,
-                    y: 200,
-                    width: 125,
-                    height: 4,
-                    content: 'Element 2',
-                    textPreview: null,
-                    type: 'line',
-                    tab: 'shape',
-                    index: 2,
-                    editor: {},
-                },
-                {
-                    id: 6781,
-                    x: 500,
-                    y: 0,
-                    width: 125,
-                    height: 50,
-                    content: 'Element 3',
-                    textPreview: 'Type...',
-                    type: 'arrow',
-                    tab: 'shape',
-                    index: 3,
-                    editor: {},
-                },
+                // {
+                //     id: 4561,
+                //     transform: {
+                //         position: {
+                //             x: 400,
+                //             y: 200,
+                //         },
+                //         size: {
+                //             width: 125,
+                //             height: 4,
+                //         },
+                //         rotation: 0,
+                //         zIndex: 0,
+                //     },
+                //     data: {
+                //         html: 'TYPE....',
+                //         media: {
+                //             type: '',
+                //             url: '',
+                //         },
+                //     },
+                //     placeholder: null,
+                //     placeholderSize: 36,
+                //     type: 'line',
+                //     tab: TYPE_SHAPE,
+                //     zIndex: 2,
+                // },
+
+                // {
+                //     id: 6781,
+                //     transform: {
+                //         position: {
+                //             x: 500,
+                //             y: 0,
+                //         },
+                //         size: {
+                //             width: 125,
+                //             height: 50,
+                //         },
+                //         rotation: 0,
+                //         zIndex: 0,
+                //     },
+                //     data: {
+                //         html: 'TYPE....',
+                //         media: {
+                //             type: '',
+                //             url: '',
+                //         },
+                //     },
+                //     placeholder: 'Type...',
+                //     placeholderSize: 36,
+                //     type: 'arrow',
+                //     tab: TYPE_SHAPE,
+                //     zIndex: 3,
+                // },
+
                 {
                     id: 7891,
-                    x: 462,
-                    y: 295,
-                    width: 140,
-                    height: 140,
-                    content: 'Element 4',
-                    textPreview: 'Type...',
+                    transform: {
+                        position: {
+                            x: 462,
+                            y: 295,
+                        },
+                        size: {
+                            width: 140,
+                            height: 140,
+                        },
+                        rotation: 0,
+                        zIndex: 1,
+                    },
+                    data: {
+                        html: 'TYPE....',
+                        media: {
+                            type: '',
+                            url: '',
+                        },
+                    },
+                    placeholder: 'Type...',
+                    placeholderSize: 36,
                     type: 'circle',
-                    tab: 'shape',
-                    index: 4,
-                    editor: {},
+                    tab: TYPE_SHAPE,
+                    zIndex: 1,
                 },
+
                 {
                     id: 8101,
-                    x: 500,
-                    y: 0,
-                    width: 125,
-                    height: 125,
-                    content: 'Element 5',
-                    textPreview: 'Type...',
+                    transform: {
+                        position: {
+                            x: 500,
+                            y: 0,
+                        },
+                        size: {
+                            width: 125,
+                            height: 125,
+                        },
+                        rotation: 0,
+                        zIndex: 0,
+                    },
+                    data: {
+                        html: 'TYPE....',
+                        media: {
+                            type: '',
+                            url: '',
+                        },
+                    },
+                    placeholder: 'Type...',
+                    placeholderSize: 36,
                     type: 'star',
-                    index: 5,
-                    tab: 'shape',
+                    tab: TYPE_SHAPE,
+                    zIndex: 5,
                 },
-                {
-                    id: 9111,
-                    x: 400,
-                    y: 100,
-                    width: 125,
-                    height: 125,
-                    content: 'Element 6',
-                    textPreview: 'Type...',
-                    type: 'triangle',
-                    tab: 'shape',
-                    index: 6,
-                    editor: {},
-                },
+
+                // {
+                //     id: 9111,
+                //     transform: {
+                //         position: {
+                //             x: 400,
+                //             y: 100,
+                //         },
+                //         size: {
+                //             width: 125,
+                //             height: 125,
+                //         },
+                //         rotation: 0,
+                //         zIndex: 0,
+                //     },
+                //     data: {
+                //         html: 'TYPE....',
+                //         media: {
+                //             type: '',
+                //             url: '',
+                //         },
+                //     },
+                //     placeholder: 'Type...',
+                //     placeholderSize: 36,
+                //     type: 'triangle',
+                //     tab: TYPE_SHAPE,
+                //     zIndex: 6,
+                // },
             ],
         },
         {
@@ -98,20 +190,60 @@ const useStore = create((set) => ({
             elements: [
                 {
                     id: 1231,
-                    x: 120,
-                    y: 75,
-                    width: 770,
-                    height: 96,
-                    index: 1,
-                    content: 'Enter title here...',
-                    textPreview: 'Enter title here...',
-                    type: 'heading',
-                    tab: 'text',
-                    tag: 'h1',
-                    editor: {},
+                    transform: {
+                        position: {
+                            x: 120,
+                            y: 75,
+                        },
+                        size: {
+                            width: 770,
+                            height: 96,
+                        },
+                        rotation: 0,
+                        zIndex: 0,
+                    },
+                    data: {
+                        html: 'TYPE....',
+                        media: {
+                            type: '',
+                            url: '',
+                        },
+                    },
+                    placeholder: 'Enter title here...',
+                    placeholderSize: 36,
+                    type: 'h1',
+                    tab: TYPE_TEXT,
+                    zIndex: 1,
                 },
-                // { id: 4561, x: 400, y: 0, width: 150, height: 100, content: 'Element 2', type: 'body', tab: 'text' },
-                // { id: 6781, x: 500, y: 0, width: 150, height: 100, content: 'Element 3', type: 'list-ul', tab: 'text' },
+                {
+                    id: 1234,
+                    transform: {
+                        position: {
+                            x: 120,
+                            y: 220,
+                        },
+                        size: {
+                            width: 770,
+                            height: 210,
+                        },
+                        rotation: 0,
+                        zIndex: 0,
+                    },
+                    data: {
+                        html: 'TYPE....',
+                        media: {
+                            type: '',
+                            url: '',
+                        },
+                    },
+                    placeholder: 'Enter title here...',
+                    placeholderSize: 36,
+                    type: 'body',
+                    tab: TYPE_TEXT,
+                    zIndex: 1,
+                },
+                // { id: 4561, x: 400, y: 0, width: 150, height: 100, content: 'Element 2', type: 'body', tab: TYPE_TEXT },
+                // { id: 6781, x: 500, y: 0, width: 150, height: 100, content: 'Element 3', type: 'list-ul', tab: TYPE_TEXT },
                 // {
                 //     id: 7891,
                 //     x: 500,
@@ -120,17 +252,30 @@ const useStore = create((set) => ({
                 //     height: 100,
                 //     content: 'Element 4',
                 //     type: 'list-number',
-                //     tab: 'text',
+                //     tab: TYPE_TEXT,
                 // },
             ],
         },
     ],
     elements: [], // loop of children items parent arr
 
+    setEditor: (editorInstance) => set({ editor: editorInstance }),
     setSelectedSlide: (id) =>
         set(() => ({
-            selectedId: id,
+            selectedSlideId: id,
         })),
+
+    setEditorComponents: (elementId, editor) => {
+        set((state) => {
+            const newEditorComponents = { ...state.editorComponents };
+
+            newEditorComponents[elementId] = { editor: editor };
+
+            return {
+                editorComponents: newEditorComponents,
+            };
+        });
+    },
 
     setSelectElementId: (elementId) =>
         set(() => ({
@@ -139,8 +284,6 @@ const useStore = create((set) => ({
 
     onSelect: ({ elementData, arrDf = false, only = false }) =>
         set((state) => {
-            console.log(elementData);
-
             if (Array.isArray(elementData) || (elementData.length === 0 && only)) {
                 return { selectedElements: [] };
             }
@@ -165,10 +308,12 @@ const useStore = create((set) => ({
     updatePositionBlock: (id, updatePosition) =>
         set((state) => {
             const updatedItems = state.items.map((slide) =>
-                slide.id === state.selectedId
+                slide.id === state.selectedSlideId
                     ? {
                           ...slide,
-                          elements: slide.elements.map((el) => (el.id === id ? { ...el, ...updatePosition } : el)),
+                          elements: slide.elements.map((el) =>
+                              el.id === id ? { ...el, transform: { ...el.transform, position: updatePosition } } : el,
+                          ),
                       }
                     : slide,
             );
@@ -203,7 +348,7 @@ const useStore = create((set) => ({
             const updatedItems = [...state.items.slice(0, index + 1), duplicateSlide, ...state.items.slice(index + 1)]; // index + 1 if = 2 get array -> last past
             return {
                 items: updatedItems,
-                selectedId: newSlideId,
+                selectedSlideId: newSlideId,
             };
         }),
 
@@ -212,19 +357,19 @@ const useStore = create((set) => ({
             const updatedItems = state.items.filter((s) => s.id !== id);
             const index = state.items.findIndex((s) => s.id === id); // current index of item remove
             const isLastItemSelected = state.items[state.items.length - 1]?.id === id; // Check if the current element is last item in arr
-            let targetSlide = state.selectedId;
+            let targetSlide = state.selectedSlideId;
 
             if (state.items.length === 1) {
                 targetSlide = null;
-            } else if (id === state.selectedId && isLastItemSelected) {
+            } else if (id === state.selectedSlideId && isLastItemSelected) {
                 targetSlide = updatedItems[updatedItems.length - 1]?.id;
-            } else if (id === state.selectedId) {
+            } else if (id === state.selectedSlideId) {
                 targetSlide = state.items[index + 1]?.id || updatedItems[0]?.id;
             }
 
             return {
                 items: updatedItems,
-                selectedId: targetSlide,
+                selectedSlideId: targetSlide,
             };
         }),
 }));

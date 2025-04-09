@@ -1,22 +1,21 @@
 import classNames from 'classnames/bind';
 import styles from './Editor.module.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faAlignLeft, faCaretDown, faFill, faPen, faTextHeight } from '@fortawesome/free-solid-svg-icons';
+import { faCaretDown, faFill, faPen, faTextHeight } from '@fortawesome/free-solid-svg-icons';
 import FontFamily from './Layer/FontFamily/FontFamily';
 import FontSize from './Layer/FontSize/FontSize';
 import ColorPicker from './Layer/ColorPicker/ColorPicker';
 import StyleType from './Layer/StyleType/StyleType';
 import ListStyle from './Layer/ListStyle/ListStyle';
-import { useStateContext } from '~/context/ContextProvider';
 import useStore from '~/features/store';
 import Order from './Layer/Order/Order';
 import TextAlign from './Layer/TextAlign/TextAlign';
+import { TYPE_SHAPE } from '~/utils/Const';
 
 const cx = classNames.bind(styles);
 
 function Editor() {
-    const { editor } = useStateContext();
-    const { selectedElements } = useStore();
+    const { selectedElements, editor } = useStore();
 
     return (
         <div className={cx('wrapper')}>
@@ -24,7 +23,7 @@ function Editor() {
             <div className={cx('toolbar')}>
                 <div className={cx('toolbar-drop')}>
                     <div className={cx('toolbar-container')}>
-                        {selectedElements?.element?.tab === 'shape' && (
+                        {selectedElements?.element?.tab === TYPE_SHAPE && (
                             <>
                                 <div className={cx('box-tool')}>
                                     <div style={{ position: 'relative' }}>

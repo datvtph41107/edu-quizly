@@ -3,32 +3,30 @@ import styles from './Presentation.module.scss';
 import classNames from 'classnames/bind';
 import useStore from '~/features/store';
 import DraggableElement from '~/components/Dragable';
-import { useStateContext } from '~/context/ContextProvider';
+import DraggableView from '~/components/Dragable/DragableView';
 
 const cx = classNames.bind(styles);
 
 function Presentation() {
-    const { setEditorMoute } = useStateContext();
-    const { selectedId, items, updatePositionBlock, onSelect, setSelectElementId, elementId, selectedElements } =
-        useStore();
+    const { selectedSlideId, selectedElements, updatePositionBlock, onSelect, items } = useStore();
     const [isDraggingToSelect, setisDraggingToSelect] = useState(false);
     const [selectedTemp, setSelectedTemp] = useState([]); // store element selected temp
     const [selectionBox, setSelectionBox] = useState(null);
     const [boundingBox, setBoundingBox] = useState(null);
     const wrapperRef = useRef(null);
     const containerRef = useRef(null);
-    const boudingRef = useRef(null);
 
-    const selectedSlide = items.find((slide) => slide.id === selectedId);
+    const selectedSlide = items.find((slide) => slide.id === selectedSlideId);
     const elements = selectedSlide ? selectedSlide.elements : []; // Find all of elemenst in slide selected
 
     const handleMouseDown = (e) => {
         // Handle bounding select box
         if (e.button !== 0) return;
         const targetElement = e.target;
+        console.log(targetElement);
 
         if (
-            (!isDraggingToSelect && (targetElement.id === 'container' || targetElement.id === 'boundingBox')) ||
+            (!isDraggingToSelect && (targetElement.id === 'display-element' || targetElement.id === 'boundingBox')) ||
             targetElement.id === 'contentText' ||
             targetElement.id === 'shape'
         ) {
@@ -36,7 +34,7 @@ function Presentation() {
             setBoundingBox(null);
         }
 
-        if (targetElement.id === 'container' && !selectedElements?.element?.id) {
+        if (targetElement.id === 'display-element' && !selectedElements?.element?.id) {
             console.log('when i touch start pull');
             const rect = containerRef.current.getBoundingClientRect();
 
@@ -49,8 +47,11 @@ function Presentation() {
             setisDraggingToSelect(true);
         }
         // if bouding wrapper not pull move mouse
-        if (targetElement.id === 'container' || (targetElement.id === 'wrapper' && selectedElements?.element?.id)) {
-            setEditorMoute(false);
+        if (
+            targetElement.id === 'display-element' ||
+            (targetElement.id === 'wrapper' && selectedElements?.element?.id)
+        ) {
+            // setEditorMoute(false);
             onSelect({ elementData: [], only: true }); // when selected element only
         }
     };
@@ -83,10 +84,10 @@ function Presentation() {
         }));
 
         const selectedElementsInBox = elements.filter((element) => {
-            const elementX = element.x;
-            const elementY = element.y;
-            const elementRight = elementX + element.width;
-            const elementBottom = elementY + element.height;
+            const elementX = element.transform.position.x;
+            const elementY = element.transform.position.y;
+            const elementRight = elementX + element.transform.size.width;
+            const elementBottom = elementY + element.transform.size.height;
             const withinX =
                 elementRight >= Math.min(startX, startX + newWidth) && elementX <= Math.max(startX, startX + newWidth);
             const withinY =
@@ -94,6 +95,7 @@ function Presentation() {
                 elementY <= Math.max(startY, startY + newHeight);
             return withinX && withinY;
         });
+
         if (selectedElementsInBox.length > 0) {
             setSelectedTemp(selectedElementsInBox);
             setBoundingBox(getBoundingBox(selectedElementsInBox));
@@ -105,27 +107,30 @@ function Presentation() {
             minY = Infinity,
             maxX = -Infinity,
             maxY = -Infinity;
+        console.log(selectedElementsInBox);
 
         selectedElementsInBox.forEach((el) => {
-            minX = Math.min(minX, el.x);
-            minY = Math.min(minY, el.y);
-            maxX = Math.max(maxX, el.x + el.width);
+            minX = Math.min(minX, el.transform.position.x);
+            minY = Math.min(minY, el.transform.position.y);
+            maxX = Math.max(maxX, el.transform.position.x + el.transform.size.width);
             // cộng width vì ví dụ tỷ lệ kéo chuột sẽ từ trái xuống dưỡi bên phải sẽ ra một hình vuông
             // => el.x là phần tử từ lúc đặt kéo chuột witdth là tính điểm cuối cùng thả ra
-            maxY = Math.max(maxY, el.y + el.height);
+            maxY = Math.max(maxY, el.transform.position.y + el.transform.size.height);
         });
 
         return {
-            startX: coordinate ? coordinate.x : minX,
-            startY: coordinate ? coordinate.y : minY,
+            startX: coordinate ? coordinate.transform.position.x : minX,
+            startY: coordinate ? coordinate.transform.position.y : minY,
             width: maxX - minX,
             height: maxY - minY,
         };
     };
 
     const handleMouseUp = () => {
-        console.log('when i throw');
-        selectedTemp.forEach((el) => onSelect(el.id));
+        // console.log('when i throw');
+        // console.log(selectedTemp);
+
+        selectedTemp.forEach((el) => onSelect({ elementData: el.id }));
         setisDraggingToSelect(false);
         setSelectionBox(null);
     };
@@ -169,7 +174,6 @@ function Presentation() {
                 )}
                 {boundingBox && (
                     <div
-                        ref={boudingRef}
                         id="boundingBox"
                         style={{
                             position: 'absolute',
@@ -182,13 +186,28 @@ function Presentation() {
                         }}
                     />
                 )}
+                <div id="display-element" className={cx('display-element')}>
+                    {elements.map((el, index) => (
+                        <DraggableView
+                            key={index}
+                            element={el}
+                            selectedElements={selectedElements}
+                            storeElementBoundingBox={selectedTemp} // Store bounding select (check to use handledrag)
+                            calculateElementsInBoundingBox={getBoundingBox}
+                            setBoundingBox={setBoundingBox}
+                            getBoundingBox={boundingBox}
+                            onUpdate={updatePositionBlock} // update position drag
+                            onSelect={onSelect} // Get select element fn
+                            isDraggingToSelect={isDraggingToSelect}
+                            setisDraggingToSelect={setisDraggingToSelect}
+                        />
+                    ))}
+                </div>
                 {elements.map((el, index) => (
                     <DraggableElement
                         key={index}
                         element={el}
                         selectedElements={selectedElements}
-                        getElementIdSelected={elementId}
-                        setSelectElementId={setSelectElementId}
                         storeElementBoundingBox={selectedTemp} // Store bounding select (check to use handledrag)
                         calculateElementsInBoundingBox={getBoundingBox}
                         setBoundingBox={setBoundingBox}

@@ -10,39 +10,33 @@
     user-select: none;
     padding: 1px;
     position: absolute;
-    z-index: 99;
-    &.disable {
-        border: 1px solid #aaa;
-        box-shadow: inset 0 0 0 3px #8854c0;
-    }
+    // &.disable {
+    //     border: 1px solid #aaa;
+    //     box-shadow: inset 0 0 0 3px #8854c0;
+    // }
+    // // &.rectangle {
+    // //     padding: 4px;
+    // // }
+    // &.selected {
+    //     border: 1px solid #aaa; /* Viền hiển thị khi chọn */
+    //     box-shadow: inset 0 0 0 3px #8854c0;
+    // }
 
-    &.selected {
-        border: 1px solid #aaa; /* Viền hiển thị khi chọn */
-        box-shadow: inset 0 0 0 3px #8854c0;
-    }
+    // &.dragging:hover {
+    //     border: 1px solid #aaa;
+    //     box-shadow: inset 0 0 0 3px #8854c0;
+    // }
 
-    &.dragging:hover {
-        border: 1px solid #aaa;
-        box-shadow: inset 0 0 0 3px #8854c0;
-    }
+    user-select: none;
 }
 
 .content {
     overflow: visible;
     stroke-width: 2px;
     vertical-align: middle;
-    width: 97%;
-    height: 97%;
-    display: block;
-}
-
-.slide-element-border {
-    display: block;
     width: 100%;
     height: 100%;
-    z-index: 10;
-    position: absolute;
-    pointer-events: none;
+    display: block;
 }
 
 .slide-inset {
@@ -57,20 +51,21 @@
 
 .nav-contain {
     position: absolute;
-    z-index: 9999999999 !important;
-    &.unmoute {
-        display: none;
-    }
-    &.disable {
-        display: none;
-    }
     height: 100%;
     left: -5rem;
+    z-index: 99999;
+    pointer-events: auto;
     .nav-main {
         border-top-left-radius: 4px;
         border-top-right-radius: 4px;
         display: flex;
         flex-direction: column;
+    }
+    &.unmoute {
+        display: none;
+    }
+    &.disable {
+        display: none;
     }
 
     .nav-main-btn {
@@ -134,11 +129,26 @@
     // }
 }
 
-.slide-element {
+.slide-element-inner {
     position: relative;
     height: 100%;
     width: 100%;
+}
 
+.slide-element-border {
+    display: none;
+    height: 100%;
+    width: 100%;
+    z-index: 10;
+    position: absolute;
+    pointer-events: none;
+    &.active {
+        display: block;
+        box-shadow: inset 0 0 0 3px #8854c0;
+    }
+}
+
+.slide-element {
     .radito-1 {
         width: 100%;
         height: 100%;
@@ -422,14 +432,12 @@
         width: 100%;
         height: 100%;
         position: relative;
-
-        &.shape {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .cover {
-            // opacity: 0;
-        }
+        display: flex;
+        text-align: center;
+        align-items: center;
+        justify-content: center;
     }
+}
+
+.slide-el-display {
 }

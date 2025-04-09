@@ -6,7 +6,7 @@ import { TYPE_SHAPE, TYPE_TEXT } from '~/utils/Const';
 import React from 'react';
 
 const cx = classNames.bind(styles);
-const ContentText = function ContentText({
+const ContentTextView = function ContentText({
     height,
     isSelected,
     setIsEditing,
@@ -34,11 +34,14 @@ const ContentText = function ContentText({
                 setIsEditing(true);
             }}
         >
-            <div className={`content-${element?.tab === TYPE_SHAPE ? TYPE_SHAPE : TYPE_TEXT}`}>
-                <EditorContent editor={editor} />
-            </div>
+            <div
+                className={`content-${element?.tab === TYPE_SHAPE ? TYPE_SHAPE : TYPE_TEXT}`}
+                dangerouslySetInnerHTML={{
+                    __html: editor.getHTML(),
+                }}
+            />
         </div>
     );
 };
 
-export default ContentText;
+export default ContentTextView;

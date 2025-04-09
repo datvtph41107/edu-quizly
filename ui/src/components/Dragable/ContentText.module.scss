@@ -2,10 +2,21 @@
     position: absolute;
     z-index: 90;
     width: calc(100% - 16px);
+
     // font-size: 16px;
     // line-height: 1.2em;
     cursor: text;
     user-select: auto;
+    word-wrap: break-word;
+
+    &.type {
+        caret-color: rgb(102, 99, 99);
+        color: black;
+        width: calc(100% - 24px) !important;
+        z-index: 50;
+        margin: 12px;
+    }
+
     &.shape {
         caret-color: white;
         color: white;
@@ -15,59 +26,5 @@
         text-align: center;
         justify-content: center;
         align-items: center;
-    }
-    &.text {
-        z-index: 50;
-        caret-color: rgb(102, 99, 99);
-        margin: 0 12px;
-        /* height: 100%; */
-        display: flex;
-        text-align: left;
-        justify-content: left;
-        align-items: left;
-        position: absolute;
-        top: 12%;
-        color: black;
-        left: 0px;
-    }
-
-    .content-text-ce {
-        width: 100%;
-        margin: 0 12px;
-    }
-
-    .content-text-type {
-        --tw-text-opacity: 1;
-        pointer-events: none;
-        color: rgba(229, 229, 229, var(--tw-text-opacity));
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        word-wrap: break-word;
-        &.text {
-            z-index: 50;
-            caret-color: rgb(102, 99, 99);
-            font-size: 48px;
-            text-align: left;
-            justify-content: left;
-            align-items: center;
-            color: black;
-        }
-    }
-}
-
-.tools {
-    margin-top: 8px;
-    button {
-        font-size: 12px;
-        padding: 4px 8px;
-        cursor: pointer;
-        border: none;
-        background-color: #ccc;
-        border-radius: 4px;
-
-        &:hover {
-            background-color: #bbb;
-        }
     }
 }

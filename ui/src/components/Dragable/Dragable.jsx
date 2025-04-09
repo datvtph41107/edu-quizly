@@ -1,12 +1,14 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Rnd } from 'react-rnd';
 import styles from './Dragable.module.scss';
 import classNames from 'classnames/bind';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCopy, faFill, faRotate, faTrash, faUnlock } from '@fortawesome/free-solid-svg-icons';
-import { useStateContext } from '~/context/ContextProvider';
+import { faCopy, faFill, faTrash, faUnlock } from '@fortawesome/free-solid-svg-icons';
 import { useEditor } from '@tiptap/react';
 import { isActiveTypeState, render, updateEditorState, extensions } from '~/components/ElementTypes/ElementTypes';
+import useStore from '~/features/store';
+import { useStateContext } from '~/context/ContextProvider';
+import { TYPE_SHAPE } from '~/utils/Const';
 import './drag.css';
 
 const cx = classNames.bind(styles);
@@ -15,22 +17,19 @@ function DraggableElement({
     className = false,
     element,
     selectedElements,
-    getElementIdSelected,
-    setSelectElementId,
     storeElementBoundingBox,
     calculateElementsInBoundingBox, // pass function calculate selectedElementsInBox
     setBoundingBox,
     getBoundingBox,
     onUpdate,
     onSelect,
-    isDraggingToSelect,
     setisDraggingToSelect,
 }) {
-    const { setEditorMoute, setEditor, setChangeEditorType, changeEditorType } = useStateContext();
+    const { setEditor, setEditorComponents } = useStore();
+    const { setChangeEditorType, changeEditorType } = useStateContext();
     const [isEditing, setIsEditing] = useState(false);
-    const [openDrag, setOpenDrag] = useState(false);
     const classes = cx('content', {
-        shape: element.tab === 'shape',
+        shape: element.tab === TYPE_SHAPE,
         [className]: className,
     });
 
@@ -38,12 +37,17 @@ function DraggableElement({
         {
             editable: true,
             extensions: extensions,
-            content: element.textPreview,
+            content: element.placeholder,
+            onCreate: ({ editor }) => {
+                if (element.type === 'h1') {
+                    editor.commands.setHeading({ level: 1 });
+                }
+            },
             onSelectionUpdate: ({ editor }) => {
                 const { $from, $to } = editor.state.selection;
-
                 const start = $from.pos;
                 const end = $to.pos;
+
                 if (!editor.isEmpty) {
                     updateEditorState({ editor: editor, setChangeEditorType: setChangeEditorType });
                 }
@@ -52,6 +56,9 @@ function DraggableElement({
                 const editorContent = editor.getHTML();
 
                 if (editor.isEmpty) {
+                    if (element.type === 'h1') {
+                        editor.commands.setHeading({ level: 1 });
+                    }
                     isActiveTypeState({ editor: editor, changeEditorType: changeEditorType });
                 }
             },
@@ -59,29 +66,37 @@ function DraggableElement({
                 setIsEditing(false);
             },
         },
-        [element.content],
+        [element.data.html],
     );
+
+    useEffect(() => {
+        setEditorComponents(element.id, editor);
+    }, [element.data.html, element]);
 
     const handleDrag = (e, d) => {
         setisDraggingToSelect(false);
         if (storeElementBoundingBox.length > 0) {
-            setOpenDrag(false);
             storeElementBoundingBox.forEach((el) => {
                 if (el.id === Number(d.node.id)) {
-                    if (el.x !== d.x || el.y !== d.y) {
-                        const deltaX = d.x - el.x;
-                        const deltaY = d.y - el.y;
+                    if (el.transform.position.x !== d.x || el.transform.position.y !== d.y) {
+                        const deltaX = d.x - el.transform.position.x;
+                        const deltaY = d.y - el.transform.position.y;
 
                         const updatedElements = storeElementBoundingBox.map((el) => {
-                            const updatedX = el.x + deltaX;
-                            const updatedY = el.y + deltaY;
+                            const updatedX = el.transform.position.x + deltaX;
+                            const updatedY = el.transform.position.y + deltaY;
 
                             onUpdate(el.id, { x: updatedX, y: updatedY });
 
                             return {
                                 ...el,
-                                x: updatedX,
-                                y: updatedY,
+                                transform: {
+                                    ...el.transform,
+                                    position: {
+                                        x: updatedX,
+                                        y: updatedY,
+                                    },
+                                },
                             };
                         });
 
@@ -92,7 +107,7 @@ function DraggableElement({
                 }
             });
         } else {
-            if (element.x !== d.x || element.y !== d.y) {
+            if (element.transform.position.x !== d.x || element.transform.position.y !== d.y) {
                 onUpdate(element.id, { x: d.x, y: d.y });
             }
         }
@@ -110,22 +125,24 @@ function DraggableElement({
     // open options
     const handleOpenDragging = (e) => {
         const parentElement = e.target.closest('.elementBox-unique-' + element.id);
+
         if (!getBoundingBox) {
+            console.log(editor);
             setEditor(editor); // set state editor to get menu header
             onSelect({ elementData: { element: element, target: parentElement }, only: true }); // get element with id
-            setEditorMoute(true); // open setting navbar left
         }
     };
 
     const isSelected = storeElementBoundingBox.map((el) => el.id).includes(element.id);
     const isSelectDisplay = selectedElements?.element?.id === element.id;
+
     // ELEMENT VIEW RENDER
     const renderView = render({
         type: element.type,
         propStyles: {
             id: `element-${element.id}`,
-            width: element.width,
-            height: element.height,
+            width: element.transform.size.width,
+            height: element.transform.size.height,
             // borderStroke: '',
             // borderColorStroke: '',
             className: classes,
@@ -149,22 +166,19 @@ function DraggableElement({
         <Rnd
             id={element.id}
             onMouseDown={handleOpenDragging}
-            className={cx(
-                'wrapper',
-                { disable: isSelectDisplay },
-                { dragging: !isDraggingToSelect },
-                { selected: isSelected },
-                'elementBox-unique-' + element.id,
-            )}
+            className={cx('wrapper', 'elementBox-unique-' + element.id)}
             style={{
                 // pointerEvents: !selectedElements.element
                 //     ? 'auto'
                 //     : selectedElements?.element?.id !== element.id && 'none',
-                zIndex: (isEditing || selectedElements?.element?.id === element.id) && 999,
+                zIndex: isEditing || selectedElements?.element?.id === element.id ? 999 : element.zIndex,
                 willChange: 'transform',
             }}
-            size={{ width: element.width, height: element.height }}
-            position={{ x: element.x, y: element.y }}
+            size={{
+                width: element.transform.size.width,
+                height: element.transform.size.height,
+            }}
+            position={{ x: element.transform.position.x, y: element.transform.position.y }}
             onDrag={handleDrag}
             onResize={handleResize}
             disableDragging={isEditing}
@@ -193,35 +207,43 @@ function DraggableElement({
             maxHeight={element.type === 'line' ? 16 : undefined}
             dragGrid={[5, 5]}
         >
-            <div className={cx('nav-contain', { disable: !isSelectDisplay })}>
-                <div>
-                    <div className={cx('nav-main')}>
-                        <button className={cx('nav-main-btn')}>
-                            <FontAwesomeIcon className={cx('nav-main-btn-icon')} icon={faFill} />
-                        </button>
-                        <button className={cx('nav-main-btn')}>
-                            <FontAwesomeIcon className={cx('nav-main-btn-icon')} icon={faCopy} />
-                        </button>
-                        <button className={cx('nav-main-btn')}>
-                            <FontAwesomeIcon className={cx('nav-main-btn-icon')} icon={faUnlock} />
-                        </button>
-                        <button className={cx('nav-main-btn')}>
-                            <FontAwesomeIcon className={cx('nav-main-btn-icon')} icon={faTrash} />
-                        </button>
+            {selectedElements?.element?.id === element.id && (
+                <div className={cx('nav-contain', { disable: !isSelectDisplay })}>
+                    <div>
+                        <div className={cx('nav-main')}>
+                            <button className={cx('nav-main-btn')}>
+                                <FontAwesomeIcon className={cx('nav-main-btn-icon')} icon={faFill} />
+                            </button>
+                            <button className={cx('nav-main-btn')}>
+                                <FontAwesomeIcon className={cx('nav-main-btn-icon')} icon={faCopy} />
+                            </button>
+                            <button className={cx('nav-main-btn')}>
+                                <FontAwesomeIcon className={cx('nav-main-btn-icon')} icon={faUnlock} />
+                            </button>
+                            <button className={cx('nav-main-btn')}>
+                                <FontAwesomeIcon className={cx('nav-main-btn-icon')} icon={faTrash} />
+                            </button>
+                        </div>
                     </div>
                 </div>
-            </div>
+            )}
 
             <div className={cx('slide-element')}>
-                <div className={cx('slide-element-border')}></div>
-                <div className={cx('slide-element-border')}></div>
+                <div
+                    className={cx('slide-element-border', { active: selectedElements?.element?.id === element.id })}
+                ></div>
 
-                <div className={cx('radito-3', { disable: !openDrag })}>
-                    <FontAwesomeIcon icon={faRotate} />
-                    <div className={cx('radito-stick')}></div>
+                {/* <div className={cx('radito-3', { disable: !openDrag })}>
+                        <FontAwesomeIcon icon={faRotate} />
+                        <div className={cx('radito-stick')}></div>
+                    </div> */}
+
+                <div
+                    style={{ opacity: isEditing ? 1 : 0 }}
+                    className={cx({ 'shape-element': element.tab === TYPE_SHAPE }, { [element.tab]: element.tab })}
+                >
+                    {renderView}
                 </div>
-
-                <div className={cx('shape-element', { [element.tab]: element.tab })}>{renderView}</div>
             </div>
         </Rnd>
     );

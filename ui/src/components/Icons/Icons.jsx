@@ -5,6 +5,7 @@ export const EllipseIcon = ({
     className,
     borderStroke = '2',
     borderColorStroke = '#429a50',
+    fillColor = '#429a50',
 }) => (
     <svg
         id={id}
@@ -14,11 +15,37 @@ export const EllipseIcon = ({
         viewBox="0 0 100 100"
         xmlns="http://www.w3.org/2000/svg"
         preserveAspectRatio="none"
-        fill="#429a50"
+        fill={fillColor}
         stroke={borderColorStroke}
         strokeWidth={borderStroke}
     >
         <ellipse id={id} cx="50" cy="50" rx="49" ry="49"></ellipse>
+    </svg>
+);
+
+export const RectangleIcon = ({
+    id = '',
+    width = '100%',
+    height = '100%',
+    className,
+    borderStroke = '0',
+    borderColorStroke = '#429a50',
+    fillColor = 'red',
+}) => (
+    <svg
+        id={id}
+        className={className}
+        width={width}
+        height={height}
+        viewBox="0 0 100 100"
+        xmlns="http://www.w3.org/2000/svg"
+        preserveAspectRatio="none"
+        fill={fillColor}
+        stroke={borderColorStroke}
+        strokeWidth={borderStroke}
+    >
+        <use href="#rectangle"></use>
+        <path id="rectangle" d="M0 0h100v100H0z" style={{ vectorEffect: 'non-scaling-stroke' }} />
     </svg>
 );
 
@@ -29,6 +56,7 @@ export const TriangleIcon = ({
     className,
     borderStroke = '2',
     borderColorStroke = '#429a50',
+    fillColor = '#429a50',
 }) => (
     <svg
         id={id}
@@ -39,7 +67,7 @@ export const TriangleIcon = ({
         viewBox="0 0 100 100"
         xmlns="http://www.w3.org/2000/svg"
         preserveAspectRatio="none"
-        fill="#429a50"
+        fill={fillColor}
         stroke={borderColorStroke}
         strokeWidth={borderStroke}
     >
@@ -54,6 +82,7 @@ export const StarIcon = ({
     className,
     borderStroke = '2',
     borderColorStroke = '#429a50',
+    fillColor = '#429a50',
 }) => (
     <svg
         id={id}
@@ -63,7 +92,7 @@ export const StarIcon = ({
         viewBox="0 0 100 100"
         xmlns="http://www.w3.org/2000/svg"
         preserveAspectRatio="none"
-        fill="#429a50"
+        fill={fillColor}
         stroke={borderColorStroke}
         strokeWidth={borderStroke}
     >
