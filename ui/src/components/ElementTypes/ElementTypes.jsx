@@ -4,23 +4,14 @@ import Underline from '@tiptap/extension-underline';
 import Subscript from '@tiptap/extension-subscript';
 import Superscript from '@tiptap/extension-superscript';
 import Link from '@tiptap/extension-link';
-// import History from '@tiptap/extension-history';
-// import ListItem from '@tiptap/extension-list-item';
-// import OrderedList from '@tiptap/extension-ordered-list';
-// import Bold from '@tiptap/extension-bold';
-// import Document from '@tiptap/extension-document';
-// import Paragraph from '@tiptap/extension-paragraph';
-// import Text from '@tiptap/extension-text';
 import StarterKit from '@tiptap/starter-kit';
 import { Extension, Mark } from '@tiptap/core';
 import TextAlign from '@tiptap/extension-text-align';
-import { Node, mergeAttributes } from '@tiptap/core';
 import FontFamily from '@tiptap/extension-font-family';
 import TextStyle from '@tiptap/extension-text-style';
 import Color from '@tiptap/extension-color';
 import Placeholder from '@tiptap/extension-placeholder';
 import { TYPE_SHAPE } from '~/utils/Const';
-import Heading from '@tiptap/extension-heading';
 import ContentTextView from '../Dragable/ContentTextView';
 
 const ElementTypes = {
@@ -145,21 +136,10 @@ export const extensions = [
     FontFamily,
     TextStyle,
     Color,
-    // FontFamily.configure({
-    //     types: ['textStyle'],
-    // }),
-
     Placeholder.configure({
-        // Use a placeholder:
-        placeholder: 'Write something …',
-        // Use different placeholders depending on the node type:
-        // placeholder: ({ node }) => {
-        //   if (node.type.name === 'heading') {
-        //     return 'What’s the title?'
-        //   }
-
-        //   return 'Can you add some further context?'
-        // },
+        placeholder: 'Type...',
+        showOnlyWhenEditable: true,
+        showOnlyCurrent: true,
     }),
     TextAlign.configure({
         types: ['heading', 'paragraph'],
@@ -231,7 +211,9 @@ export const render = ({ type, propStyles, props, tab }) => {
     if (Component && tab === TYPE_SHAPE) {
         return (
             <>
-                <Component {...propStyles} />
+                <div style={{ opacity: propStyles.style.opacity }}>
+                    <Component {...propStyles} />
+                </div>
                 {type !== 'line' && type !== 'arrow' && <ContentText {...props} />}
             </>
         );
@@ -250,7 +232,9 @@ export const renderView = ({ type, propStyles, props, tab }) => {
     if (Component && tab === TYPE_SHAPE) {
         return (
             <>
-                <Component {...propStyles} />
+                <div>
+                    <Component {...propStyles} />
+                </div>
                 {type !== 'line' && type !== 'arrow' && <ContentTextView {...props} />}
             </>
         );

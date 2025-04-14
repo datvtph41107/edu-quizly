@@ -30,7 +30,7 @@ export const RectangleIcon = ({
     className,
     borderStroke = '0',
     borderColorStroke = '#429a50',
-    fillColor = 'red',
+    fillColor = '#429a50',
 }) => (
     <svg
         id={id}

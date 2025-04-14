@@ -15,8 +15,8 @@ import { TYPE_SHAPE } from '~/utils/Const';
 const cx = classNames.bind(styles);
 
 function Editor() {
-    const { selectedElements, editor } = useStore();
-
+    const { selectedElements, editors } = useStore();
+    const editor = editors[selectedElements?.element?.id];
     return (
         <div className={cx('wrapper')}>
             <div className={cx('start')}></div>

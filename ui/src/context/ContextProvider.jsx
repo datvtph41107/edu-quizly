@@ -5,6 +5,10 @@ const StateContext = createContext();
 export const ContextProvider = ({ children }) => {
     const [loading, setLoading] = useState(false);
     const [editor, setEditor] = useState({});
+    const [openSlide, setOpenSlide] = useState({
+        open: false,
+        back: false,
+    }); // create blank slide when items store empty array
     const [changeEditorType, setChangeEditorType] = useState(TypesEditor);
 
     const showLoading = () => {
@@ -22,6 +26,8 @@ export const ContextProvider = ({ children }) => {
                 changeEditorType,
                 showLoading,
                 hideLoading,
+                openSlide,
+                setOpenSlide,
             }}
         >
             {children}

@@ -4,15 +4,18 @@ import classNames from 'classnames/bind';
 import useStore from '~/features/store';
 import DraggableElement from '~/components/Dragable';
 import DraggableView from '~/components/Dragable/DragableView';
+import { useEditor } from '@tiptap/react';
+import { extensions, isActiveTypeState, updateEditorState } from '~/components/ElementTypes/ElementTypes';
 
 const cx = classNames.bind(styles);
 
 function Presentation() {
-    const { selectedSlideId, selectedElements, updatePositionBlock, onSelect, items } = useStore();
+    const { selectedSlideId, selectedElements, updatePositionBlock, onSelect, items, editorComponents } = useStore();
     const [isDraggingToSelect, setisDraggingToSelect] = useState(false);
     const [selectedTemp, setSelectedTemp] = useState([]); // store element selected temp
     const [selectionBox, setSelectionBox] = useState(null);
     const [boundingBox, setBoundingBox] = useState(null);
+    // const [editors, setEditors] = useState([]);
     const wrapperRef = useRef(null);
     const containerRef = useRef(null);
 
@@ -107,7 +110,6 @@ function Presentation() {
             minY = Infinity,
             maxX = -Infinity,
             maxY = -Infinity;
-        console.log(selectedElementsInBox);
 
         selectedElementsInBox.forEach((el) => {
             minX = Math.min(minX, el.transform.position.x);
@@ -147,6 +149,50 @@ function Presentation() {
             }
         };
     }, [isDraggingToSelect]);
+
+    // const editors = elements.map((element, index) => {
+    //     return {
+    //         elementId: element.id,
+    //         editor: useEditor(
+    //             {
+    //                 editable: true,
+    //                 extensions: extensions,
+    //                 content: element.placeholder,
+    //                 onCreate: ({ editor }) => {
+    //                     // setEditorComponents(element.id, editor);
+    //                     // setEditorComponents(element.id, editor);
+    //                     if (element.type === 'h1') {
+    //                         editor.commands.setHeading({ level: 1 });
+    //                     }
+    //                 },
+    //                 onSelectionUpdate: ({ editor }) => {
+    //                     const { $from, $to } = editor.state.selection;
+    //                     const start = $from.pos;
+    //                     const end = $to.pos;
+
+    //                     if (!editor.isEmpty) {
+    //                         updateEditorState({ editor: editor, setChangeEditorType: setChangeEditorType });
+    //                     }
+    //                 },
+    //                 onUpdate: ({ editor }) => {
+    //                     const editorContent = editor.getHTML();
+
+    //                     if (editor.isEmpty) {
+    //                         if (element.type === 'h1') {
+    //                             editor.commands.setHeading({ level: 1 });
+    //                         }
+    //                         isActiveTypeState({ editor: editor, changeEditorType: changeEditorType });
+    //                     }
+    //                 },
+    //                 onBlur: (e) => {
+    //                     setIsEditing(false);
+    //                 },
+    //             },
+    //             [element.data.html, element],
+    //         ),
+    //     };
+    // });
+    // console.log(editors);
 
     return (
         // ON MOUSE DOWN
@@ -191,6 +237,7 @@ function Presentation() {
                         <DraggableView
                             key={index}
                             element={el}
+                            // editor={editors.find((editor) => editor.elementId === el.id)?.editor}
                             selectedElements={selectedElements}
                             storeElementBoundingBox={selectedTemp} // Store bounding select (check to use handledrag)
                             calculateElementsInBoundingBox={getBoundingBox}
@@ -207,6 +254,7 @@ function Presentation() {
                     <DraggableElement
                         key={index}
                         element={el}
+                        // editor={editors.find((editor) => editor.elementId === el.id)?.editor}
                         selectedElements={selectedElements}
                         storeElementBoundingBox={selectedTemp} // Store bounding select (check to use handledrag)
                         calculateElementsInBoundingBox={getBoundingBox}
