@@ -3,20 +3,17 @@ import styles from './ContentText.module.scss';
 import { EditorContent } from '@tiptap/react';
 import './customStyle.css';
 import { TYPE_SHAPE, TYPE_TEXT } from '~/utils/Const';
-import React from 'react';
+import React, { useState } from 'react';
 
 const cx = classNames.bind(styles);
-const ContentText = function ContentText({
-    height,
-    isSelected,
-    setIsEditing,
-    editor,
-    onSelect,
-    element,
-    changeEditorType,
-    selectedElements,
-}) {
+const ContentText = function ContentText({ isSelected, editor, element }) {
     if (!editor) return null;
+    const [count, setCount] = useState(0);
+
+    const editorClass = classNames(`content-${element?.tab === TYPE_SHAPE ? TYPE_SHAPE : TYPE_TEXT}`, 'tiptap', {
+        [`contentShape ProseMirror${editor.isFocused || count === 0 ? ' ProseMirror-focus' : ''}`]: true,
+        'hide-placeholder': count === 1,
+    });
 
     return (
         <div
@@ -28,13 +25,13 @@ const ContentText = function ContentText({
                 { [element.tab]: element.tab },
             )}
             onClick={() => {
-                if (editor.getHTML() === `<p>${element.placeholder}</p>`) {
+                if (editor.isEmpty) {
                     editor.commands.setContent('');
+                    setCount(1);
                 }
-                setIsEditing(true);
             }}
         >
-            <div className={`content-${element?.tab === TYPE_SHAPE ? TYPE_SHAPE : TYPE_TEXT}`}>
+            <div className={editorClass}>
                 <EditorContent editor={editor} />
             </div>
         </div>

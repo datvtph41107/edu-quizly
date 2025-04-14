@@ -19,11 +19,13 @@
                 padding: 8px;
 
                 &.selected {
-                    background-color: #fff3;
+                    background-color: var(--green-hover);
+                    color: white !important;
                 }
 
                 &.hold:hover {
                     background-color: rgba(153, 153, 153, 0.2);
+                    color: white;
                 }
 
                 .side-nav-contain {

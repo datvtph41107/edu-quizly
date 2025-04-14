@@ -1,19 +1,45 @@
 import styles from './SidebarContent.module.scss';
 import classNames from 'classnames/bind';
-import { faCloudArrowUp, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faArrowLeft, faBackward, faCloudArrowUp, faPlus, faStepBackward } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PreviewItemBlock from './PreviewSlide/PreviewItemBlock';
 import TextBar from './TextBar';
 import Shape from './Shape/Shape';
 import Table from './Table';
+import { useEffect, useState } from 'react';
+import SelectPreviewSlide from './SelectPreviewSlide';
+import { useStateContext } from '~/context/ContextProvider';
 
 const cx = classNames.bind(styles);
 
-function SidebarContent({ side }) {
+function SidebarContent({ side, items, openSlide }) {
+    const { setOpenSlide } = useStateContext();
+    // const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+    // const [isSidebarVisible, setIsSidebarVisible] = useState(true);
+
+    // useEffect(() => {
+    //     if (items.length == 0) {
+    //         setIsSidebarOpen((prevState) => {
+    //             if (prevState) {
+    //                 setTimeout(() => {
+    //                     setIsSidebarVisible(false);
+    //                 }, 500);
+    //             } else {
+    //                 setIsSidebarVisible(true);
+    //             }
+    //             return !prevState;
+    //         });
+    //     }
+    // }, [items]);
+
     const renderSide = () => {
         switch (side) {
             case 'Slides':
-                return <PreviewItemBlock />;
+                if (openSlide.open) {
+                    return <SelectPreviewSlide />;
+                } else {
+                    return <PreviewItemBlock />;
+                }
             case 'Text':
                 return <TextBar />;
             case 'Media':
@@ -36,14 +62,42 @@ function SidebarContent({ side }) {
                 </div>
             </div>
             <div className={cx('toast-bar')}>
-                <button type="button" className={cx('btn', 'out')}>
-                    <FontAwesomeIcon icon={faCloudArrowUp} />
-                    <span>Import</span>
-                </button>
-                <button type="button" className={cx('btn', 'pri')}>
-                    <FontAwesomeIcon icon={faPlus} />
-                    <span>Add new slide</span>
-                </button>
+                {openSlide.open ? (
+                    <button
+                        disabled={!openSlide.back}
+                        onClick={() =>
+                            setOpenSlide({
+                                open: false,
+                                back: false,
+                            })
+                        }
+                        type="button"
+                        className={cx('btn', 'back')}
+                    >
+                        <FontAwesomeIcon icon={faArrowLeft} />
+                        <span>Back to slides</span>
+                    </button>
+                ) : (
+                    <div style={{ display: 'flex', gap: '6px' }}>
+                        <button type="button" className={cx('btn', 'out')}>
+                            <FontAwesomeIcon icon={faCloudArrowUp} />
+                            <span>Import</span>
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() =>
+                                setOpenSlide({
+                                    open: true,
+                                    back: true,
+                                })
+                            }
+                            className={cx('btn', 'pri')}
+                        >
+                            <FontAwesomeIcon icon={faPlus} />
+                            <span>Add new slide</span>
+                        </button>
+                    </div>
+                )}
             </div>
         </div>
     );

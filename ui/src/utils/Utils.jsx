@@ -1,3 +1,5 @@
+import { faAlignLeft, faPencil, faSquareCheck, faSquarePollVertical } from '@fortawesome/free-solid-svg-icons';
+
 export class Utils {
     static colorOptions = [
         'rgb(126, 27, 27)',
@@ -67,6 +69,78 @@ export class Utils {
         'Courier New',
         'Tangerine',
         'Dancing Script',
+    ];
+
+    static slideTypes = [
+        {
+            span: 'Blank slide',
+            type: 'blank',
+            backgroundPosition: '-2px -2px',
+        },
+        {
+            span: 'Title slide',
+            type: 'title',
+            backgroundPosition: '-2px 264px',
+        },
+        {
+            span: 'Text slide',
+            type: 'text',
+            backgroundPosition: '-2px 210px',
+        },
+        {
+            span: 'Text and media',
+            type: 'textMedia',
+            backgroundPosition: '-2px 155px',
+        },
+        {
+            span: 'Fullscreen media',
+            type: 'fullscreenMedia',
+            backgroundPosition: '-2px 101px',
+        },
+        {
+            span: 'Web page link',
+            type: 'WebPageLink',
+            backgroundPosition: '-2px 46px',
+        },
+    ];
+
+    static buttonData = [
+        {
+            icon: faSquareCheck,
+            text: 'Multiple Choice',
+            iconStyle: { fontSize: '18px', color: 'white' },
+            bgClass: 'section-manualy-bg',
+            overlayClass: 'section-overlay',
+        },
+        {
+            icon: null,
+            text: 'Fill the Blank',
+            iconStyle: null,
+            bgClass: 'section-manualy-bg',
+            overlayClass: 'section-overlay',
+            blank: true,
+        },
+        {
+            icon: faAlignLeft,
+            text: 'Open Ended',
+            iconStyle: { fontSize: '18px', color: 'white' },
+            bgClass: 'section-manualy-bg',
+            overlayClass: 'section-overlay',
+        },
+        {
+            icon: faSquarePollVertical,
+            text: 'Poll',
+            iconStyle: { fontSize: '18px', color: 'white' },
+            bgClass: 'section-manualy-bg',
+            overlayClass: 'section-overlay',
+        },
+        {
+            icon: faPencil,
+            text: 'Draw',
+            iconStyle: { fontSize: '18px', color: 'white' },
+            bgClass: 'section-manualy-bg',
+            overlayClass: 'section-overlay',
+        },
     ];
 
     static fontSizeOptions = ['12', '14', '16', '18', '20', '24', '32', '48', '64'];

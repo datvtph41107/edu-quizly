@@ -4,13 +4,16 @@
     margin: 12px 0;
     padding: 8px 12px;
     border-radius: 4px;
-    background-color: #fff3;
+    background-color: white;
     transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
     transition-duration: 0.2s;
     transition-property: background-color, border-color, color, fill, stroke;
     cursor: pointer;
+
     &:hover {
-        background-color: #ffffff54;
+        // background-color: #ffffff54;
+        background-color: rgba(224, 221, 221, 0.377);
+        // color: white;
     }
 
     &:active {
@@ -31,21 +34,18 @@
     font-weight: bolder;
     font-size: 20px;
     &:hover {
-        background-color: rgb(63, 62, 62);
+        background-color: rgba(224, 221, 221, 0.377);
     }
 }
 
 .box {
     height: 96px;
     width: 48%;
-    background-color: #ffffff1a;
+    background-color: white;
     border-radius: 4px;
     margin-bottom: 12px !important;
     margin-top: 0 !important;
-
-    &:hover {
-        background-color: #ffffff0d;
-    }
+    color: rgba(104, 103, 103, 0.986);
 }
 
 .box-icon {

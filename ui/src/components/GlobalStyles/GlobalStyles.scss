@@ -15,7 +15,10 @@
     --bg: hsl(var(--hue), 10%, 90%);
     --fg: hsl(var(--hue), 10%, 10%);
     --trans-dur: 0.3s;
-
+    --background-slide: rgba(241, 241, 241, 1);
+    --background-slide-header: rgba(247, 247, 247, 1);
+    --sidebar-slide-color-hover: rgba(109, 109, 109, 1);
+    --sidebar-slide-color-active: rgb(90, 165, 61);
     --front-family: Open Sans, sans-serif, Helvetica, Arial, Symbola;
 
     // Default layout

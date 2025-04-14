@@ -1,27 +1,21 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Rnd } from 'react-rnd';
+import React from 'react';
 import styles from './Dragable.module.scss';
 import classNames from 'classnames/bind';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCopy, faFill, faRotate, faTrash, faUnlock } from '@fortawesome/free-solid-svg-icons';
-import { useEditor } from '@tiptap/react';
-import { isActiveTypeState, updateEditorState, extensions, renderView } from '~/components/ElementTypes/ElementTypes';
+import { renderView } from '~/components/ElementTypes/ElementTypes';
 import './drag.css';
 import useStore from '~/features/store';
-import { useStateContext } from '~/context/ContextProvider';
 import { TYPE_SHAPE } from '~/utils/Const';
 
 const cx = classNames.bind(styles);
 
 function DraggableView({ className = false, element, selectedElements, storeElementBoundingBox }) {
-    const { editorComponents } = useStore();
-    const { changeEditorType } = useStateContext();
-    const [isEditing, setIsEditing] = useState(false);
+    const { editors } = useStore();
     const classes = cx('content', {
         shape: element.tab === TYPE_SHAPE,
         [className]: className,
     });
-    const editor = editorComponents[element.id]?.editor;
+    const editor = editors[element.id];
+
     const isSelected = storeElementBoundingBox.map((el) => el.id).includes(element.id);
 
     // ELEMENT VIEW RENDER
@@ -36,16 +30,12 @@ function DraggableView({ className = false, element, selectedElements, storeElem
             className: classes,
             style: {
                 ...(element.type === 'block' ? { backgroundColor: '#018a38' } : {}),
-                // zIndex: element.index,
             },
         },
         props: {
             element: element,
             isSelected: isSelected,
-            setIsEditing: setIsEditing,
             editor: editor,
-            changeEditorType: changeEditorType,
-            selectedElements: selectedElements,
         },
         tab: element.tab,
     });

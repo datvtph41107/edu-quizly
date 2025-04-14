@@ -10,7 +10,10 @@ function SidebarPreviewItem({ isSelected, countSlide, elements, onSelect, copyNe
 
     return (
         <div className={cx('side-preview-container')}>
-            <div className={cx('side-preview-contain', { selected: isSelected, hold: !isSelected })}>
+            <div
+                style={{ color: isSelected ? 'white' : 'black' }}
+                className={cx('side-preview-contain', { selected: isSelected, hold: !isSelected })}
+            >
                 <div className={cx('side-nav-contain')}>
                     <div className={cx('side-nav-contain-count')}>{countSlide}</div>
                     <div className={cx('side-nav-contain-icon')} onClick={copyNewSlide}>

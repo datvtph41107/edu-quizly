@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Rnd } from 'react-rnd';
 import styles from './Dragable.module.scss';
 import classNames from 'classnames/bind';
@@ -25,9 +25,9 @@ function DraggableElement({
     onSelect,
     setisDraggingToSelect,
 }) {
-    const { setEditor, setEditorComponents } = useStore();
+    const { registerEditor, updateElementHtml, items } = useStore();
     const { setChangeEditorType, changeEditorType } = useStateContext();
-    const [isEditing, setIsEditing] = useState(false);
+
     const classes = cx('content', {
         shape: element.tab === TYPE_SHAPE,
         [className]: className,
@@ -37,8 +37,10 @@ function DraggableElement({
         {
             editable: true,
             extensions: extensions,
-            content: element.placeholder,
+            // content: element.placeholder,
             onCreate: ({ editor }) => {
+                registerEditor(element.id, editor);
+                // setEditorComponents(element.id, editor);
                 if (element.type === 'h1') {
                     editor.commands.setHeading({ level: 1 });
                 }
@@ -53,7 +55,12 @@ function DraggableElement({
                 }
             },
             onUpdate: ({ editor }) => {
-                const editorContent = editor.getHTML();
+                const html = editor.getHTML();
+
+                updateElementHtml({
+                    elementId: element.id,
+                    html,
+                });
 
                 if (editor.isEmpty) {
                     if (element.type === 'h1') {
@@ -62,16 +69,9 @@ function DraggableElement({
                     isActiveTypeState({ editor: editor, changeEditorType: changeEditorType });
                 }
             },
-            onBlur: (e) => {
-                setIsEditing(false);
-            },
         },
-        [element.data.html],
+        [],
     );
-
-    useEffect(() => {
-        setEditorComponents(element.id, editor);
-    }, [element.data.html, element]);
 
     const handleDrag = (e, d) => {
         setisDraggingToSelect(false);
@@ -127,8 +127,6 @@ function DraggableElement({
         const parentElement = e.target.closest('.elementBox-unique-' + element.id);
 
         if (!getBoundingBox) {
-            console.log(editor);
-            setEditor(editor); // set state editor to get menu header
             onSelect({ elementData: { element: element, target: parentElement }, only: true }); // get element with id
         }
     };
@@ -148,16 +146,13 @@ function DraggableElement({
             className: classes,
             style: {
                 ...(element.type === 'block' ? { backgroundColor: '#018a38' } : {}),
-                // zIndex: element.index,
+                opacity: editor.isFocused ? 1 : 0,
             },
         },
         props: {
             element: element,
             isSelected: isSelected,
-            setIsEditing: setIsEditing,
             editor: editor,
-            changeEditorType: changeEditorType,
-            selectedElements: selectedElements,
         },
         tab: element.tab,
     });
@@ -171,17 +166,17 @@ function DraggableElement({
                 // pointerEvents: !selectedElements.element
                 //     ? 'auto'
                 //     : selectedElements?.element?.id !== element.id && 'none',
-                zIndex: isEditing || selectedElements?.element?.id === element.id ? 999 : element.zIndex,
+                zIndex: editor?.isFocused || selectedElements?.element?.id === element.id ? 999 : element.zIndex,
                 willChange: 'transform',
             }}
             size={{
-                width: element.transform.size.width,
-                height: element.transform.size.height,
+                width: element.transform.size.width + 2,
+                height: element.transform.size.height + 2,
             }}
             position={{ x: element.transform.position.x, y: element.transform.position.y }}
             onDrag={handleDrag}
             onResize={handleResize}
-            disableDragging={isEditing}
+            disableDragging={editor?.isFocused}
             enableResizing={{
                 top: true,
                 right: true,
@@ -238,10 +233,7 @@ function DraggableElement({
                         <div className={cx('radito-stick')}></div>
                     </div> */}
 
-                <div
-                    style={{ opacity: isEditing ? 1 : 0 }}
-                    className={cx({ 'shape-element': element.tab === TYPE_SHAPE }, { [element.tab]: element.tab })}
-                >
+                <div className={cx({ 'shape-element': element.tab === TYPE_SHAPE }, { [element.tab]: element.tab })}>
                     {renderView}
                 </div>
             </div>

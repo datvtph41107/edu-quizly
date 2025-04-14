@@ -2,14 +2,17 @@
 .sidebar {
     position: relative;
     z-index: 1000;
-    background-color: rgba(34, 34, 34, 1);
     height: 100%;
     width: 266px;
+    transition: transform 0.3s ease-in-out; /* Thêm hiệu ứng chuyển động */
+    transform: translateX(0);
+    border-left: 1px solid #09090933;
     .sidebar-container {
         overflow-x: hidden;
         overflow-y: auto;
         max-height: 100%;
         height: 100%;
+        background-color: var(--background-slide-header);
         .sidebar-contain {
             height: 100%;
 
@@ -31,6 +34,11 @@
     }
 }
 
+.sidebar.closed {
+    // width: 0;
+    transform: translateX(-100%);
+}
+
 .toast-bar {
     position: absolute;
     bottom: 0;
@@ -41,8 +49,8 @@
     gap: 6px;
     background-color: white;
     width: 100%;
-    height: 50px;
-
+    height: 60px;
+    padding: 12px 0;
     .btn {
         font-size: 14px;
         padding: 9px 18px;
@@ -55,6 +63,13 @@
         cursor: pointer;
         font-weight: bold;
         transition: background-color 0.2s ease, color 0.2s ease;
+
+        &.back {
+            border-radius: 4px;
+            width: 100%;
+            margin: 0 12px;
+        }
+
         &.out {
             border-radius: 4px;
             color: var(--primary);

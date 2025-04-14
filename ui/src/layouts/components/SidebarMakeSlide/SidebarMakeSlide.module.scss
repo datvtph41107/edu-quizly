@@ -4,21 +4,26 @@
 
 .side-sub {
     color: rgba(255, 255, 255, 1);
-    background-color: rgb(34, 34, 34);
+    // background-color: rgb(34, 34, 34);
     height: 100%;
     display: flex;
     position: relative;
+    transition: transform 0.3s ease-in-out; /* Thêm hiệu ứng chuyển động */
+    transform: translateX(0);
+}
+
+.side-sub.closed {
+    transform: translateX(-100%); /* Sidebar thu vào */
 }
 
 .list {
     position: relative;
     z-index: 1001;
-    color: #ffffff80;
     margin: 0;
     padding: 0;
     width: 72px;
     list-style: none;
-    background-color: rgba(9, 9, 9, 1);
+    background-color: var(--background-slide-header);
     padding-top: 28px;
 }
 
@@ -26,6 +31,8 @@
     justify-content: flex-end;
     align-items: center;
     display: flex;
+    color: var(--sidebar-slide-color-hover);
+
     margin: 8px 0px 8px 10px;
     position: relative;
     cursor: pointer;
@@ -33,14 +40,17 @@
     padding-bottom: 6px;
     border-top-left-radius: 6px;
     border-bottom-left-radius: 6px;
-
+    &.disable {
+        color: rgb(199 199 199);
+        pointer-events: none;
+    }
     &.active {
         background-color: #ffffff1a;
-        color: white;
+        color: var(--sidebar-slide-color-active);
     }
-    &:hover {
+    &.hover:hover {
         background-color: #ffffff1a;
-        color: white;
+        color: var(--sidebar-slide-color-active);
     }
 }
 

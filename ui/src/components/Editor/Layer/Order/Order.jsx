@@ -71,7 +71,6 @@ function Order({ editor }) {
                 // editor.commands.bringForward();
                 break;
             case 3:
-                console.log(111);
                 editor.commands.bringForward(selectedElements);
                 break;
             case 4:
