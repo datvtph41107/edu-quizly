@@ -46,8 +46,6 @@ function SidebarContent({ side, items, openSlide }) {
                 return 'Media';
             case 'Shapes':
                 return <Shape />;
-            case 'Tables':
-                return <Table />;
             default:
                 return 'Not Found';
         }

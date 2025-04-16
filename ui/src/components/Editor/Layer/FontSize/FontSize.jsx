@@ -13,7 +13,6 @@ const cx = classNames.bind(styles);
 function FontSize({ editor, elementId, fn }) {
     const { setChangeEditorType, changeEditorType } = useStateContext();
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-    const [selectedSize, setSelectedSize] = useState('32');
 
     const toggleDropdown = () => {
         editor.commands.focus();
@@ -23,17 +22,17 @@ function FontSize({ editor, elementId, fn }) {
     const handleFontSizeChange = (size) => {
         editor.commands.focus();
         editor.commands.setFontSize(size);
-        setSelectedSize(size);
-        updateEditorState({ setChangeEditorType: setChangeEditorType, value: size, name: 'fontSize' });
+        updateEditorState({ editor, setChangeEditorType: setChangeEditorType, value: size, name: 'fontSize' });
         setIsDropdownOpen(false);
     };
+    const currentSize = editor?.getAttributes('textStyle').fontSize;
 
     return (
         <div className={cx('section-family', 'w-20')}>
-            <div className={cx('section-label')}>Font Size (Selected: {selectedSize})</div>
+            <div className={cx('section-label')}>Font Size (Selected: {currentSize ?? 18})</div>
             <div className={cx('section-wrap')}>
                 <button type="button" className={cx('section-dropdown')} onClick={toggleDropdown}>
-                    <span>{selectedSize} px</span>
+                    <span>{currentSize ?? 18} px</span>
                     <div className={cx('section-dropdown-node', { open: isDropdownOpen })}>
                         <FontAwesomeIcon icon={faCaretUp} />
                     </div>

@@ -5,10 +5,12 @@ export const EllipseIcon = ({
     className,
     borderStroke = '2',
     borderColorStroke = '#429a50',
-    fillColor = '#429a50',
+    fillColor = 'transparent',
+    style,
 }) => (
     <svg
         id={id}
+        style={style}
         className={className}
         width={width}
         height={height}
@@ -19,7 +21,7 @@ export const EllipseIcon = ({
         stroke={borderColorStroke}
         strokeWidth={borderStroke}
     >
-        <ellipse id={id} cx="50" cy="50" rx="49" ry="49"></ellipse>
+        <ellipse id={id} cx="50" cy="50" rx="50" ry="50" />
     </svg>
 );
 
@@ -31,9 +33,11 @@ export const RectangleIcon = ({
     borderStroke = '0',
     borderColorStroke = '#429a50',
     fillColor = '#429a50',
+    style,
 }) => (
     <svg
         id={id}
+        style={style}
         className={className}
         width={width}
         height={height}
@@ -57,10 +61,11 @@ export const TriangleIcon = ({
     borderStroke = '2',
     borderColorStroke = '#429a50',
     fillColor = '#429a50',
+    style,
 }) => (
     <svg
         id={id}
-        style={{ zIndex: 10 }}
+        style={style}
         className={className}
         width={width}
         height={height}
@@ -83,9 +88,11 @@ export const StarIcon = ({
     borderStroke = '2',
     borderColorStroke = '#429a50',
     fillColor = '#429a50',
+    style,
 }) => (
     <svg
         id={id}
+        style={style}
         className={className}
         width={width}
         height={height}
@@ -107,9 +114,11 @@ export const LineIcon = ({
     className,
     borderStroke = '6',
     borderColorStroke = '#429a50',
+    style,
 }) => (
     <svg
         id={id}
+        style={style}
         className={className}
         width={width}
         height={height}
@@ -131,9 +140,14 @@ export const ArrowIcon = ({
     className,
     borderStroke = '5',
     borderColorStroke = '#429a50',
+    style,
 }) => (
     <svg
         id={id}
+        style={{
+            ...style,
+            vectorEffect: 'non-scaling-stroke',
+        }}
         className={className}
         width={width}
         height={height}
@@ -144,7 +158,6 @@ export const ArrowIcon = ({
         stroke={borderColorStroke}
         strokeLinejoin="round"
         strokeLinecap="round"
-        style={{ vectorEffect: 'non-scaling-stroke' }}
     >
         <path
             id={id}

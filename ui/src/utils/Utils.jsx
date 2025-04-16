@@ -71,6 +71,8 @@ export class Utils {
         'Dancing Script',
     ];
 
+    static BORDER_SIZES = ['No Border', '1', '2', '3', '4', '5', '6', '7', '8'];
+
     static slideTypes = [
         {
             span: 'Blank slide',
@@ -144,4 +146,15 @@ export class Utils {
     ];
 
     static fontSizeOptions = ['12', '14', '16', '18', '20', '24', '32', '48', '64'];
+
+    // static getSpanTextAttributeParser = (editor) => {
+    //     const html = editor.getHTML();
+
+    //     const parser = new DOMParser();
+    //     const doc = parser.parseFromString(html, 'text/html');
+    //     const span = doc.querySelector('span');
+    //     console.log(span?.outerHTML);
+
+    //     return span?.outerHTML;
+    // };
 }

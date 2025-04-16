@@ -15,7 +15,6 @@ function Presentation() {
     const [selectedTemp, setSelectedTemp] = useState([]); // store element selected temp
     const [selectionBox, setSelectionBox] = useState(null);
     const [boundingBox, setBoundingBox] = useState(null);
-    // const [editors, setEditors] = useState([]);
     const wrapperRef = useRef(null);
     const containerRef = useRef(null);
 
@@ -26,7 +25,6 @@ function Presentation() {
         // Handle bounding select box
         if (e.button !== 0) return;
         const targetElement = e.target;
-        console.log(targetElement);
 
         if (
             (!isDraggingToSelect && (targetElement.id === 'display-element' || targetElement.id === 'boundingBox')) ||

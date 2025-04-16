@@ -11,6 +11,9 @@ import useStore from '~/features/store';
 import Order from './Layer/Order/Order';
 import TextAlign from './Layer/TextAlign/TextAlign';
 import { TYPE_SHAPE } from '~/utils/Const';
+import BorderSize from './Layer/BorderSize/BorderSize';
+import BorderColor from './Layer/BorderColor/BorderColor';
+import FillColor from './Layer/FillColor/FillColor';
 
 const cx = classNames.bind(styles);
 
@@ -26,46 +29,9 @@ function Editor() {
                         {selectedElements?.element?.tab === TYPE_SHAPE && (
                             <>
                                 <div className={cx('box-tool')}>
-                                    <div style={{ position: 'relative' }}>
-                                        <button className={cx('box-btn')}>
-                                            <div
-                                                style={{ boxShadow: '0px -2px 0px inset' }}
-                                                className={cx('box-btn-grap')}
-                                            >
-                                                <FontAwesomeIcon icon={faFill} />
-                                            </div>
-                                        </button>
-                                    </div>
-                                    <div style={{ position: 'relative' }}>
-                                        <button className={cx('box-btn')}>
-                                            <div
-                                                style={{ boxShadow: '0px -2px 0px inset' }}
-                                                className={cx('box-btn-grap')}
-                                            >
-                                                <FontAwesomeIcon icon={faPen} />
-                                            </div>
-                                        </button>
-                                    </div>
-                                    <div style={{ position: 'relative', padding: '10px', marginTop: '5px' }}>
-                                        <div className={cx('box-btn-cs')}>
-                                            <div
-                                                style={{ height: '0.5px', width: '100%', marginBottom: '2px' }}
-                                                className={cx('bg-faded')}
-                                            ></div>
-                                            <div
-                                                style={{ height: '1px', width: '100%', marginBottom: '2px' }}
-                                                className={cx('bg-faded')}
-                                            ></div>
-                                            <div
-                                                style={{ height: '1.5px', width: '100%', marginBottom: '2px' }}
-                                                className={cx('bg-faded')}
-                                            ></div>
-                                            <div
-                                                style={{ height: '2px', width: '100%', marginBottom: '2px' }}
-                                                className={cx('bg-faded')}
-                                            ></div>
-                                        </div>
-                                    </div>
+                                    <FillColor editor={editor} />
+                                    <BorderColor editor={editor} />
+                                    <BorderSize editor={editor} />
                                 </div>
                                 <div className={cx('start')}></div>
                             </>

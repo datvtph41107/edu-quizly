@@ -7,28 +7,29 @@ import { Utils } from '~/utils/Utils';
 
 const cx = classNames.bind(styles);
 
-function FontFamily({ editor, elementId, fn }) {
+function FontFamily({ editor }) {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-    const [selectedFont, setSelectedFont] = useState('Quicksand');
+    const [font, setFont] = useState('Quicksand');
 
     const toggleDropdown = () => {
         editor.commands.focus();
-
         setIsDropdownOpen((prev) => !prev);
     };
 
     const handleFontChange = (font) => {
-        setSelectedFont(font);
+        setFont(font);
         editor.chain().focus().setFontFamily(font).run();
         setIsDropdownOpen(false);
     };
 
     return (
         <div className={cx('section-family')}>
-            <div className={cx('section-label')}>Font (with selected value) {selectedFont}</div>
+            <div className={cx('section-label')}>
+                Font (with selected value) {editor?.isActive('textStyle', { fontFamily: font }) ? font : 'Quicksand'}
+            </div>
             <div className={cx('section-wrap')}>
                 <button type="button" className={cx('section-dropdown')} onClick={toggleDropdown}>
-                    <span>{selectedFont}</span>
+                    <span>{editor?.isActive('textStyle', { fontFamily: font }) ? font : 'Quicksand'}</span>
                     <div className={cx('section-dropdown-node', { open: isDropdownOpen })}>
                         <FontAwesomeIcon icon={faCaretUp} />
                     </div>
@@ -49,10 +50,6 @@ function FontFamily({ editor, elementId, fn }) {
                     </div>
                 )}
             </div>
-
-            {/* <div style={{ fontFamily: selectedFont }}>
-                Đây là nội dung với font: {selectedFont}
-            </div> */}
         </div>
     );
 }

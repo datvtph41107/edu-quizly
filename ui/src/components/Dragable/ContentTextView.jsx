@@ -1,7 +1,8 @@
 import classNames from 'classnames/bind';
-import styles from './ContentText.module.scss';
+import styles from './ContentTextView.module.scss';
 import './customStyle.css';
 import React from 'react';
+import { Utils } from '~/utils/Utils';
 
 const cx = classNames.bind(styles);
 function ContentTextView({ isSelected, editor, element }) {
@@ -9,7 +10,12 @@ function ContentTextView({ isSelected, editor, element }) {
 
     return (
         <div
-            id={'contentText' + (isSelected ? '-selected' : '')}
+            style={{
+                position: 'absolute',
+                zIndex: 30,
+                width: 'calc(100% - 16px)',
+                wordWrap: 'break-word',
+            }}
             className={cx(
                 'content-text',
                 { type: element.type === 'h1' || element.type === 'body' },
@@ -21,13 +27,10 @@ function ContentTextView({ isSelected, editor, element }) {
                     editor.commands.setContent('');
                 }
             }}
-        >
-            <div
-                dangerouslySetInnerHTML={{
-                    __html: element.data.html,
-                }}
-            />
-        </div>
+            dangerouslySetInnerHTML={{
+                __html: editor.getHTML(),
+            }}
+        />
     );
 }
 
