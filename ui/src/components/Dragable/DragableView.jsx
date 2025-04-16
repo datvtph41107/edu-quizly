@@ -5,15 +5,13 @@ import { renderView } from '~/components/ElementTypes/ElementTypes';
 import './drag.css';
 import useStore from '~/features/store';
 import { TYPE_SHAPE } from '~/utils/Const';
+import { Rnd } from 'react-rnd';
 
 const cx = classNames.bind(styles);
 
-function DraggableView({ className = false, element, selectedElements, storeElementBoundingBox }) {
+function DraggableView({ element, selectedElements, storeElementBoundingBox }) {
     const { editors } = useStore();
-    const classes = cx('content', {
-        shape: element.tab === TYPE_SHAPE,
-        [className]: className,
-    });
+
     const editor = editors[element.id];
 
     const isSelected = storeElementBoundingBox.map((el) => el.id).includes(element.id);
@@ -25,10 +23,13 @@ function DraggableView({ className = false, element, selectedElements, storeElem
             id: `element-${element.id}`,
             width: element.transform.size.width,
             height: element.transform.size.height,
-            // borderStroke: '',
-            // borderColorStroke: '',
-            className: classes,
+            borderStroke: element.borderSize === '' ? '0' : element.borderSize,
+            borderColorStroke: element.borderColor === '' ? '#429a50' : element.borderColor,
+            fillColor: element.backgroundColor === '' ? '#429a50' : element.backgroundColor,
             style: {
+                overflow: 'visible',
+                verticalAlign: 'middle',
+                display: 'block',
                 ...(element.type === 'block' ? { backgroundColor: '#018a38' } : {}),
             },
         },
@@ -42,16 +43,22 @@ function DraggableView({ className = false, element, selectedElements, storeElem
 
     return (
         <div className={cx('slide-el-display')}>
-            <div
+            <Rnd
                 style={{
-                    position: 'absolute',
-                    left: element.transform.position.x,
-                    top: element.transform.position.y,
+                    zIndex: element.zIndex,
+                    willChange: 'transform',
+                }}
+                size={{
                     width: element.transform.size.width,
                     height: element.transform.size.height,
-                    transform: 'rotate(0deg)',
-                    zIndex: element.zIndex,
                 }}
+                position={{ x: element.transform.position.x - 1.6, y: element.transform.position.y - 1.6 }}
+                disableDragging={true}
+                enableResizing={false}
+                minWidth={40}
+                minHeight={element.type !== 'line' ? 40 : 5}
+                maxHeight={element.type === 'line' ? 16 : undefined}
+                dragGrid={[5, 5]}
             >
                 <div className={cx('slide-element')}>
                     {/* <div className={cx('radito-3', { disable: !openDrag })}>
@@ -65,7 +72,7 @@ function DraggableView({ className = false, element, selectedElements, storeElem
                         {renderViewDr}
                     </div>
                 </div>
-            </div>
+            </Rnd>
         </div>
     );
 }

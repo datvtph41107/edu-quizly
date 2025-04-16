@@ -6,7 +6,7 @@ import { TYPE_SHAPE, TYPE_TEXT } from '~/utils/Const';
 import React, { useState } from 'react';
 
 const cx = classNames.bind(styles);
-const ContentText = function ContentText({ isSelected, editor, element }) {
+function ContentText({ isSelected, editor, element }) {
     if (!editor) return null;
     const [count, setCount] = useState(0);
 
@@ -36,6 +36,6 @@ const ContentText = function ContentText({ isSelected, editor, element }) {
             </div>
         </div>
     );
-};
+}
 
 export default ContentText;

@@ -8,34 +8,13 @@
 .wrapper {
     transform: rotate(0deg);
     user-select: none;
-    padding: 1px;
     position: absolute;
-    // &.disable {
-    //     border: 1px solid #aaa;
-    //     box-shadow: inset 0 0 0 3px #8854c0;
-    // }
-    // // &.rectangle {
-    // //     padding: 4px;
-    // // }
-    // &.selected {
-    //     border: 1px solid #aaa; /* Viền hiển thị khi chọn */
-    //     box-shadow: inset 0 0 0 3px #8854c0;
-    // }
-
-    // &.dragging:hover {
-    //     border: 1px solid #aaa;
-    //     box-shadow: inset 0 0 0 3px #8854c0;
-    // }
-
     user-select: none;
 }
 
 .content {
     overflow: visible;
-    stroke-width: 2px;
     vertical-align: middle;
-    width: 100%;
-    height: 100%;
     display: block;
 }
 

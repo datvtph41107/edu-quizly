@@ -55,8 +55,10 @@ const control = [
 ];
 
 function Order({ editor }) {
-    const { selectedElements } = useStore();
+    const { selectedElements, updateOrderZIndexTransform, items } = useStore();
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+    const elementId = selectedElements?.element?.id;
 
     const toggleDropdown = () => {
         setIsDropdownOpen((prev) => !prev);
@@ -66,9 +68,11 @@ function Order({ editor }) {
         switch (id) {
             case 1:
                 // editor.commands.bringForward();
+                updateOrderZIndexTransform(elementId, 'above');
                 break;
             case 2:
                 // editor.commands.bringForward();
+                updateOrderZIndexTransform(elementId, 'below');
                 break;
             case 3:
                 editor.commands.bringForward(selectedElements);
@@ -81,6 +85,7 @@ function Order({ editor }) {
         }
         setIsDropdownOpen(false);
     };
+    console.log(elementId, items);
 
     return (
         <div className={cx('section-family', 'w-20')}>

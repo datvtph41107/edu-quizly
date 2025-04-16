@@ -309,11 +309,14 @@ const useStore = create((set) => ({
                             zIndex: nextZIndex,
                         },
                         data: {
-                            html: '',
+                            html: element.html,
                             media: { type: '', url: '' },
                         },
                         placeholder: element.placeholder,
                         placeholderSize: element.placeholderSize,
+                        borderSize: element.borderSize ?? '',
+                        borderColor: element.borderColor ?? '',
+                        backgroundColor: element.backgroundColor ?? '', //shape
                         type: element.type,
                         tab: element.tab,
                         zIndex: nextZIndex,
@@ -330,6 +333,68 @@ const useStore = create((set) => ({
             return {
                 items: updatedItems,
             };
+        }),
+
+    updateElementBorderSize: ({ slideId, elementId, borderSize }) =>
+        set((state) => {
+            const updatedItems = state.items.map((slide) => {
+                if (slide.id !== slideId) return slide;
+
+                const updatedElements = slide.elements.map((el) => (el.id === elementId ? { ...el, borderSize } : el));
+
+                return { ...slide, elements: updatedElements };
+            });
+
+            return { items: updatedItems };
+        }),
+
+    updateElementBorderColor: ({ slideId, elementId, borderColor }) =>
+        set((state) => {
+            const updatedItems = state.items.map((slide) => {
+                if (slide.id !== slideId) return slide;
+
+                const updatedElements = slide.elements.map((el) => (el.id === elementId ? { ...el, borderColor } : el));
+
+                return { ...slide, elements: updatedElements };
+            });
+
+            return { items: updatedItems };
+        }),
+
+    updateElementBackgroundColor: ({ slideId, elementId, backgroundColor }) =>
+        set((state) => {
+            const updatedItems = state.items.map((slide) => {
+                if (slide.id !== slideId) return slide;
+
+                const updatedElements = slide.elements.map((el) =>
+                    el.id === elementId ? { ...el, backgroundColor } : el,
+                );
+
+                return { ...slide, elements: updatedElements };
+            });
+
+            return { items: updatedItems };
+        }),
+
+    updateOrderZIndexTransform: (elementId, type) =>
+        set((state) => {
+            const updatedItems = state.items.map((slide) => ({
+                ...slide,
+                elements: slide.elements.map((el) =>
+                    el.id === elementId
+                        ? {
+                              ...el,
+                              zIndex: Math.max(0, (el.zIndex || 0) + (type === 'above' ? 1 : -1)),
+                              transform: {
+                                  ...el.transform,
+                                  zIndex: Math.max(0, (el.transform?.zIndex || 0) + (type === 'above' ? 1 : -1)),
+                              },
+                          }
+                        : el,
+                ),
+            }));
+
+            return { items: updatedItems };
         }),
 
     updateElementHtml: ({ elementId, html }) =>
@@ -352,14 +417,23 @@ const useStore = create((set) => ({
             return { items: updatedItems };
         }),
 
-    updatePositionBlock: (id, updatePosition) =>
+    updatePositionBlock: (id, updatePosition, updateSize) =>
         set((state) => {
             const updatedItems = state.items.map((slide) =>
                 slide.id === state.selectedSlideId
                     ? {
                           ...slide,
                           elements: slide.elements.map((el) =>
-                              el.id === id ? { ...el, transform: { ...el.transform, position: updatePosition } } : el,
+                              el.id === id
+                                  ? {
+                                        ...el,
+                                        transform: {
+                                            ...el.transform,
+                                            position: updatePosition || el.transform.position,
+                                            size: updateSize || el.transform.size,
+                                        },
+                                    }
+                                  : el,
                           ),
                       }
                     : slide,

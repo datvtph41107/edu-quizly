@@ -95,31 +95,63 @@ const SendBackExtension = Extension.create({
     },
 });
 
-const FontSize = Mark.create({
+const FontSize = Extension.create({
     name: 'fontSize',
-    addAttributes() {
+
+    addOptions() {
         return {
-            size: {
-                default: '14px',
+            types: ['textStyle'],
+            getStyle: (fontSize) => {
+                return `font-size: ${fontSize}px`;
             },
         };
     },
-    parseHTML() {
+
+    addGlobalAttributes() {
+        // set mark với extension  commands.setMark('textStyle', { fontSize: 16, lineHeight: '1.5em' });
         return [
             {
-                style: 'font-size',
+                types: this.options.types,
+                attributes: {
+                    fontSize: {
+                        default: null,
+                        parseHTML: (element) => element.style.fontSize.replace(/['"]+/g, ''),
+                        renderHTML: (attributes) => {
+                            if (!attributes.fontSize) {
+                                return {};
+                            }
+
+                            return {
+                                style: this.options.getStyle(attributes.fontSize),
+                            };
+                        },
+                    },
+                    lineHeight: {
+                        default: null,
+                        parseHTML: (element) => element.style.lineHeight?.replace(/['"]+/g, '') || null,
+                        renderHTML: (attributes) => {
+                            if (!attributes.lineHeight) return {};
+                            return {
+                                style: `line-height: ${attributes.lineHeight}`,
+                            };
+                        },
+                    },
+                },
             },
         ];
     },
-    renderHTML({ HTMLAttributes }) {
-        return ['span', { style: `font-size: ${HTMLAttributes.size}px !important` }, 0];
-    },
+
     addCommands() {
         return {
             setFontSize:
-                (size) =>
-                ({ commands }) => {
-                    return commands.setMark('fontSize', { size });
+                (fontSize) =>
+                ({ chain }) => {
+                    return chain().setMark('textStyle', { fontSize }).run();
+                },
+            unsetFontSize:
+                () =>
+                ({ chain }) => {
+                    return chain().setMark('textStyle', { fontSize: null }).removeEmptyTextStyle().run();
                 },
         };
     },
@@ -232,9 +264,7 @@ export const renderView = ({ type, propStyles, props, tab }) => {
     if (Component && tab === TYPE_SHAPE) {
         return (
             <>
-                <div>
-                    <Component {...propStyles} />
-                </div>
+                <Component {...propStyles} />
                 {type !== 'line' && type !== 'arrow' && <ContentTextView {...props} />}
             </>
         );

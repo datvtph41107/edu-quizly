@@ -1,0 +1,29 @@
+.box-btn {
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    background-color: transparent;
+    cursor: pointer;
+    display: flex;
+    width: 32px;
+    height: 32px;
+    border-radius: 4px;
+    &:hover {
+        background-color: #ffffff0d;
+    }
+
+    &.active {
+        background-color: #ffffff0d;
+    }
+    .box-btn-grap {
+        justify-content: center;
+        align-items: center;
+        display: flex;
+        width: 24px;
+        height: 24px;
+    }
+
+    .box-icc {
+        color: black !important;
+    }
+}

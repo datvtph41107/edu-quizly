@@ -1,4 +1,4 @@
-import { faArrowRightLong, faCircle, faMinus, faPlay, faSquare, faStar } from '@fortawesome/free-solid-svg-icons';
+import { faArrowRightLong, faCircle, faPlay, faSquare, faStar } from '@fortawesome/free-solid-svg-icons';
 import styles from './Shape.module.scss';
 import classNames from 'classnames/bind';
 import TaskbarItem from '~/components/TaskbarItem/TaskbarItem';
@@ -16,57 +16,17 @@ import {
     TYPE_SHAPE_STAR,
     TYPE_SHAPE_TRIANGLE,
 } from '~/utils/Const';
-import { extensions, useEditor } from '@tiptap/react';
-import { isActiveTypeState, updateEditorState } from '~/components/ElementTypes/ElementTypes';
+import Table from '../Table';
 
 const cx = classNames.bind(styles);
 
-// const editor = useEditor(
-//     {
-//         editable: true,
-//         extensions: extensions,
-//         content: element.placeholder,
-//         onCreate: ({ editor }) => {
-//             // setEditorComponents(element.id, editor);
-//             // setEditorComponents(element.id, editor);
-//             if (element.type === 'h1') {
-//                 editor.commands.setHeading({ level: 1 });
-//             }
-//         },
-//         onSelectionUpdate: ({ editor }) => {
-//             const { $from, $to } = editor.state.selection;
-//             const start = $from.pos;
-//             const end = $to.pos;
-
-//             if (!editor.isEmpty) {
-//                 updateEditorState({ editor: editor, setChangeEditorType: setChangeEditorType });
-//             }
-//         },
-//         onUpdate: ({ editor }) => {
-//             const editorContent = editor.getHTML();
-
-//             if (editor.isEmpty) {
-//                 if (element.type === 'h1') {
-//                     editor.commands.setHeading({ level: 1 });
-//                 }
-//                 isActiveTypeState({ editor: editor, changeEditorType: changeEditorType });
-//             }
-//         },
-//         onBlur: (e) => {
-//             setIsEditing(false);
-//         },
-//     },
-//     [],
-// );
-
 function Shape() {
-    const { selectedSlideId, items, addElementIntoSlide } = useStore();
-    console.log(selectedSlideId, items);
+    const { selectedSlideId, addElementIntoSlide } = useStore();
 
     const pattern = ({
         type,
-        width = 125,
-        height = 125,
+        width = 140,
+        height = 140,
         x = 400,
         y = 270,
         placeholder = SHAPE_PLACEHOLDER_TEXT,
@@ -84,6 +44,7 @@ function Shape() {
                 placeholderSize,
                 type,
                 tab,
+                html: '',
             },
         });
     };
@@ -95,25 +56,11 @@ function Shape() {
             wrap: [
                 {
                     icon: <LineIcon width="60px" height="6px" borderColorStroke="rgba(104, 103, 103, 0.986)" />,
-                    onClick: () =>
-                        pattern({
-                            type: TYPE_SHAPE_LINE,
-                            width: 125,
-                            height: 4,
-                            placeholder: null,
-                            placeholderSize: null,
-                        }),
+                    onClick: () => pattern({ type: TYPE_SHAPE_LINE, width: 125, height: 4 }),
                 },
                 {
                     icon: <FontAwesomeIcon icon={faArrowRightLong} />,
-                    onClick: () =>
-                        pattern({
-                            type: TYPE_SHAPE_ARROW,
-                            width: 130,
-                            height: 60,
-                            placeholder: null,
-                            placeholderSize: null,
-                        }),
+                    onClick: () => pattern({ type: TYPE_SHAPE_ARROW, width: 130, height: 60 }),
                 },
             ],
         },
@@ -143,21 +90,26 @@ function Shape() {
 
     return (
         <div className={cx('wrapper')}>
-            <h2 className={cx('heading')}>Shapes</h2>
-            {data.map((item, index) => (
-                <div key={index}>
-                    <h3 className={cx('title', 'above')}>
-                        <span>{item.title}</span>
-                    </h3>
-                    <div className={cx('container')}>
-                        {item.wrap.map((t, idx) => (
-                            <TaskbarItem key={idx} box rotate={item.rotate} onClick={t.onClick}>
-                                {t.icon}
-                            </TaskbarItem>
-                        ))}
+            <div className={cx('side-preview-wrapper')}>
+                <h2 className={cx('heading')}>Shapes</h2>
+                {data.map((item, index) => (
+                    <div key={index}>
+                        <h3 className={cx('title', 'above')}>
+                            <span>{item.title}</span>
+                        </h3>
+                        <div className={cx('container')}>
+                            {item.wrap.map((t, idx) => (
+                                <TaskbarItem key={idx} box rotate={item.rotate} onClick={t.onClick}>
+                                    {t.icon}
+                                </TaskbarItem>
+                            ))}
+                        </div>
                     </div>
+                ))}
+                <div>
+                    <Table />
                 </div>
-            ))}
+            </div>
         </div>
     );
 }

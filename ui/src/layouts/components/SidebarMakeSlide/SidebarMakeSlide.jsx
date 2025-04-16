@@ -1,4 +1,4 @@
-import { faBarsStaggered, faFont, faPhotoFilm, faShapes, faTable } from '@fortawesome/free-solid-svg-icons';
+import { faBarsStaggered, faFont, faPhotoFilm, faShapes } from '@fortawesome/free-solid-svg-icons';
 import styles from './SidebarMakeSlide.module.scss';
 import classNames from 'classnames/bind';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -30,11 +30,6 @@ function SidebarMakeSlide({ openSlide }) {
         {
             icon: faShapes,
             text: 'Shapes',
-            selected: false,
-        },
-        {
-            icon: faTable,
-            text: 'Tables',
             selected: false,
         },
     ];
