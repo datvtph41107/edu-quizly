@@ -2,35 +2,40 @@ import classNames from 'classnames/bind';
 import styles from './ContentText.module.scss';
 import { EditorContent } from '@tiptap/react';
 import './customStyle.css';
-import { TYPE_SHAPE, TYPE_TEXT } from '~/utils/Const';
-import React, { useState } from 'react';
+import { TYPE_SHAPE, TYPE_TABLE, TYPE_TEXT } from '~/utils/Const';
+import React, { useEffect, useState } from 'react';
 
 const cx = classNames.bind(styles);
-function ContentText({ isSelected, editor, element }) {
-    if (!editor) return null;
-    const [count, setCount] = useState(0);
 
-    const editorClass = classNames(`content-${element?.tab === TYPE_SHAPE ? TYPE_SHAPE : TYPE_TEXT}`, 'tiptap', {
-        [`contentShape ProseMirror${editor.isFocused || count === 0 ? ' ProseMirror-focus' : ''}`]: true,
-        'hide-placeholder': count === 1,
-    });
+function ContentText({ editor, element }) {
+    if (!editor) return null;
+    const [hasFocusedOnce, setHasFocusedOnce] = useState(false);
+    const isTable = element.type === TYPE_TABLE;
+
+    useEffect(() => {
+        if (editor.isFocused && !hasFocusedOnce) {
+            setHasFocusedOnce(true);
+        }
+    }, [editor.isFocused, hasFocusedOnce]);
+
+    const editorClass = !isTable
+        ? classNames(`content-${element?.tab === TYPE_SHAPE ? TYPE_SHAPE : TYPE_TEXT}`, 'tiptap', {
+              [`contentShape ProseMirror${editor.isFocused ? ' ProseMirror-focus' : ''}`]: true,
+          })
+        : classNames(cx('table-tiptap', { 'table-focused': editor.isFocused }));
+
+    const containerClassName = !isTable
+        ? cx('content-text', { type: element.type === 'h1' || element.type === 'body' }, { [element.tab]: element.tab })
+        : undefined;
 
     return (
-        <div
-            id={'contentText' + (isSelected ? '-selected' : '')}
-            className={cx(
-                'content-text',
-                { type: element.type === 'h1' || element.type === 'body' },
-                { active: !isSelected },
-                { [element.tab]: element.tab },
-            )}
-            onClick={() => {
-                if (editor.isEmpty) {
-                    editor.commands.setContent('');
-                    setCount(1);
-                }
-            }}
-        >
+        <div className={containerClassName}>
+            <div
+                style={{ display: hasFocusedOnce ? 'none' : 'block' }}
+                className={cx('placeholder', { [element.tab]: [element.tab] })}
+            >
+                {element.placeholder}
+            </div>
             <div className={editorClass}>
                 <EditorContent editor={editor} />
             </div>

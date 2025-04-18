@@ -21,7 +21,6 @@ const cx = classNames.bind(styles);
 function StyleType({ editor }) {
     const { setChangeEditorType, changeEditorType } = useStateContext();
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [selectedText, setSelectedText] = useState('');
     // console.log(changeEditorType);
     const handleSaveLink = useCallback(
         (url) => {

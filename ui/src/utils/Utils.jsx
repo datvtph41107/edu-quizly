@@ -1,7 +1,7 @@
 import { faAlignLeft, faPencil, faSquareCheck, faSquarePollVertical } from '@fortawesome/free-solid-svg-icons';
 
 export class Utils {
-    static colorOptions = [
+    static COLOR_OPTIONS = [
         'rgb(126, 27, 27)',
         'rgb(149, 77, 4)',
         'rgb(138, 106, 40)',
@@ -54,7 +54,7 @@ export class Utils {
         'rgb(255, 255, 255)',
     ];
 
-    static fontOptions = [
+    static FONT_OPTIONS = [
         'Quicksand',
         'Lobster',
         'BEBAS NEUE',
@@ -73,7 +73,7 @@ export class Utils {
 
     static BORDER_SIZES = ['No Border', '1', '2', '3', '4', '5', '6', '7', '8'];
 
-    static slideTypes = [
+    static SLIDE_TYPE = [
         {
             span: 'Blank slide',
             type: 'blank',
@@ -106,7 +106,7 @@ export class Utils {
         },
     ];
 
-    static buttonData = [
+    static BUTTON_DATA = [
         {
             icon: faSquareCheck,
             text: 'Multiple Choice',
@@ -145,16 +145,92 @@ export class Utils {
         },
     ];
 
-    static fontSizeOptions = ['12', '14', '16', '18', '20', '24', '32', '48', '64'];
-
-    // static getSpanTextAttributeParser = (editor) => {
-    //     const html = editor.getHTML();
-
-    //     const parser = new DOMParser();
-    //     const doc = parser.parseFromString(html, 'text/html');
-    //     const span = doc.querySelector('span');
-    //     console.log(span?.outerHTML);
-
-    //     return span?.outerHTML;
-    // };
+    static FONT_SIZE_OPTIONS = ['12', '14', '16', '18', '20', '24', '32', '48', '64'];
 }
+
+export const createCustomTable = (rows, cols) => {
+    const defaultSpan = {
+        type: 'text',
+        text: '\u200B',
+        marks: [
+            {
+                type: 'textStyle',
+                attrs: {
+                    fontSize: '24',
+                    lineHeight: '1.5em',
+                    color: 'rgb(7, 10, 14)',
+                    textDecorationColor: 'rgb(7, 10, 14)',
+                },
+            },
+        ],
+    };
+
+    const defaultParagraph = {
+        type: 'paragraph',
+        content: [defaultSpan],
+    };
+
+    const table = {
+        type: 'table',
+        content: [],
+    };
+
+    for (let r = 0; r < rows; r++) {
+        const row = {
+            type: 'tableRow',
+            content: [],
+        };
+
+        for (let c = 0; c < cols; c++) {
+            row.content.push({
+                type: r === 0 ? 'tableHeader' : 'tableCell',
+                content: [defaultParagraph],
+            });
+        }
+
+        table.content.push(row);
+    }
+
+    return table;
+};
+
+export const defaultParagraph = {
+    type: 'paragraph',
+    content: [
+        {
+            type: 'text',
+            text: '\u200B',
+            marks: [
+                {
+                    type: 'textStyle',
+                    attrs: {
+                        fontSize: '16',
+                        lineHeight: '1.5em',
+                    },
+                },
+            ],
+        },
+    ],
+};
+
+export const defaultHeadingContent = {
+    type: 'heading',
+    attrs: { level: 1 },
+    content: [
+        {
+            type: 'text',
+            text: '\u200B',
+            marks: [{ type: 'textStyle', attrs: { fontSize: '48', lineHeight: '1.5em' } }, { type: 'bold' }],
+        },
+    ],
+};
+// export const getSpanTextAttributeParser = (editor) => {
+//     const html = editor.getHTML();
+
+//     const parser = new DOMParser();
+//     const doc = parser.parseFromString(html, 'text/html');
+//     const span = doc.querySelector('span');
+//     console.log(span?.outerHTML);
+
+//     return span?.outerHTML;
+// };

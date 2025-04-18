@@ -9,7 +9,7 @@ function ColorPickerOption({ fn = () => {} }) {
     return (
         <div className={cx('color-dropdown')}>
             <div className={cx('color-option')}>
-                {Utils.colorOptions.map((color, index) => (
+                {Utils.COLOR_OPTIONS.map((color, index) => (
                     <div
                         key={index}
                         onClick={() => fn(color)}

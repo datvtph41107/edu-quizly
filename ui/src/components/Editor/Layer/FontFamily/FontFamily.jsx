@@ -37,7 +37,7 @@ function FontFamily({ editor }) {
 
                 {isDropdownOpen && (
                     <div className={cx('dropdown-options')}>
-                        {Utils.fontOptions.map((font, index) => (
+                        {Utils.FONT_OPTIONS.map((font, index) => (
                             <div
                                 key={index}
                                 style={{ fontFamily: font }}

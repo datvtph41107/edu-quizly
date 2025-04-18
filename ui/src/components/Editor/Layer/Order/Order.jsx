@@ -85,7 +85,6 @@ function Order({ editor }) {
         }
         setIsDropdownOpen(false);
     };
-    console.log(elementId, items);
 
     return (
         <div className={cx('section-family', 'w-20')}>

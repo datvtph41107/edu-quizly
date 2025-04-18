@@ -5,14 +5,18 @@ import Subscript from '@tiptap/extension-subscript';
 import Superscript from '@tiptap/extension-superscript';
 import Link from '@tiptap/extension-link';
 import StarterKit from '@tiptap/starter-kit';
-import { Extension, Mark } from '@tiptap/core';
 import TextAlign from '@tiptap/extension-text-align';
 import FontFamily from '@tiptap/extension-font-family';
 import TextStyle from '@tiptap/extension-text-style';
 import Color from '@tiptap/extension-color';
 import Placeholder from '@tiptap/extension-placeholder';
-import { TYPE_SHAPE } from '~/utils/Const';
+import { TYPE_SHAPE, TYPE_TABLE_SHAPE } from '~/utils/Const';
 import ContentTextView from '../Dragable/ContentTextView';
+import TableRow from '@tiptap/extension-table-row';
+import TableHeader from '@tiptap/extension-table-header';
+import TableCell from '@tiptap/extension-table-cell';
+import TableTipTap from '@tiptap/extension-table';
+import { BringForwardExtension, FontSize, SendBackExtension } from './Extension';
 
 const ElementTypes = {
     arrow: ArrowIcon,
@@ -48,117 +52,8 @@ export const TypesEditor = {
 
 const editorTypes = Object.keys(TypesEditor);
 
-const BringForwardExtension = Extension.create({
-    name: 'bringForward',
-    addCommands() {
-        return {
-            bringForward:
-                (element) =>
-                ({ state, dispatch }) => {
-                    const selectedElement = element.target;
-                    if (selectedElement) {
-                        selectedElement.style.zIndex = '9999';
-                    }
-                    return true;
-                },
-        };
-    },
-});
-
-const SendBackExtension = Extension.create({
-    name: 'sendBack',
-
-    addCommands() {
-        return {
-            sendBack:
-                () =>
-                ({ state, dispatch }) => {
-                    const { selection, doc } = state;
-                    const { from } = selection;
-                    console.log(selection);
-                    const node = doc.nodeAt(from);
-
-                    if (node) {
-                        const updatedNode = node.copy(node.content);
-
-                        const tr = state.tr.setNodeMarkup(from, null, {
-                            ...node.attrs,
-                            style: 'z-index: -1;',
-                        });
-
-                        dispatch(tr);
-                    }
-
-                    return true;
-                },
-        };
-    },
-});
-
-const FontSize = Extension.create({
-    name: 'fontSize',
-
-    addOptions() {
-        return {
-            types: ['textStyle'],
-            getStyle: (fontSize) => {
-                return `font-size: ${fontSize}px`;
-            },
-        };
-    },
-
-    addGlobalAttributes() {
-        // set mark với extension  commands.setMark('textStyle', { fontSize: 16, lineHeight: '1.5em' });
-        return [
-            {
-                types: this.options.types,
-                attributes: {
-                    fontSize: {
-                        default: null,
-                        parseHTML: (element) => element.style.fontSize.replace(/['"]+/g, ''),
-                        renderHTML: (attributes) => {
-                            if (!attributes.fontSize) {
-                                return {};
-                            }
-
-                            return {
-                                style: this.options.getStyle(attributes.fontSize),
-                            };
-                        },
-                    },
-                    lineHeight: {
-                        default: null,
-                        parseHTML: (element) => element.style.lineHeight?.replace(/['"]+/g, '') || null,
-                        renderHTML: (attributes) => {
-                            if (!attributes.lineHeight) return {};
-                            return {
-                                style: `line-height: ${attributes.lineHeight}`,
-                            };
-                        },
-                    },
-                },
-            },
-        ];
-    },
-
-    addCommands() {
-        return {
-            setFontSize:
-                (fontSize) =>
-                ({ chain }) => {
-                    return chain().setMark('textStyle', { fontSize }).run();
-                },
-            unsetFontSize:
-                () =>
-                ({ chain }) => {
-                    return chain().setMark('textStyle', { fontSize: null }).removeEmptyTextStyle().run();
-                },
-        };
-    },
-});
-
 export const extensions = [
-    StarterKit,
+    StarterKit.configure({ table: false }),
     Underline,
     Subscript,
     Superscript,
@@ -168,9 +63,12 @@ export const extensions = [
     FontFamily,
     TextStyle,
     Color,
+    TableTipTap.configure({ resizable: true }),
+    TableRow,
+    TableHeader,
+    TableCell,
     Placeholder.configure({
         placeholder: 'Type...',
-        showOnlyWhenEditable: true,
         showOnlyCurrent: true,
     }),
     TextAlign.configure({
@@ -240,7 +138,11 @@ export const render = ({ type, propStyles, props, tab }) => {
         Component = ElementTypes[type];
     }
 
-    if (Component && tab === TYPE_SHAPE) {
+    if (tab === TYPE_TABLE_SHAPE) {
+        return <ContentText {...props} />;
+    }
+
+    if (tab === TYPE_SHAPE) {
         return (
             <>
                 <div style={{ opacity: propStyles.style.opacity }}>
@@ -255,10 +157,10 @@ export const render = ({ type, propStyles, props, tab }) => {
 };
 
 export const renderView = ({ type, propStyles, props, tab }) => {
-    let Component = 'div';
+    let Component = ElementTypes[type];
 
-    if (type !== 'block') {
-        Component = ElementTypes[type];
+    if (tab === TYPE_TABLE_SHAPE) {
+        return <ContentTextView {...props} />;
     }
 
     if (Component && tab === TYPE_SHAPE) {

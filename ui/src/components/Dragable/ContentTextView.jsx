@@ -2,31 +2,36 @@ import classNames from 'classnames/bind';
 import styles from './ContentTextView.module.scss';
 import './customStyle.css';
 import React from 'react';
-import { Utils } from '~/utils/Utils';
+import { TYPE_TABLE } from '~/utils/Const';
+import useStore from '~/features/store';
 
 const cx = classNames.bind(styles);
-function ContentTextView({ isSelected, editor, element }) {
+
+function ContentTextView({ editor, element }) {
+    // const { selectedElements } = useStore();
     if (!editor) return null;
+    const isTable = element.type === TYPE_TABLE;
+    const containerClassName = isTable
+        ? cx('table-tiptap')
+        : cx(
+              'content-text',
+              { type: element.type === 'h1' || element.type === 'body' },
+              { [element.tab]: element.tab },
+          );
+
+    const containerStyle = isTable
+        ? undefined
+        : {
+              position: 'absolute',
+              zIndex: 30,
+              width: 'calc(100% - 16px)',
+              wordWrap: 'break-word',
+          };
 
     return (
         <div
-            style={{
-                position: 'absolute',
-                zIndex: 30,
-                width: 'calc(100% - 16px)',
-                wordWrap: 'break-word',
-            }}
-            className={cx(
-                'content-text',
-                { type: element.type === 'h1' || element.type === 'body' },
-                { active: !isSelected },
-                { [element.tab]: element.tab },
-            )}
-            onClick={() => {
-                if (editor.getHTML() === `<p>${element.placeholder}</p>`) {
-                    editor.commands.setContent('');
-                }
-            }}
+            style={containerStyle}
+            className={containerClassName}
             dangerouslySetInnerHTML={{
                 __html: editor.getHTML(),
             }}

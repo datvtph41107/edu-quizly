@@ -13,6 +13,7 @@ function DraggableView({ element, selectedElements, storeElementBoundingBox }) {
     const { editors } = useStore();
 
     const editor = editors[element.id];
+    console.log(editors);
 
     const isSelected = storeElementBoundingBox.map((el) => el.id).includes(element.id);
 

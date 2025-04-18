@@ -3,14 +3,13 @@ import classNames from 'classnames/bind';
 import styles from './FontSize.module.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCaretUp } from '@fortawesome/free-solid-svg-icons';
-import useStore from '~/features/store';
 import { Utils } from '~/utils/Utils';
 import { updateEditorState } from '~/components/ElementTypes/ElementTypes';
 import { useStateContext } from '~/context/ContextProvider';
 
 const cx = classNames.bind(styles);
 
-function FontSize({ editor, elementId, fn }) {
+function FontSize({ editor }) {
     const { setChangeEditorType, changeEditorType } = useStateContext();
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
@@ -20,8 +19,12 @@ function FontSize({ editor, elementId, fn }) {
     };
 
     const handleFontSizeChange = (size) => {
+        console.log('Editor empty:', editor?.getAttributes('textStyle').fontSize);
+
         editor.commands.focus();
-        editor.commands.setFontSize(size);
+
+        // editor.commands.setMark('textStyle', { fontSize: size });
+        // editor.commands.setFontSize(size);
         updateEditorState({ editor, setChangeEditorType: setChangeEditorType, value: size, name: 'fontSize' });
         setIsDropdownOpen(false);
     };
@@ -40,7 +43,7 @@ function FontSize({ editor, elementId, fn }) {
 
                 {isDropdownOpen && (
                     <div className={cx('dropdown-options')}>
-                        {Utils.fontSizeOptions.map((size, index) => (
+                        {Utils.FONT_SIZE_OPTIONS.map((size, index) => (
                             <div key={index} className={cx('dropdown-item')} onClick={() => handleFontSizeChange(size)}>
                                 {size}
                             </div>
