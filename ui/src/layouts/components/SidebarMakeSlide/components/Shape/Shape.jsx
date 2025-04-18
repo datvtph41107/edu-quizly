@@ -107,7 +107,7 @@ function Shape() {
                     </div>
                 ))}
                 <div>
-                    <Table />
+                    <Table selectedSlideId={selectedSlideId} addElementIntoSlide={addElementIntoSlide} />
                 </div>
             </div>
         </div>

@@ -5,14 +5,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PreviewItemBlock from './PreviewSlide/PreviewItemBlock';
 import TextBar from './TextBar';
 import Shape from './Shape/Shape';
-import Table from './Table';
-import { useEffect, useState } from 'react';
 import SelectPreviewSlide from './SelectPreviewSlide';
 import { useStateContext } from '~/context/ContextProvider';
 
 const cx = classNames.bind(styles);
 
-function SidebarContent({ side, items, openSlide }) {
+function SidebarContent({ side, setSide, openSlide }) {
     const { setOpenSlide } = useStateContext();
     // const [isSidebarOpen, setIsSidebarOpen] = useState(true);
     // const [isSidebarVisible, setIsSidebarVisible] = useState(true);
@@ -33,13 +31,13 @@ function SidebarContent({ side, items, openSlide }) {
     // }, [items]);
 
     const renderSide = () => {
+        if (openSlide.open) {
+            return <SelectPreviewSlide />;
+        }
+
         switch (side) {
             case 'Slides':
-                if (openSlide.open) {
-                    return <SelectPreviewSlide />;
-                } else {
-                    return <PreviewItemBlock />;
-                }
+                return <PreviewItemBlock />;
             case 'Text':
                 return <TextBar />;
             case 'Media':
@@ -63,12 +61,13 @@ function SidebarContent({ side, items, openSlide }) {
                 {openSlide.open ? (
                     <button
                         disabled={!openSlide.back}
-                        onClick={() =>
+                        onClick={() => {
                             setOpenSlide({
                                 open: false,
                                 back: false,
-                            })
-                        }
+                            });
+                            setSide('Slides');
+                        }}
                         type="button"
                         className={cx('btn', 'back')}
                     >

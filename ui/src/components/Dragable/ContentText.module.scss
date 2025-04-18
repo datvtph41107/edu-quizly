@@ -28,3 +28,38 @@
         align-items: center;
     }
 }
+
+.table-tiptap {
+    margin: 12px;
+    display: table;
+    z-index: 50;
+    position: absolute;
+    opacity: 0;
+}
+.table-tiptap.table-focused {
+    opacity: 1;
+}
+
+.placeholder {
+    &.SHAPE {
+        position: absolute;
+        justify-content: center;
+        align-items: center;
+        display: flex;
+        text-align: center;
+        width: 100%;
+    }
+
+    &.heading {
+        position: absolute;
+        justify-content: center;
+        align-items: center;
+        display: flex;
+        text-align: center;
+        width: 100%;
+        font-size: 48px;
+        font-weight: bold;
+        text-align: left;
+        color: black;
+    }
+}

@@ -55,7 +55,7 @@ function SelectPreviewSlide() {
                     <div className={cx('slide-creator-section')}>
                         <h2 className={cx('section-two-title')}>Select slide type</h2>
                         <div className={cx('section-group')}>
-                            {Utils.slideTypes.map((item, index) => (
+                            {Utils.SLIDE_TYPE.map((item, index) => (
                                 <div
                                     className={cx('section-group-item')}
                                     key={index}
@@ -75,7 +75,7 @@ function SelectPreviewSlide() {
                     <div className={cx('slide-creator-section')}>
                         <h2 className={cx('section-two-title')}>Create manually</h2>
                         <div className={cx('section-group')}>
-                            {Utils.buttonData.map((button, index) => (
+                            {Utils.BUTTON_DATA.map((button, index) => (
                                 <div key={index} style={{ marginBottom: '8px' }}>
                                     <button className={cx('section-manualy')}>
                                         <span className={cx(button.bgClass)}>

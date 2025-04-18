@@ -14,10 +14,11 @@ import {
     updateEditorState,
     extensions,
 } from '~/components/ElementTypes/ElementTypes';
-import { TYPE_SHAPE, TYPE_TEXT_HEADING } from '~/utils/Const';
+import { TYPE_SHAPE, TYPE_TABLE, TYPE_TEXT_BODY, TYPE_TEXT_HEADING, TYPE_TEXT_TAG } from '~/utils/Const';
 import { faCopy, faFill, faTrash, faUnlock } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import './drag.css';
+import { createCustomTable, defaultHeadingContent, defaultParagraph } from '~/utils/Utils';
 
 const cx = classNames.bind(styles);
 
@@ -36,7 +37,6 @@ function DraggableElement({
     const { setChangeEditorType, changeEditorType } = useStateContext();
     const [htmlValue, setHtmlValue] = useState('');
 
-    const isSelected = storeElementBoundingBox.map((el) => el.id).includes(element.id);
     const isSelectDisplay = selectedElements?.element?.id === element.id;
     let isApplyingReset = false;
 
@@ -47,16 +47,29 @@ function DraggableElement({
             // content: element.placeholder,
             onCreate: ({ editor }) => {
                 registerEditor(element.id, editor);
+                if (element.type === TYPE_TABLE) {
+                    const customTableNode = createCustomTable(element.placeholder, element.placeholderSize);
+                    editor.commands.setContent({ type: 'doc', content: [customTableNode] });
+                    updateElementHtml({
+                        elementId: element.id,
+                        html: editor.getHTML(),
+                    });
+                }
 
-                if (element.type === 'h1') {
-                    editor.commands.setHeading({ level: 1 });
+                if (element.type === TYPE_SHAPE || element.type === TYPE_TEXT_BODY) {
+                    editor.commands.setContent({ type: 'doc', content: [defaultParagraph] });
+                }
+                if (element.type === TYPE_TEXT_TAG) {
+                    console.log(1333);
+
+                    editor.commands.setContent({
+                        type: 'doc',
+                        content: [defaultHeadingContent],
+                    });
+                    editor.commands.setTextAlign('left');
                 }
             },
             onSelectionUpdate: ({ editor }) => {
-                const { $from, $to } = editor.state.selection;
-                const start = $from.pos;
-                const end = $to.pos;
-
                 if (!editor.isEmpty) {
                     updateEditorState({ editor: editor, setChangeEditorType: setChangeEditorType });
                 }
@@ -69,10 +82,11 @@ function DraggableElement({
 
                 if (editor.isEmpty) {
                     isApplyingReset = true;
+                    console.log(111111111);
 
-                    if (element.type === TYPE_TEXT_HEADING) {
-                        editor.commands.setHeading({ level: 1 });
-                    }
+                    // if (element.type === TYPE_TEXT_TAG) {
+                    //     editor.commands.setHeading({ level: 1 });
+                    // }
                     if (element.tab === TYPE_SHAPE) {
                         editor.chain().focus().setTextAlign('left').run();
                     }
@@ -112,7 +126,6 @@ function DraggableElement({
                 },
                 props: {
                     element: element,
-                    isSelected: isSelected,
                     editor: editor,
                 },
                 tab: element.tab,
@@ -131,7 +144,7 @@ function DraggableElement({
         const handleBeforeInput = () => {
             const { commands } = editor;
 
-            if (!editor.isActive('textStyle')) {
+            if (!editor.isActive('textStyle') && element.type !== TYPE_TEXT_HEADING) {
                 commands.setMark('textStyle', { fontSize: 16, lineHeight: '1.5em' });
             }
         };
@@ -177,8 +190,6 @@ function DraggableElement({
                 }
             });
         } else {
-            console.log(d);
-
             if (element.transform.position.x !== d.x || element.transform.position.y !== d.y) {
                 onUpdate(element.id, { x: d.x, y: d.y });
             }
@@ -193,7 +204,6 @@ function DraggableElement({
                 y: position.y,
             },
             {
-                // width: parseInt(ref.style.width, 10),
                 width: parseFloat(ref.style.width),
                 height: parseFloat(ref.style.height),
             },
@@ -229,7 +239,6 @@ function DraggableElement({
         },
         props: {
             element: element,
-            isSelected: isSelected,
             editor: editor,
         },
         tab: element.tab,

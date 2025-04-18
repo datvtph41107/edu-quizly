@@ -15,34 +15,22 @@ function SidebarMakeSlide({ openSlide }) {
         {
             icon: faBarsStaggered,
             text: 'Slides',
-            selected: true,
         },
         {
             icon: faFont,
             text: 'Text',
-            selected: false,
         },
         {
             icon: faPhotoFilm,
             text: 'Media',
-            selected: false,
         },
         {
             icon: faShapes,
             text: 'Shapes',
-            selected: false,
         },
     ];
-    const [lists, setLists] = useState(sideLists);
     const [side, setSide] = useState('Slides');
-    const handleSelect = (index, side) => {
-        console.log(index);
-
-        const updatedLists = lists.map((list, i) => ({
-            ...list,
-            selected: i === index,
-        }));
-        setLists(updatedLists);
+    const handleSelect = (side) => {
         setSide(side);
     };
 
@@ -50,28 +38,28 @@ function SidebarMakeSlide({ openSlide }) {
         <div className={cx('wrapper')}>
             <aside className={cx('side-sub')}>
                 <ul className={cx('list')}>
-                    {lists.map((side, index) => (
+                    {sideLists.map((sideItem, index) => (
                         <li
                             key={index}
                             className={cx(
                                 'list-item',
                                 { hover: items.length > 0 },
-                                { active: side.selected },
+                                { active: side === sideItem.text },
                                 { disable: items.length === 0 },
                             )}
-                            onClick={items.length > 0 ? () => handleSelect(index, side.text) : null}
+                            onClick={items.length > 0 ? () => handleSelect(sideItem.text) : null}
                         >
-                            <div className={cx({ first: side.text === 'Slides' })}></div>
+                            <div className={cx({ first: sideItem.text === 'Slides' })}></div>
                             <div className={cx('item')}>
-                                <FontAwesomeIcon icon={side.icon} />
-                                <p>{side.text}</p>
+                                <FontAwesomeIcon icon={sideItem.icon} />
+                                <p>{sideItem.text}</p>
                             </div>
                         </li>
                     ))}
                 </ul>
 
                 {(items.length > 0 || openSlide.open) && (
-                    <SidebarPreview side={side} items={items} openSlide={openSlide} />
+                    <SidebarPreview side={side} setSide={setSide} openSlide={openSlide} />
                 )}
             </aside>
         </div>

@@ -3,16 +3,11 @@ import Input from '~/components/Input';
 import Button from '~/components/Button';
 import styles from './Table.module.scss';
 import classNames from 'classnames/bind';
-import { useEditor } from '@tiptap/react';
-import StarterKit from '@tiptap/starter-kit';
-import TableTipTap from '@tiptap/extension-table';
-import TableHeader from '@tiptap/extension-table-header';
-import TableRow from '@tiptap/extension-table-row';
-import TableCell from '@tiptap/extension-table-cell';
+import { TYPE_TABLE, TYPE_TABLE_SHAPE } from '~/utils/Const';
 
 const cx = classNames.bind(styles);
 
-function Table() {
+function Table({ selectedSlideId, addElementIntoSlide }) {
     const {
         register,
         watch,
@@ -23,17 +18,6 @@ function Table() {
             rows: '',
             columns: '',
         },
-    });
-
-    const editor = useEditor({
-        extensions: [
-            StarterKit.configure({ table: false }),
-            TableTipTap.configure({ resizable: true }),
-            TableRow,
-            TableHeader,
-            TableCell,
-        ],
-        content: '<p>Start typing or insert a table 👇</p>',
     });
 
     const rows = watch('rows');
@@ -50,16 +34,27 @@ function Table() {
         const rowCount = Number(rows);
         const colCount = Number(columns);
 
-        editor
-            .chain()
-            .focus()
-            .insertTable({
-                rows: rowCount,
-                cols: colCount,
-                withHeaderRow: true,
-            })
-            .run();
+        let tableHeight = 0;
+        const headerHeight = 44;
+        tableHeight = headerHeight + (rowCount - 1) * headerHeight + 25; //( Phan nay tinh toan dau tien (rowCount - 1) * headerHeight)
+        const tableWidth = 770;
+
+        addElementIntoSlide({
+            slideId: selectedSlideId,
+            element: {
+                x: 150,
+                y: 200,
+                width: `${tableWidth}px`,
+                height: `${tableHeight}px`,
+                placeholder: rowCount,
+                placeholderSize: colCount,
+                type: TYPE_TABLE,
+                tab: TYPE_TABLE_SHAPE,
+                html: '',
+            },
+        });
     };
+
     return (
         <>
             <h2 className={cx('heading')}>Dimensions for table</h2>
