@@ -4,7 +4,7 @@ import classNames from 'classnames/bind';
 import TaskbarItem from '~/components/TaskbarItem/TaskbarItem';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import useStore from '~/features/store';
-import { TYPE_TEXT_HEADING, TYPE_TEXT_TAG } from '~/utils/Const';
+import { TYPE_TEXT_BODY, TYPE_TEXT_HEADING, TYPE_TEXT_TAG, TYPE_TEXT_TAG_BODY } from '~/utils/Const';
 
 const cx = classNames.bind(styles);
 
@@ -23,9 +23,9 @@ function TextBar() {
                             element: {
                                 x: 200,
                                 y: 270,
-                                width: 770,
-                                height: 96,
-                                placeholder: 'Enter Title here',
+                                width: 550,
+                                height: 78,
+                                placeholder: 'Enter Title here...',
                                 placeholderSize: 36,
                                 type: TYPE_TEXT_TAG,
                                 tab: TYPE_TEXT_HEADING,
@@ -36,6 +36,21 @@ function TextBar() {
                 {
                     type: 'body',
                     content: 'Add body text',
+                    onClick: () =>
+                        addElementIntoSlide({
+                            slideId: selectedSlideId,
+                            element: {
+                                x: 200,
+                                y: 270,
+                                width: 550,
+                                height: 180,
+                                placeholder: 'Enter text here...',
+                                placeholderSize: 36,
+                                type: TYPE_TEXT_TAG_BODY,
+                                tab: TYPE_TEXT_BODY,
+                                html: '',
+                            },
+                        }),
                 },
             ],
         },
