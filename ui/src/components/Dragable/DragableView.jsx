@@ -1,21 +1,59 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from './Dragable.module.scss';
 import classNames from 'classnames/bind';
 import { renderView } from '~/components/ElementTypes/ElementTypes';
 import './drag.css';
 import useStore from '~/features/store';
-import { TYPE_SHAPE } from '~/utils/Const';
+import { TYPE_SHAPE, TYPE_TEXT_TAG } from '~/utils/Const';
 import { Rnd } from 'react-rnd';
 
 const cx = classNames.bind(styles);
 
 function DraggableView({ element, selectedElements, storeElementBoundingBox }) {
+    const [hasFocusedOnce, setHasFocusedOnce] = useState(false);
+    const [takeOpcity, setTakeOpcity] = useState(false);
     const { editors } = useStore();
-
     const editor = editors[element.id];
-    console.log(editors);
 
     const isSelected = storeElementBoundingBox.map((el) => el.id).includes(element.id);
+
+    useEffect(() => {
+        if (!editor) return;
+
+        const handleFocus = () => {
+            if (!hasFocusedOnce) {
+                setHasFocusedOnce(true);
+            }
+        };
+
+        editor.on('focus', handleFocus);
+        return () => {
+            editor.off('focus', handleFocus);
+        };
+    }, [editor, hasFocusedOnce]);
+
+    useEffect(() => {
+        if (!editor) return;
+
+        const handleFocus = () => {
+            if (!hasFocusedOnce) {
+                setTakeOpcity(true);
+            }
+        };
+
+        const handleBlur = () => {
+            if (!hasFocusedOnce) {
+                setTakeOpcity(false);
+            }
+        };
+
+        editor.on('focus', handleFocus);
+        editor.on('blur', handleBlur);
+        return () => {
+            editor.off('focus', handleFocus);
+            editor.off('blur', handleBlur);
+        };
+    }, [editor]);
 
     // ELEMENT VIEW RENDER
     const renderViewDr = renderView({
@@ -42,8 +80,29 @@ function DraggableView({ element, selectedElements, storeElementBoundingBox }) {
         tab: element.tab,
     });
 
+    // function shouldHideByFocus(editor, element) {
+    //     if (!editor || !(element.type === TYPE_TEXT_TAG || element.type === TYPE_TABLE)) return false;
+
+    //     const editorFocused = editor.view.hasFocus?.();
+    //     if (editorFocused) return false;
+
+    //     const selection = window.getSelection();
+
+    //     const isSelectingInside =
+    //         selection &&
+    //         (editor.view.dom.contains(selection.anchorNode) || editor.view.dom.contains(selection.focusNode));
+
+    //     if (isSelectingInside) return false;
+
+    //     return true;
+    // }
+
     return (
-        <div className={cx('slide-el-display')}>
+        <div
+            className={cx('slide-el-display', {
+                'opacity-zero': takeOpcity,
+            })}
+        >
             <Rnd
                 style={{
                     zIndex: element.zIndex,

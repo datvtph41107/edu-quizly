@@ -417,4 +417,7 @@
 }
 
 .slide-el-display {
+    &.opacity-zero {
+        opacity: 0;
+    }
 }

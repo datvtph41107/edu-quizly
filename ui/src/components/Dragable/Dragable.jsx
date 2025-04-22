@@ -18,7 +18,7 @@ import { TYPE_SHAPE, TYPE_TABLE, TYPE_TEXT_BODY, TYPE_TEXT_HEADING, TYPE_TEXT_TA
 import { faCopy, faFill, faTrash, faUnlock } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import './drag.css';
-import { createCustomTable, defaultHeadingContent, defaultParagraph } from '~/utils/Utils';
+import { createCustomTable, defaultHeadingContent, defaultParagraph, defaultParagraphBody } from '~/utils/Utils';
 
 const cx = classNames.bind(styles);
 
@@ -33,12 +33,11 @@ function DraggableElement({
     onSelect,
     setisDraggingToSelect,
 }) {
-    const { registerEditor, updateElementHtml } = useStore();
+    const { registerEditor, updateElementHtml, updateElementSize } = useStore();
     const { setChangeEditorType, changeEditorType } = useStateContext();
     const [htmlValue, setHtmlValue] = useState('');
 
     const isSelectDisplay = selectedElements?.element?.id === element.id;
-    let isApplyingReset = false;
 
     const editor = useEditor(
         {
@@ -56,46 +55,54 @@ function DraggableElement({
                     });
                 }
 
-                if (element.type === TYPE_SHAPE || element.type === TYPE_TEXT_BODY) {
+                if (element.tab === TYPE_SHAPE) {
                     editor.commands.setContent({ type: 'doc', content: [defaultParagraph] });
+                    editor.commands.setTextAlign('center');
                 }
-                if (element.type === TYPE_TEXT_TAG) {
-                    console.log(1333);
 
+                if (element.tab === TYPE_TEXT_BODY) {
+                    editor.commands.setContent({
+                        type: 'doc',
+                        content: [defaultParagraphBody],
+                    });
+                    editor.commands.setTextAlign('left');
+                }
+
+                if (element.tab === TYPE_TEXT_HEADING) {
                     editor.commands.setContent({
                         type: 'doc',
                         content: [defaultHeadingContent],
                     });
                     editor.commands.setTextAlign('left');
                 }
+                onSelect({ elementData: { element: element, target: null }, only: true });
             },
             onSelectionUpdate: ({ editor }) => {
+                if (editor.isEmpty && element.tab === TYPE_SHAPE) {
+                    editor.commands.setTextAlign('left');
+                }
+
+                if (element.type === TYPE_TEXT_TAG) {
+                    // let temp = 1;
+                    // const flag = Float(20.03)
+                    // const length =  editor.getText().trim().length - 1
+                    // if (Number(length) > Float(element.transform.size.width) * temp) {
+                    //     flag * length
+                    //     temp += 1
+                    // }
+                    // console.log('TARGETTTTT', editor.getText().trim().length - 1);
+                }
+
                 if (!editor.isEmpty) {
                     updateEditorState({ editor: editor, setChangeEditorType: setChangeEditorType });
                 }
             },
             onUpdate: ({ editor }) => {
-                if (isApplyingReset) return;
-
                 const html = editor.getHTML();
                 setHtmlValue(html);
 
                 if (editor.isEmpty) {
-                    isApplyingReset = true;
-                    console.log(111111111);
-
-                    // if (element.type === TYPE_TEXT_TAG) {
-                    //     editor.commands.setHeading({ level: 1 });
-                    // }
-                    if (element.tab === TYPE_SHAPE) {
-                        editor.chain().focus().setTextAlign('left').run();
-                    }
-
                     isActiveTypeState({ editor, changeEditorType });
-
-                    setTimeout(() => {
-                        isApplyingReset = false;
-                    }, 0);
                 }
             },
         },
@@ -219,6 +226,39 @@ function DraggableElement({
         }
     };
 
+    const handleContentResize = (size) => {
+        if (element.type !== TYPE_TEXT_TAG) return;
+
+        const { width: newWidth, height: newHeight } = size;
+        const { width: oldWidth, height: oldHeight } = element.transform.size;
+
+        const widthTerm = 20.23076923076923;
+        const BUFFER = 24;
+        const length = editor.getText().trim().length - 1;
+        // let flag = 1;
+
+        // console.log('length', length);
+        // console.log('new', widthTerm * length + BUFFER);
+        // console.log('old', oldWidth);
+        // console.log('new height', newHeight);
+        // console.log(oldHeight);
+
+        const shouldUpdate = widthTerm * length + BUFFER > oldWidth;
+        console.log(shouldUpdate, widthTerm * length + BUFFER, oldWidth);
+
+        if (shouldUpdate) {
+            // flag += 1;
+
+            updateElementSize({
+                elementId: element.id,
+                size: {
+                    width: Math.max(newWidth + BUFFER, oldWidth),
+                    height: newHeight + BUFFER,
+                },
+            });
+        }
+    };
+
     // ELEMENT VIEW RENDER
     const renderElementDrag = render({
         type: element.type,
@@ -240,6 +280,7 @@ function DraggableElement({
         props: {
             element: element,
             editor: editor,
+            onResizeContent: handleContentResize,
         },
         tab: element.tab,
     });

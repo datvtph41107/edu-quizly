@@ -176,6 +176,32 @@ const useStore = create((set) => ({
             return { items: updatedItems };
         }),
 
+    updateElementSize: ({ elementId, size }) =>
+        set((state) => {
+            const updatedItems = state.items.map((slide) => {
+                if (slide.id !== state.selectedSlideId) return slide;
+
+                const updatedElements = slide.elements.map((el) =>
+                    el.id === elementId
+                        ? {
+                              ...el,
+                              transform: {
+                                  ...el.transform,
+                                  size: {
+                                      width: size.width ?? el.transform.size.width,
+                                      height: size.height ?? el.transform.size.height,
+                                  },
+                              },
+                          }
+                        : el,
+                );
+
+                return { ...slide, elements: updatedElements };
+            });
+
+            return { items: updatedItems };
+        }),
+
     updatePositionBlock: (id, updatePosition, updateSize) =>
         set((state) => {
             const updatedItems = state.items.map((slide) =>

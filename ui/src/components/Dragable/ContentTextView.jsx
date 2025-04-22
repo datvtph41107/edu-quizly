@@ -1,23 +1,33 @@
 import classNames from 'classnames/bind';
 import styles from './ContentTextView.module.scss';
+import React, { useState } from 'react';
+import { TYPE_TABLE, TYPE_TEXT_TAG, TYPE_TEXT_TAG_BODY } from '~/utils/Const';
 import './customStyle.css';
-import React from 'react';
-import { TYPE_TABLE } from '~/utils/Const';
-import useStore from '~/features/store';
 
 const cx = classNames.bind(styles);
 
 function ContentTextView({ editor, element }) {
-    // const { selectedElements } = useStore();
     if (!editor) return null;
+
+    const [hasFocusedOnce, _] = useState(false);
     const isTable = element.type === TYPE_TABLE;
+    const isTextTag = element.type === TYPE_TEXT_TAG || element.type === TYPE_TEXT_TAG_BODY;
+
+    const isContentEmpty = (editor) => {
+        if (editor.isEmpty) return false;
+
+        const html = editor.getHTML();
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = html;
+
+        const text = tempDiv.textContent?.replace(/\u200B/g, '').trim();
+
+        return !text;
+    };
+
     const containerClassName = isTable
         ? cx('table-tiptap')
-        : cx(
-              'content-text',
-              { type: element.type === 'h1' || element.type === 'body' },
-              { [element.tab]: element.tab },
-          );
+        : cx('content-text', { type: isTextTag }, { [element.tab]: element.tab });
 
     const containerStyle = isTable
         ? undefined
@@ -28,14 +38,22 @@ function ContentTextView({ editor, element }) {
               wordWrap: 'break-word',
           };
 
+    const showPlaceholder = !hasFocusedOnce;
+
     return (
-        <div
-            style={containerStyle}
-            className={containerClassName}
-            dangerouslySetInnerHTML={{
-                __html: editor.getHTML(),
-            }}
-        />
+        <div>
+            {showPlaceholder && isTextTag && isContentEmpty(editor) ? (
+                <div style={containerStyle} className={containerClassName}>
+                    <div className={cx('placeholder', { [element.tab]: [element.tab] })}>{element.placeholder}</div>
+                </div>
+            ) : (
+                <div
+                    style={containerStyle}
+                    className={containerClassName}
+                    dangerouslySetInnerHTML={{ __html: editor.getHTML() }}
+                />
+            )}
+        </div>
     );
 }
 

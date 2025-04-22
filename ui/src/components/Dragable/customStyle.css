@@ -33,11 +33,11 @@
 
 /* tiptap */
 
-.content-SHAPE.tiptap.ProseMirror.ProseMirror-focus {
+.tiptap.ProseMirror.ProseMirror-focused {
     opacity: 1;
 }
 
-.content-SHAPE.tiptap.ProseMirror {
+.tiptap.ProseMirror {
     opacity: 0;
 }
 

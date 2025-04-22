@@ -213,6 +213,25 @@ export const defaultParagraph = {
     ],
 };
 
+export const defaultParagraphBody = {
+    type: 'paragraph',
+    content: [
+        {
+            type: 'text',
+            text: '\u200B',
+            marks: [
+                {
+                    type: 'textStyle',
+                    attrs: {
+                        fontSize: '24',
+                        lineHeight: '1.5em',
+                    },
+                },
+            ],
+        },
+    ],
+};
+
 export const defaultHeadingContent = {
     type: 'heading',
     attrs: { level: 1 },
@@ -220,7 +239,7 @@ export const defaultHeadingContent = {
         {
             type: 'text',
             text: '\u200B',
-            marks: [{ type: 'textStyle', attrs: { fontSize: '48', lineHeight: '1.5em' } }, { type: 'bold' }],
+            marks: [{ type: 'textStyle', attrs: { fontSize: '36', lineHeight: '1.5em' } }],
         },
     ],
 };
