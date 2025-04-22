@@ -4,7 +4,15 @@ import classNames from 'classnames/bind';
 import TaskbarItem from '~/components/TaskbarItem/TaskbarItem';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import useStore from '~/features/store';
-import { TYPE_TEXT_BODY, TYPE_TEXT_HEADING, TYPE_TEXT_TAG, TYPE_TEXT_TAG_BODY } from '~/utils/Const';
+import {
+    TYPE_LIST,
+    TYPE_TEXT_BODY,
+    TYPE_TEXT_HEADING,
+    TYPE_TEXT_LIST_NUMBER,
+    TYPE_TEXT_LIST_UL,
+    TYPE_TEXT_TAG,
+    TYPE_TEXT_TAG_BODY,
+} from '~/utils/Const';
 
 const cx = classNames.bind(styles);
 
@@ -61,10 +69,40 @@ function TextBar() {
                 {
                     icon: <FontAwesomeIcon icon={faListUl} />,
                     content: 'Bullets',
+                    onClick: () =>
+                        addElementIntoSlide({
+                            slideId: selectedSlideId,
+                            element: {
+                                x: 200,
+                                y: 270,
+                                width: 550,
+                                height: 133,
+                                placeholder: null,
+                                placeholderSize: null,
+                                type: TYPE_TEXT_LIST_UL,
+                                tab: TYPE_LIST,
+                                html: '',
+                            },
+                        }),
                 },
                 {
                     icon: <FontAwesomeIcon icon={faListOl} />,
                     content: 'Numbered',
+                    onClick: () =>
+                        addElementIntoSlide({
+                            slideId: selectedSlideId,
+                            element: {
+                                x: 200,
+                                y: 270,
+                                width: 550,
+                                height: 133,
+                                placeholder: null,
+                                placeholderSize: null,
+                                type: TYPE_TEXT_LIST_NUMBER,
+                                tab: TYPE_LIST,
+                                html: '',
+                            },
+                        }),
                 },
             ],
         },

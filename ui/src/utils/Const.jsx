@@ -1,5 +1,6 @@
 export const TYPE_SHAPE = 'SHAPE';
 export const TYPE_TEXT = 'TEXT';
+export const TYPE_LIST = 'LIST';
 
 export const TYPE_SHAPE_LINE = 'line';
 export const TYPE_SHAPE_RECTANGLE = 'rectangle';
@@ -14,7 +15,7 @@ export const TYPE_TEXT_TAG = 'h1';
 export const TYPE_TEXT_HEADING = 'heading';
 export const TYPE_TEXT_TAG_BODY = 'P';
 export const TYPE_TEXT_BODY = 'body';
-export const TYPE_TEXT_LIST_NUMBER = 'list-number';
-export const TYPE_TEXT_LIST_UL = 'list-ul';
+export const TYPE_TEXT_LIST_NUMBER = 'orderedList';
+export const TYPE_TEXT_LIST_UL = 'bulletList';
 export const TYPE_TABLE = 'table';
 export const TYPE_TABLE_SHAPE = 'table-shape';

@@ -71,7 +71,7 @@ export class Utils {
         'Dancing Script',
     ];
 
-    static BORDER_SIZES = ['No Border', '1', '2', '3', '4', '5', '6', '7', '8'];
+    static BORDER_SIZES = ['0', '1', '2', '3', '4', '5', '6', '7', '8'];
 
     static SLIDE_TYPE = [
         {
@@ -156,7 +156,7 @@ export const createCustomTable = (rows, cols) => {
             {
                 type: 'textStyle',
                 attrs: {
-                    fontSize: '24',
+                    fontSize: '20',
                     lineHeight: '1.5em',
                     color: 'rgb(7, 10, 14)',
                     textDecorationColor: 'rgb(7, 10, 14)',
@@ -192,6 +192,44 @@ export const createCustomTable = (rows, cols) => {
     }
 
     return table;
+};
+
+export const createList = (items = 3, listType) => {
+    const defaultSpan = {
+        type: 'text',
+        text: 'Item',
+        marks: [
+            {
+                type: 'textStyle',
+                attrs: {
+                    fontSize: '24',
+                    lineHeight: '1.5em',
+                },
+            },
+        ],
+    };
+
+    const defaultParagraph = {
+        type: 'paragraph',
+        attrs: {
+            textAlign: 'left',
+        },
+        content: [defaultSpan],
+    };
+
+    const listNode = {
+        type: listType,
+        content: [],
+    };
+
+    for (let i = 0; i < items; i++) {
+        listNode.content.push({
+            type: 'listItem',
+            content: [defaultParagraph],
+        });
+    }
+
+    return listNode;
 };
 
 export const defaultParagraph = {
@@ -243,6 +281,7 @@ export const defaultHeadingContent = {
         },
     ],
 };
+
 // export const getSpanTextAttributeParser = (editor) => {
 //     const html = editor.getHTML();
 

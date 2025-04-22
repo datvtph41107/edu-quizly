@@ -21,7 +21,6 @@ function ContentTextView({ editor, element }) {
         tempDiv.innerHTML = html;
 
         const text = tempDiv.textContent?.replace(/\u200B/g, '').trim();
-
         return !text;
     };
 
@@ -42,7 +41,7 @@ function ContentTextView({ editor, element }) {
 
     return (
         <div>
-            {showPlaceholder && isTextTag && isContentEmpty(editor) ? (
+            {showPlaceholder && isTextTag && isContentEmpty(editor) && element.placeholder ? (
                 <div style={containerStyle} className={containerClassName}>
                     <div className={cx('placeholder', { [element.tab]: [element.tab] })}>{element.placeholder}</div>
                 </div>

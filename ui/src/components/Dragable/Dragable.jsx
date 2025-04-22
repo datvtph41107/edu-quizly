@@ -14,11 +14,27 @@ import {
     updateEditorState,
     extensions,
 } from '~/components/ElementTypes/ElementTypes';
-import { TYPE_SHAPE, TYPE_TABLE, TYPE_TEXT_BODY, TYPE_TEXT_HEADING, TYPE_TEXT_TAG } from '~/utils/Const';
-import { faCopy, faFill, faTrash, faUnlock } from '@fortawesome/free-solid-svg-icons';
+import {
+    TYPE_SHAPE,
+    TYPE_SHAPE_ARROW,
+    TYPE_SHAPE_LINE,
+    TYPE_TABLE,
+    TYPE_TEXT_BODY,
+    TYPE_TEXT_HEADING,
+    TYPE_TEXT_LIST_NUMBER,
+    TYPE_TEXT_LIST_UL,
+    TYPE_TEXT_TAG,
+} from '~/utils/Const';
+import { faCopy, faFill, faLock, faTrash, faUnlock } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import './drag.css';
-import { createCustomTable, defaultHeadingContent, defaultParagraph, defaultParagraphBody } from '~/utils/Utils';
+import {
+    createCustomTable,
+    defaultHeadingContent,
+    defaultParagraph,
+    defaultParagraphBody,
+    createList,
+} from '~/utils/Utils';
 
 const cx = classNames.bind(styles);
 
@@ -33,8 +49,9 @@ function DraggableElement({
     onSelect,
     setisDraggingToSelect,
 }) {
-    const { registerEditor, updateElementHtml, updateElementSize } = useStore();
-    const { setChangeEditorType, changeEditorType } = useStateContext();
+    const { registerEditor, updateElementHtml, updateElementSize, removeElement, updateElementLock, duplicateElement } =
+        useStore();
+    const { setChangeEditorType, changeEditorType, setFillSetting, setBorderColorSetting } = useStateContext();
     const [htmlValue, setHtmlValue] = useState('');
 
     const isSelectDisplay = selectedElements?.element?.id === element.id;
@@ -68,6 +85,24 @@ function DraggableElement({
                     editor.commands.setTextAlign('left');
                 }
 
+                if (element.type === TYPE_TEXT_LIST_UL) {
+                    const bulletListNode = createList(3, TYPE_TEXT_LIST_UL);
+                    editor.commands.setContent({
+                        type: 'doc',
+                        content: [bulletListNode],
+                    });
+                    editor.commands.setTextAlign('left');
+                }
+
+                if (element.type === TYPE_TEXT_LIST_NUMBER) {
+                    const bulletListNode = createList(3, TYPE_TEXT_LIST_NUMBER);
+                    editor.commands.setContent({
+                        type: 'doc',
+                        content: [bulletListNode],
+                    });
+                    editor.commands.setTextAlign('left');
+                }
+
                 if (element.tab === TYPE_TEXT_HEADING) {
                     editor.commands.setContent({
                         type: 'doc',
@@ -80,17 +115,6 @@ function DraggableElement({
             onSelectionUpdate: ({ editor }) => {
                 if (editor.isEmpty && element.tab === TYPE_SHAPE) {
                     editor.commands.setTextAlign('left');
-                }
-
-                if (element.type === TYPE_TEXT_TAG) {
-                    // let temp = 1;
-                    // const flag = Float(20.03)
-                    // const length =  editor.getText().trim().length - 1
-                    // if (Number(length) > Float(element.transform.size.width) * temp) {
-                    //     flag * length
-                    //     temp += 1
-                    // }
-                    // console.log('TARGETTTTT', editor.getText().trim().length - 1);
                 }
 
                 if (!editor.isEmpty) {
@@ -244,7 +268,6 @@ function DraggableElement({
         // console.log(oldHeight);
 
         const shouldUpdate = widthTerm * length + BUFFER > oldWidth;
-        console.log(shouldUpdate, widthTerm * length + BUFFER, oldWidth);
 
         if (shouldUpdate) {
             // flag += 1;
@@ -257,6 +280,26 @@ function DraggableElement({
                 },
             });
         }
+    };
+
+    const handleRemoveElement = () => {
+        removeElement(element.id);
+    };
+
+    const handleLockElement = (bol) => {
+        updateElementLock(element.id, bol);
+    };
+
+    const handleCPel = () => {
+        duplicateElement(element.id);
+    };
+
+    const handleFillColor = () => {
+        setFillSetting(true);
+    };
+
+    const handleBorderColor = () => {
+        setBorderColorSetting(true);
     };
 
     // ELEMENT VIEW RENDER
@@ -301,7 +344,7 @@ function DraggableElement({
             position={{ x: element.transform.position.x, y: element.transform.position.y }}
             onDrag={handleDrag}
             onResize={handleResize}
-            disableDragging={editor?.isFocused}
+            disableDragging={editor?.isFocused || element.lock}
             enableResizing={{
                 top: true,
                 right: true,
@@ -313,45 +356,64 @@ function DraggableElement({
                 topLeft: true,
             }}
             resizeHandleClasses={{
-                topLeft: 'node-1 ' + (!isSelectDisplay && 'disable'),
-                topRight: 'node-2 ' + (!isSelectDisplay && 'disable'),
-                bottomLeft: 'node-3 ' + (!isSelectDisplay && 'disable'),
-                bottomRight: 'node-4 ' + (!isSelectDisplay && 'disable'),
-                top: 'node-5 ' + (!isSelectDisplay && 'disable'),
-                bottom: 'node-6 ' + (!isSelectDisplay && 'disable'),
-                left: 'node-7 ' + (!isSelectDisplay && 'disable'),
-                right: 'node-8 ' + (!isSelectDisplay && 'disable'),
+                topLeft: 'node-1 ' + ((!isSelectDisplay || element.lock) && 'disable'),
+                topRight: 'node-2 ' + ((!isSelectDisplay || element.lock) && 'disable'),
+                bottomLeft: 'node-3 ' + ((!isSelectDisplay || element.lock) && 'disable'),
+                bottomRight: 'node-4 ' + ((!isSelectDisplay || element.lock) && 'disable'),
+                top: 'node-5 ' + ((!isSelectDisplay || element.lock) && 'disable'),
+                bottom: 'node-6 ' + ((!isSelectDisplay || element.lock) && 'disable'),
+                left: 'node-7 ' + ((!isSelectDisplay || element.lock) && 'disable'),
+                right: 'node-8 ' + ((!isSelectDisplay || element.lock) && 'disable'),
             }}
             minWidth={40}
-            minHeight={element.type !== 'line' ? 40 : 5}
-            maxHeight={element.type === 'line' ? 16 : undefined}
+            minHeight={element.type !== TYPE_SHAPE_LINE ? 40 : 5}
+            maxHeight={element.type === TYPE_SHAPE_LINE ? 16 : undefined}
             dragGrid={[5, 5]}
         >
-            {selectedElements?.element?.id === element.id && (
-                <div className={cx('nav-contain', { disable: !isSelectDisplay })}>
+            {element.lock ? (
+                <div className={cx('nav-contain')}>
                     <div>
                         <div className={cx('nav-main')}>
-                            <button className={cx('nav-main-btn')}>
-                                <FontAwesomeIcon className={cx('nav-main-btn-icon')} icon={faFill} />
-                            </button>
-                            <button className={cx('nav-main-btn')}>
-                                <FontAwesomeIcon className={cx('nav-main-btn-icon')} icon={faCopy} />
-                            </button>
-                            <button className={cx('nav-main-btn')}>
-                                <FontAwesomeIcon className={cx('nav-main-btn-icon')} icon={faUnlock} />
-                            </button>
-                            <button className={cx('nav-main-btn')}>
-                                <FontAwesomeIcon className={cx('nav-main-btn-icon')} icon={faTrash} />
+                            <button className={cx('nav-main-btn')} onClick={() => handleLockElement(false)}>
+                                <FontAwesomeIcon className={cx('nav-main-btn-icon')} icon={faLock} />
                             </button>
                         </div>
                     </div>
                 </div>
+            ) : (
+                selectedElements?.element?.id === element.id && (
+                    <div className={cx('nav-contain', { disable: !isSelectDisplay })}>
+                        <div>
+                            <div className={cx('nav-main')}>
+                                {element.tab === TYPE_SHAPE && (
+                                    <button
+                                        className={cx('nav-main-btn')}
+                                        onClick={
+                                            element.type !== TYPE_SHAPE_LINE && element.type !== TYPE_SHAPE_ARROW
+                                                ? handleFillColor
+                                                : handleBorderColor
+                                        }
+                                    >
+                                        <FontAwesomeIcon className={cx('nav-main-btn-icon')} icon={faFill} />
+                                    </button>
+                                )}
+                                <button className={cx('nav-main-btn')} onClick={handleCPel}>
+                                    <FontAwesomeIcon className={cx('nav-main-btn-icon')} icon={faCopy} />
+                                </button>
+                                <button className={cx('nav-main-btn')} onClick={() => handleLockElement(true)}>
+                                    <FontAwesomeIcon className={cx('nav-main-btn-icon')} icon={faUnlock} />
+                                </button>
+                                <button className={cx('nav-main-btn')} onClick={handleRemoveElement}>
+                                    <FontAwesomeIcon className={cx('nav-main-btn-icon')} icon={faTrash} />
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )
             )}
 
             <div className={cx('slide-element')}>
-                <div
-                    className={cx('slide-element-border', { active: selectedElements?.element?.id === element.id })}
-                ></div>
+                <div className={cx('slide-element-border', { active: isSelectDisplay || element.lock })}></div>
 
                 {/* <div className={cx('radito-3', { disable: !openDrag })}>
                         <FontAwesomeIcon icon={faRotate} />

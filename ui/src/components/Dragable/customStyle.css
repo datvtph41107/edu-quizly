@@ -61,7 +61,6 @@
 }
 
 .tableWrapper {
-    overflow-x: auto;
 }
 
 .tiptap table {
@@ -74,6 +73,19 @@
     text-indent: 0;
     border-color: inherit;
     overflow: hidden;
+}
+
+.tiptap table td:hover::after,
+.tiptap table th:hover::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 100%;
+    width: 5px;
+    cursor: col-resize;
+    background-color: var(--green-hover);
+    z-index: 10;
 }
 
 .tiptap td,
