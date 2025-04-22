@@ -32,6 +32,7 @@ function Shape() {
         placeholder = SHAPE_PLACEHOLDER_TEXT,
         placeholderSize = SHAPE_PLACEHOLDER_SIZE,
         tab = TYPE_SHAPE,
+        borderSize = '',
     }) => {
         addElementIntoSlide({
             slideId: selectedSlideId,
@@ -45,6 +46,7 @@ function Shape() {
                 type,
                 tab,
                 html: '',
+                borderSize,
             },
         });
     };
@@ -60,7 +62,7 @@ function Shape() {
                 },
                 {
                     icon: <FontAwesomeIcon icon={faArrowRightLong} />,
-                    onClick: () => pattern({ type: TYPE_SHAPE_ARROW, width: 130, height: 60 }),
+                    onClick: () => pattern({ type: TYPE_SHAPE_ARROW, width: 130, height: 60, borderSize: 5 }),
                 },
             ],
         },

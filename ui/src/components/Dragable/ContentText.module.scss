@@ -23,6 +23,20 @@
         justify-content: center;
         align-items: center;
     }
+
+    &.LIST {
+        caret-color: rgb(102, 99, 99);
+        color: black;
+        width: calc(100% - 24px) !important;
+        z-index: 50;
+        margin: 12px;
+    }
+
+    ul,
+    ol {
+        margin-left: 48px;
+        font-size: 24px;
+    }
 }
 
 .table-tiptap {
@@ -57,9 +71,30 @@
         text-align: left;
         color: black;
     }
+
+    &.body {
+        position: absolute;
+        align-items: center;
+        display: flex;
+        text-align: center;
+        width: 100%;
+        font-size: 24px;
+        text-align: left;
+        color: black;
+    }
 }
 
 .opacity-zero {
     opacity: 0;
     // transition: opacity 0.3s ease;
+}
+
+.table-contain {
+    margin: 12px;
+    z-index: 50;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
 }

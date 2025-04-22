@@ -23,7 +23,6 @@ function ContentText({ editor, element, onResizeContent }) {
             if (entry) {
                 const { width, height } = entry.contentRect;
                 // console.log('NEW WIDTH:', width);
-
                 onResizeContent({ width, height });
             }
         });
@@ -79,14 +78,14 @@ function ContentText({ editor, element, onResizeContent }) {
               [element.tab]: element.tab,
               'opacity-zero': isTextTag && !editor.isFocused,
           })
-        : undefined;
+        : cx('table-contain');
 
     return (
         <div ref={ref} className={containerClassName}>
-            {showPlaceholder && (
+            {showPlaceholder && element.placeholder && !isTable && (
                 <div className={cx('placeholder', { [element.tab]: [element.tab] })}>{element.placeholder}</div>
             )}
-            <EditorContent editor={editor} />
+            {!element.lock && <EditorContent editor={editor} />}
         </div>
     );
 }

@@ -35,9 +35,9 @@ function Table({ selectedSlideId, addElementIntoSlide }) {
         const colCount = Number(columns);
 
         let tableHeight = 0;
-        const headerHeight = 44;
+        const headerHeight = 38;
         tableHeight = headerHeight + (rowCount - 1) * headerHeight + 25; //( Phan nay tinh toan dau tien (rowCount - 1) * headerHeight)
-        const tableWidth = 770;
+        const tableWidth = 500;
 
         addElementIntoSlide({
             slideId: selectedSlideId,

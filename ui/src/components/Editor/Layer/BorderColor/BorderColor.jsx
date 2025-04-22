@@ -5,17 +5,16 @@ import useStore from '~/features/store';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPen } from '@fortawesome/free-solid-svg-icons';
 import ColorPickerOption from '../ColorPickerOption';
+import { useStateContext } from '~/context/ContextProvider';
 
 const cx = classNames.bind(styles);
 
 function BorderColor({ editor }) {
     const { selectedSlideId, selectedElements, updateElementBorderColor } = useStore();
-    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-    const [color, setColor] = useState('black');
+    const { borderColorSetting, setBorderColorSetting } = useStateContext();
 
     const toggleDropdown = () => {
-        editor?.commands.focus();
-        setIsDropdownOpen((prev) => !prev);
+        setBorderColorSetting((prev) => !prev);
     };
 
     const handleSelect = (color) => {
@@ -25,8 +24,7 @@ function BorderColor({ editor }) {
             elementId: selectedElements.element.id,
             borderColor: color,
         });
-        setIsDropdownOpen(false);
-        setColor(color);
+        setBorderColorSetting(false);
     };
 
     return (
@@ -35,14 +33,17 @@ function BorderColor({ editor }) {
                 <div
                     style={{
                         boxShadow: '0px -2px 0px inset',
-                        color: color ?? 'black',
+                        color:
+                            selectedElements.element.borderColor !== ''
+                                ? selectedElements.element.borderColor
+                                : 'black',
                     }}
                     className={cx('box-btn-grap')}
                 >
                     <FontAwesomeIcon icon={faPen} className={cx('box-icc')} />
                 </div>
             </button>
-            {isDropdownOpen && <ColorPickerOption fn={handleSelect} />}
+            {borderColorSetting && <ColorPickerOption fn={handleSelect} />}
         </div>
     );
 }

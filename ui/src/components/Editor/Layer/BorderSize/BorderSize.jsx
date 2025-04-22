@@ -40,7 +40,7 @@ function BorderSize({ editor }) {
                 <div className={cx('dropdown-list')}>
                     {Utils.BORDER_SIZES.map((size, idx) => {
                         const isSelected = size === selected;
-                        const isNoBorder = size === 'No Border';
+                        const isNoBorder = size === '0';
                         const height = isNoBorder ? '1px' : size;
 
                         return (
@@ -50,7 +50,7 @@ function BorderSize({ editor }) {
                                 onClick={() => handleSelect(size)}
                             >
                                 <div className={cx('line-preview')} style={{ height }} />
-                                {size + 'px'}
+                                {isNoBorder ? 'No Border' : `${size}px`}
                             </div>
                         );
                     })}

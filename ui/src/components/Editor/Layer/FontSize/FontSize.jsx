@@ -24,7 +24,7 @@ function FontSize({ editor }) {
         editor.commands.focus();
 
         // editor.commands.setMark('textStyle', { fontSize: size });
-        // editor.commands.setFontSize(size);
+        editor.commands.setFontSize(size);
         updateEditorState({ editor, setChangeEditorType: setChangeEditorType, value: size, name: 'fontSize' });
         setIsDropdownOpen(false);
     };

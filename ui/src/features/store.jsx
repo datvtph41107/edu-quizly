@@ -78,6 +78,7 @@ const useStore = create((set) => ({
                         backgroundColor: element.backgroundColor ?? '', //shape
                         type: element.type,
                         tab: element.tab,
+                        lock: false,
                         zIndex: nextZIndex,
                     };
 
@@ -172,6 +173,68 @@ const useStore = create((set) => ({
                         : el,
                 ),
             }));
+
+            return { items: updatedItems };
+        }),
+
+    updateElementLock: (elementId, lock) =>
+        set((state) => {
+            const updatedItems = state.items.map((slide) => ({
+                ...slide,
+                elements: slide.elements.map((el) =>
+                    el.id === elementId
+                        ? {
+                              ...el,
+                              lock: lock,
+                          }
+                        : el,
+                ),
+            }));
+
+            return { items: updatedItems };
+        }),
+
+    removeElement: (elementId) =>
+        set((state) => {
+            const updatedItems = state.items.map((slide) => {
+                if (slide.id !== state.selectedSlideId) return slide;
+
+                return {
+                    ...slide,
+                    elements: slide.elements.filter((el) => el.id !== elementId),
+                };
+            });
+
+            return { items: updatedItems };
+        }),
+
+    duplicateElement: (elementId) =>
+        set((state) => {
+            const updatedItems = state.items.map((slide) => {
+                if (slide.id !== state.selectedSlideId) return slide;
+
+                const elementToCopy = slide.elements.find((el) => el.id === elementId);
+                if (!elementToCopy) return slide;
+
+                const newElement = {
+                    ...elementToCopy,
+                    id: uuidv4(),
+                    transform: {
+                        ...elementToCopy.transform,
+                        position: {
+                            x: elementToCopy.transform.position.x + 20,
+                            y: elementToCopy.transform.position.y + 20,
+                        },
+                        zIndex: slide.elements.length,
+                    },
+                    zIndex: slide.elements.length,
+                };
+
+                return {
+                    ...slide,
+                    elements: [...slide.elements, newElement],
+                };
+            });
 
             return { items: updatedItems };
         }),

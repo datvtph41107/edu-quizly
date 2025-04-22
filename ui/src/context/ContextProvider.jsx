@@ -4,6 +4,8 @@ const StateContext = createContext();
 
 export const ContextProvider = ({ children }) => {
     const [loading, setLoading] = useState(false);
+    const [fillSetting, setFillSetting] = useState(false);
+    const [borderColorSetting, setBorderColorSetting] = useState(false);
     const [openSlide, setOpenSlide] = useState({
         open: false,
         back: false,
@@ -18,6 +20,10 @@ export const ContextProvider = ({ children }) => {
     return (
         <StateContext.Provider
             value={{
+                fillSetting,
+                setFillSetting,
+                borderColorSetting,
+                setBorderColorSetting,
                 loading,
                 setChangeEditorType,
                 changeEditorType,
