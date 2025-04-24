@@ -56,6 +56,8 @@ const useStore = create((set) => ({
 
     addElementIntoSlide: ({ slideId, element }) =>
         set((state) => {
+            console.log(element.html);
+
             const updatedItems = state.items.map((slide) => {
                 if (slide.id === slideId) {
                     const nextZIndex = slide.elements.length;

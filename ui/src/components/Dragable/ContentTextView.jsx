@@ -1,12 +1,12 @@
 import classNames from 'classnames/bind';
 import styles from './ContentTextView.module.scss';
 import React, { useState } from 'react';
-import { TYPE_TABLE, TYPE_TEXT_TAG, TYPE_TEXT_TAG_BODY } from '~/utils/Const';
+import { TYPE_SHAPE, TYPE_TABLE, TYPE_TEXT_TAG, TYPE_TEXT_TAG_BODY } from '~/utils/Const';
 import './customStyle.css';
 
 const cx = classNames.bind(styles);
 
-function ContentTextView({ editor, element }) {
+function ContentTextView({ editor, element, scale = 1, isPreview = false }) {
     if (!editor) return null;
 
     const [hasFocusedOnce, _] = useState(false);
@@ -29,30 +29,57 @@ function ContentTextView({ editor, element }) {
         : cx('content-text', { type: isTextTag }, { [element.tab]: element.tab });
 
     const containerStyle = isTable
-        ? undefined
+        ? isPreview
+            ? {
+                  position: 'absolute',
+                  transform: `scale(${scale})`,
+                  transformOrigin: 'top left',
+                  width: `${element.transform.size.width}px`,
+                  height: `${element.transform.size.height}px`,
+              }
+            : undefined
         : {
               position: 'absolute',
               zIndex: 30,
-              width: 'calc(100% - 16px)',
               wordWrap: 'break-word',
+              ...(isPreview && element.tab == TYPE_SHAPE
+                  ? {
+                        transform: `scale(${scale})`,
+                        width: `${element.transform.size.width}px`,
+                        margin: `${12 * scale}px`,
+                    }
+                  : {
+                        width: 'calc(100% - 16px)',
+                    }),
           };
 
     const showPlaceholder = !hasFocusedOnce;
 
-    return (
-        <div>
-            {showPlaceholder && isTextTag && isContentEmpty(editor) && element.placeholder ? (
-                <div style={containerStyle} className={containerClassName}>
-                    <div className={cx('placeholder', { [element.tab]: [element.tab] })}>{element.placeholder}</div>
-                </div>
-            ) : (
-                <div
-                    style={containerStyle}
-                    className={containerClassName}
-                    dangerouslySetInnerHTML={{ __html: editor.getHTML() }}
-                />
-            )}
+    const content =
+        showPlaceholder && isTextTag && isContentEmpty(editor) && element.placeholder ? (
+            <div style={containerStyle} className={containerClassName}>
+                <div className={cx('placeholder', { [element.tab]: [element.tab] })}>{element.placeholder}</div>
+            </div>
+        ) : (
+            <div
+                style={containerStyle}
+                className={containerClassName}
+                dangerouslySetInnerHTML={{ __html: editor.getHTML() }}
+            />
+        );
+
+    return isPreview && element.tab !== TYPE_SHAPE && element.type !== TYPE_TABLE ? (
+        <div
+            style={{
+                transform: `scale(${scale})`,
+                transformOrigin: 'top left',
+                width: `${100 / scale}%`,
+            }}
+        >
+            {content}
         </div>
+    ) : (
+        <>{content}</>
     );
 }
 

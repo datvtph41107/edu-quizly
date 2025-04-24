@@ -44,8 +44,8 @@ function Table({ selectedSlideId, addElementIntoSlide }) {
             element: {
                 x: 150,
                 y: 200,
-                width: `${tableWidth}px`,
-                height: `${tableHeight}px`,
+                width: tableWidth,
+                height: tableHeight,
                 placeholder: rowCount,
                 placeholderSize: colCount,
                 type: TYPE_TABLE,

@@ -14,7 +14,6 @@ const cx = classNames.bind(styles);
 function MakeSlideLayout({ children }) {
     const { openSlide, setOpenSlide } = useStateContext();
     const { items, selectedElements } = useStore();
-    console.log(selectedElements.element);
 
     return (
         <div className={cx('wrapper')}>

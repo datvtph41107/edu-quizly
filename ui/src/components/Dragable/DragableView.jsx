@@ -4,18 +4,22 @@ import classNames from 'classnames/bind';
 import { renderView } from '~/components/ElementTypes/ElementTypes';
 import './drag.css';
 import useStore from '~/features/store';
-import { TYPE_SHAPE, TYPE_TEXT_TAG } from '~/utils/Const';
+import { TYPE_SHAPE } from '~/utils/Const';
 import { Rnd } from 'react-rnd';
 
 const cx = classNames.bind(styles);
 
-function DraggableView({ element, selectedElements, storeElementBoundingBox }) {
+function DraggableView({ element, storeElementBoundingBox, isPreview = false, scale = 1 }) {
     const [hasFocusedOnce, setHasFocusedOnce] = useState(false);
     const [takeOpcity, setTakeOpcity] = useState(false);
     const { editors } = useStore();
     const editor = editors[element.id];
 
     const isSelected = storeElementBoundingBox.map((el) => el.id).includes(element.id);
+
+    useEffect(() => {
+        if (!editor || isPreview) return;
+    }, [editor, isPreview]);
 
     useEffect(() => {
         if (!editor) return;
@@ -65,6 +69,7 @@ function DraggableView({ element, selectedElements, storeElementBoundingBox }) {
             borderStroke: element.borderSize === '' ? '0' : element.borderSize,
             borderColorStroke: element.borderColor === '' ? '#429a50' : element.borderColor,
             fillColor: element.backgroundColor === '' ? '#429a50' : element.backgroundColor,
+            scale,
             style: {
                 overflow: 'visible',
                 verticalAlign: 'middle',
@@ -76,31 +81,20 @@ function DraggableView({ element, selectedElements, storeElementBoundingBox }) {
             element: element,
             isSelected: isSelected,
             editor: editor,
+            isPreview: isPreview,
         },
         tab: element.tab,
     });
 
-    // function shouldHideByFocus(editor, element) {
-    //     if (!editor || !(element.type === TYPE_TEXT_TAG || element.type === TYPE_TABLE)) return false;
-
-    //     const editorFocused = editor.view.hasFocus?.();
-    //     if (editorFocused) return false;
-
-    //     const selection = window.getSelection();
-
-    //     const isSelectingInside =
-    //         selection &&
-    //         (editor.view.dom.contains(selection.anchorNode) || editor.view.dom.contains(selection.focusNode));
-
-    //     if (isSelectingInside) return false;
-
-    //     return true;
-    // }
+    const x = (element.transform.position.x - 1.6) * scale;
+    const y = (element.transform.position.y - 1.6) * scale;
+    const width = element.transform.size.width * scale;
+    const height = element.transform.size.height * scale;
 
     return (
         <div
             className={cx('slide-el-display', {
-                'opacity-zero': takeOpcity,
+                'opacity-zero': takeOpcity && !isPreview,
             })}
         >
             <Rnd
@@ -108,16 +102,13 @@ function DraggableView({ element, selectedElements, storeElementBoundingBox }) {
                     zIndex: element.zIndex,
                     willChange: 'transform',
                 }}
-                size={{
-                    width: element.transform.size.width,
-                    height: element.transform.size.height,
-                }}
-                position={{ x: element.transform.position.x - 1.6, y: element.transform.position.y - 1.6 }}
+                size={{ width, height }}
+                position={{ x, y }}
                 disableDragging={true}
                 enableResizing={false}
-                minWidth={40}
-                minHeight={element.type !== 'line' ? 40 : 5}
-                maxHeight={element.type === 'line' ? 16 : undefined}
+                minWidth={40 * scale}
+                minHeight={(element.type !== 'line' ? 40 : 5) * scale}
+                maxHeight={element.type === 'line' ? 16 * scale : undefined}
                 dragGrid={[5, 5]}
             >
                 <div className={cx('slide-element')}>

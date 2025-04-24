@@ -99,13 +99,19 @@
 .preview-item {
     width: 100%;
     position: absolute;
-    background-color: black;
+    background-color: transparent;
     border: 1px solid #ccc;
     z-index: 6;
-    color: red;
+    // color: black;
     display: flex;
     justify-content: center;
     align-items: center;
     text-align: center;
     font-size: 6px;
+
+    div {
+        display: flex;
+        text-align: center;
+        justify-content: center;
+    }
 }
