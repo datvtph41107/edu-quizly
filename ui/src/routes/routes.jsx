@@ -6,6 +6,7 @@ import Admin from '~/page/Admin';
 import CreateLesson from '~/page/CreateLesson';
 import Home from '~/page/Home';
 import Presentation from '~/page/Presentation';
+
 // Public routes
 const publicRoutes = [
     { path: config.routes.home, component: Home },

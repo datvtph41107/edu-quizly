@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { v4 as uuidv4 } from 'uuid';
-import { TYPE_SHAPE, TYPE_TEXT } from '~/utils/Const';
+import { SLIDE_PRESENTATION, TAB_SLIDE, TYPE_SHAPE, TYPE_TEXT } from '~/utils/Const';
 
 const slideDefault = 1;
 
@@ -30,6 +30,143 @@ const useStore = create((set) => ({
         set(() => ({
             elementId: elementId,
         })),
+
+    updateAnswerCorrect: (answerId) =>
+        set((state) => {
+            const { items, selectedSlideId } = state;
+
+            const updatedItems = items.map((slide) => {
+                if (slide.id !== selectedSlideId || !slide.question?.answers) return slide;
+
+                const isSingleMode = slide.question.mode === 'single';
+                const currentAnswers = slide.question.answers;
+
+                if (isSingleMode) {
+                    const updatedAnswers = currentAnswers.map((ans) => ({
+                        ...ans,
+                        isCorrect: ans.id === answerId && !ans.isCorrect,
+                    }));
+
+                    return {
+                        ...slide,
+                        question: {
+                            ...slide.question,
+                            answers: updatedAnswers,
+                        },
+                    };
+                } else {
+                    const clickedAnswer = currentAnswers.find((ans) => ans.id === answerId);
+                    const correctCount = currentAnswers.filter((ans) => ans.isCorrect).length;
+
+                    const updatedAnswers = currentAnswers.map((ans) => {
+                        if (ans.id !== answerId) return ans;
+
+                        if (clickedAnswer.isCorrect) {
+                            return { ...ans, isCorrect: false };
+                        }
+
+                        if (!clickedAnswer.isCorrect && correctCount >= 2) {
+                            return ans;
+                        }
+
+                        return { ...ans, isCorrect: true };
+                    });
+
+                    return {
+                        ...slide,
+                        question: {
+                            ...slide.question,
+                            answers: updatedAnswers,
+                        },
+                    };
+                }
+            });
+
+            return { items: updatedItems };
+        }),
+
+    changeModeSetting: (mode) =>
+        set((state) => {
+            const { items, selectedSlideId } = state;
+
+            const updatedItems = items.map((slide) => {
+                if (slide.id !== selectedSlideId) return slide;
+
+                let updatedAnswers = slide.question.answers;
+
+                if (mode === 'single') {
+                    const firstCorrect = updatedAnswers.find((ans) => ans.isCorrect);
+                    updatedAnswers = updatedAnswers.map((ans) => ({
+                        ...ans,
+                        isCorrect: ans.id === firstCorrect?.id,
+                    }));
+                }
+
+                return {
+                    ...slide,
+                    question: {
+                        ...slide.question,
+                        mode,
+                        answers: updatedAnswers,
+                    },
+                };
+            });
+
+            return {
+                items: updatedItems,
+            };
+        }),
+
+    addNewAnswer: () =>
+        set((state) => {
+            const { items, selectedSlideId } = state;
+            const availableColors = ['blue', 'teal', 'yellow', 'red', 'purple'];
+
+            const updatedItems = items.map((slide) => {
+                if (slide.id !== selectedSlideId || !slide.question?.answers) return slide;
+
+                const usedColors = slide.question.answers.map((ans) => ans.color);
+                const remainingColor = availableColors.find((color) => !usedColors.includes(color));
+
+                if (!remainingColor) return slide;
+
+                const newAnswer = {
+                    id: uuidv4(),
+                    color: remainingColor,
+                    isCorrect: false,
+                    text: 'Type answer option here',
+                };
+
+                return {
+                    ...slide,
+                    question: {
+                        ...slide.question,
+                        answers: [...slide.question.answers, newAnswer],
+                    },
+                };
+            });
+
+            return {
+                items: updatedItems,
+            };
+        }),
+
+    removeAnswer: (qaId) =>
+        set((state) => {
+            const updatedItems = state.items.map((slide) => {
+                if (slide.id !== state.selectedSlideId) return slide;
+
+                return {
+                    ...slide,
+                    question: {
+                        ...slide.question,
+                        answers: slide.question.answers.filter((el) => el.id !== qaId),
+                    },
+                };
+            });
+
+            return { items: updatedItems };
+        }),
 
     onSelect: ({ elementData, arrDf = false, only = false }) =>
         set((state) => {
@@ -294,19 +431,24 @@ const useStore = create((set) => ({
             };
         }),
 
-    addNewSlide: () =>
+    addNewSlide: (params = {}) => {
+        const { type = SLIDE_PRESENTATION, tab = TAB_SLIDE, element = [], question = {} } = params;
+
         set((state) => {
             const id = uuidv4();
             const newSlide = {
                 id: id,
-                type: 'slide-' + id,
-                elements: [],
+                type,
+                tab,
+                elements: element,
+                question,
             };
             return {
                 items: [...state.items, newSlide],
                 selectedSlideId: id,
             };
-        }),
+        });
+    },
 
     copyNewSlide: (id) =>
         set((state) => {

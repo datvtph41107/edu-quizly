@@ -19,3 +19,8 @@ export const TYPE_TEXT_LIST_NUMBER = 'orderedList';
 export const TYPE_TEXT_LIST_UL = 'bulletList';
 export const TYPE_TABLE = 'table';
 export const TYPE_TABLE_SHAPE = 'table-shape';
+
+export const SLIDE_PRESENTATION = 'presentation';
+export const TAB_SLIDE = 'slide';
+export const TAB_QUESTION = 'question';
+export const QA_MULTIPLE_CHOICE = 'QaMultipleChoice';
