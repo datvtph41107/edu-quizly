@@ -70,6 +70,7 @@ function DraggableElement({
                         elementId: element.id,
                         html: editor.getHTML(),
                     });
+                    
                 }
 
                 if (element.tab === TYPE_SHAPE) {

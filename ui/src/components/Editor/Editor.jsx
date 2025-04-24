@@ -20,7 +20,6 @@ const cx = classNames.bind(styles);
 function Editor() {
     const { selectedElements, editors } = useStore();
     const editor = editors[selectedElements?.element?.id];
-    console.log(selectedElements);
 
     return (
         <div className={cx('wrapper')}>

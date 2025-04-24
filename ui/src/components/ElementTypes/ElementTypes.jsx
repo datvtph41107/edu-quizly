@@ -160,18 +160,18 @@ export const renderView = ({ type, propStyles, props, tab }) => {
     let Component = ElementTypes[type];
 
     if (tab === TYPE_TABLE_SHAPE) {
-        return <ContentTextView {...props} />;
+        return <ContentTextView {...props} scale={propStyles.scale || 1} />;
     }
 
     if (Component && tab === TYPE_SHAPE) {
         return (
             <>
-                <Component {...propStyles} />
-                {type !== 'line' && type !== 'arrow' && <ContentTextView {...props} />}
+                <Component {...propStyles} scale={propStyles.scale || 1} />
+                {type !== 'line' && type !== 'arrow' && <ContentTextView {...props} scale={propStyles.scale || 1} />}
             </>
         );
     } else {
-        return <ContentTextView {...props} />;
+        return <ContentTextView {...props} scale={propStyles.scale || 1} />;
     }
 };
 

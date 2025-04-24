@@ -2,6 +2,7 @@ import styles from './SidebarPreview.module.scss';
 import classNames from 'classnames/bind';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPaste, faTrash } from '@fortawesome/free-solid-svg-icons';
+import DraggableView from '~/components/Dragable/DragableView';
 
 const cx = classNames.bind(styles);
 
@@ -28,18 +29,14 @@ function SidebarPreviewItem({ isSelected, countSlide, elements, onSelect, copyNe
                         <div className={cx('preview-item-wrapper')}>
                             <div className={cx('preview-item-block')}>
                                 {elements.map((element, index) => (
-                                    <div
+                                    <DraggableView
                                         key={index}
-                                        className={cx('preview-item')}
-                                        style={{
-                                            left: `${element.transform.position.x * scale}px`,
-                                            top: `${element.transform.position.y * scale}px`,
-                                            width: `${element.transform.size.width * scale}px`,
-                                            height: `${element.transform.size.height * scale}px`,
-                                        }}
-                                    >
-                                        {element.data.html}
-                                    </div>
+                                        element={element}
+                                        selectedElements={[]}
+                                        storeElementBoundingBox={[]}
+                                        isPreview={true}
+                                        scale={scale}
+                                    />
                                 ))}
                             </div>
                         </div>

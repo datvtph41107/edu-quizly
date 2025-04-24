@@ -33,6 +33,7 @@ function Shape() {
         placeholderSize = SHAPE_PLACEHOLDER_SIZE,
         tab = TYPE_SHAPE,
         borderSize = '',
+        html,
     }) => {
         addElementIntoSlide({
             slideId: selectedSlideId,
@@ -45,7 +46,7 @@ function Shape() {
                 placeholderSize,
                 type,
                 tab,
-                html: '',
+                html: html,
                 borderSize,
             },
         });
@@ -57,7 +58,7 @@ function Shape() {
             rotate: true,
             wrap: [
                 {
-                    icon: <LineIcon width="60px" height="6px" borderColorStroke="rgba(104, 103, 103, 0.986)" />,
+                    icon: <LineIcon width="60" height="6" borderColorStroke="rgba(104, 103, 103, 0.986)" />,
                     onClick: () => pattern({ type: TYPE_SHAPE_LINE, width: 125, height: 4 }),
                 },
                 {
@@ -76,7 +77,11 @@ function Shape() {
                 },
                 {
                     icon: <FontAwesomeIcon icon={faCircle} />,
-                    onClick: () => pattern({ type: TYPE_SHAPE_CIRCLE }),
+                    onClick: () =>
+                        pattern({
+                            type: TYPE_SHAPE_CIRCLE,
+                            html: `<svg id="element-6ec0fc0b-c73d-43f7-abac-224d6e3ef6ba" style="overflow:visible;vertical-align:middle;display:block" width="140" height="140" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" fill="#429a50" stroke="#429a50" stroke-width="0"><ellipse id="element-6ec0fc0b-c73d-43f7-abac-224d6e3ef6ba" cx="50" cy="50" rx="50" ry="50"></ellipse></svg><div><div style="position:absolute;z-index:30;width:calc(100% - 16px);word-wrap:break-word" class="_content-text_1duaj_1 _SHAPE_1duaj_65"><p style="text-align: center"><span style="font-size: 16px; line-height: 1.5em">​</span></p></div></div>`,
+                        }),
                 },
                 {
                     icon: <FontAwesomeIcon style={{ transform: 'rotate(-90deg)' }} icon={faPlay} />,
