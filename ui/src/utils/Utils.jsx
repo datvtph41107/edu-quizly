@@ -1,4 +1,5 @@
 import { faAlignLeft, faPencil, faSquareCheck, faSquarePollVertical } from '@fortawesome/free-solid-svg-icons';
+import { QA_MULTIPLE_CHOICE } from './Const';
 
 export class Utils {
     static COLOR_OPTIONS = [
@@ -113,6 +114,7 @@ export class Utils {
             iconStyle: { fontSize: '18px', color: 'white' },
             bgClass: 'section-manualy-bg',
             overlayClass: 'section-overlay',
+            type: QA_MULTIPLE_CHOICE,
         },
         {
             icon: null,

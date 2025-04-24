@@ -1,6 +1,6 @@
 import styles from './SidebarContent.module.scss';
 import classNames from 'classnames/bind';
-import { faArrowLeft, faBackward, faCloudArrowUp, faPlus, faStepBackward } from '@fortawesome/free-solid-svg-icons';
+import { faArrowLeft, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PreviewItemBlock from './PreviewSlide/PreviewItemBlock';
 import TextBar from './TextBar';
@@ -12,23 +12,6 @@ const cx = classNames.bind(styles);
 
 function SidebarContent({ side, setSide, openSlide }) {
     const { setOpenSlide } = useStateContext();
-    // const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-    // const [isSidebarVisible, setIsSidebarVisible] = useState(true);
-
-    // useEffect(() => {
-    //     if (items.length == 0) {
-    //         setIsSidebarOpen((prevState) => {
-    //             if (prevState) {
-    //                 setTimeout(() => {
-    //                     setIsSidebarVisible(false);
-    //                 }, 500);
-    //             } else {
-    //                 setIsSidebarVisible(true);
-    //             }
-    //             return !prevState;
-    //         });
-    //     }
-    // }, [items]);
 
     const renderSide = () => {
         if (openSlide.open) {
@@ -75,12 +58,13 @@ function SidebarContent({ side, setSide, openSlide }) {
                         <span>Back to slides</span>
                     </button>
                 ) : (
-                    <div style={{ display: 'flex', gap: '6px' }}>
-                        <button type="button" className={cx('btn', 'out')}>
+                    <div style={{ display: 'flex', gap: '6px', width: '100%', margin: '0 18px' }}>
+                        {/* <button type="button" className={cx('btn', 'out')}>
                             <FontAwesomeIcon icon={faCloudArrowUp} />
                             <span>Import</span>
-                        </button>
+                        </button> */}
                         <button
+                            style={{ width: '100%' }}
                             type="button"
                             onClick={() =>
                                 setOpenSlide({

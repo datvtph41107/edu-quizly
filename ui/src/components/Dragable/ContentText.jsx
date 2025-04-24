@@ -85,7 +85,7 @@ function ContentText({ editor, element, onResizeContent }) {
             {showPlaceholder && element.placeholder && !isTable && (
                 <div className={cx('placeholder', { [element.tab]: [element.tab] })}>{element.placeholder}</div>
             )}
-            {!element.lock && <EditorContent editor={editor} />}
+            {!element.lock && <EditorContent className="inherit" editor={editor} />}
         </div>
     );
 }
