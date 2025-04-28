@@ -15,10 +15,11 @@ function QaSlide() {
     const slideTypeActions = {
         QaMultipleChoice: (type) => {
             const defaultTemplate = [
-                { id: uuidv4(), color: 'blue', text: 'Type answer option here', isCorrect: false },
-                { id: uuidv4(), color: 'teal', text: 'Type answer option here', isCorrect: false },
-                { id: uuidv4(), color: 'yellow', text: 'Type answer option here', isCorrect: false },
-                { id: uuidv4(), color: 'red', text: 'Type answer option here', isCorrect: false },
+                { id: uuidv4(), color: 'blue', text: 'Type answer option here', isCorrect: false, disable: false },
+                { id: uuidv4(), color: 'teal', text: 'Type answer option here', isCorrect: false, disable: false },
+                { id: uuidv4(), color: 'yellow', text: 'Type answer option here', isCorrect: false, disable: false },
+                { id: uuidv4(), color: 'red', text: 'Type answer option here', isCorrect: false, disable: false },
+                { id: uuidv4(), color: 'purple', text: 'Type answer option here', isCorrect: false, disable: true },
             ];
             addNewSlide({
                 type: type,
@@ -38,6 +39,8 @@ function QaSlide() {
     };
 
     const handleSelectSlideType = (type) => {
+        console.log('cliecked');
+
         const action = slideTypeActions[type];
         if (action) {
             action(type);
@@ -45,6 +48,8 @@ function QaSlide() {
             console.warn(`Unknown slide type: ${type}`);
         }
     };
+
+    console.log('temp');
 
     return (
         <div className={cx('slide-creator-section')}>

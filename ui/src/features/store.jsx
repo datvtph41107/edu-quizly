@@ -1,23 +1,87 @@
 import { create } from 'zustand';
 import { v4 as uuidv4 } from 'uuid';
-import { SLIDE_PRESENTATION, TAB_SLIDE, TYPE_SHAPE, TYPE_TEXT } from '~/utils/Const';
+import { SLIDE_PRESENTATION, TAB_SLIDE } from '~/utils/Const';
 
 const slideDefault = 1;
 
-const useStore = create((set) => ({
+const useStore = create((set, get) => ({
     editor: null,
     editors: {},
+    errors: {
+        questions: {}, // { [questionId]: boolean }
+        answers: {}, // { [answerId]: boolean }
+    },
     selectedElements: [],
+    selectedQuestionAnswers: [],
     getBoundingElements: [],
     elementId: null,
     selectedSlideId: slideDefault,
     items: [],
     elements: [], // loop of children items parent arr
+    addedState: false,
 
     registerEditor: (id, editor) =>
         set((state) => ({
             editors: { ...state.editors, [id]: editor },
         })),
+
+    validateQuestionAndAnswers: (questionId, answers) => {
+        const { errors } = get();
+
+        const question_empty = errors.questions?.[questionId] !== false;
+        const validAnswerCount = answers.filter((a) => errors.answers?.[a.id] === false).length;
+        const answers_empty = validAnswerCount < 2;
+
+        return {
+            question_empty,
+            answers_empty,
+            isValid: !question_empty && !answers_empty,
+            messages: {
+                question: question_empty ? 'Please enter a question' : null,
+                answers: answers_empty ? 'Add at least two options' : null,
+            },
+        };
+    },
+
+    updateQuestionText: (questionId, text) =>
+        set((state) => {
+            console.log('TEXT', text);
+
+            const updatedItems = state.items.map((slide) => {
+                if (!slide.question || slide.question.id !== questionId) return slide;
+
+                return {
+                    ...slide,
+                    question: {
+                        ...slide.question,
+                        question: text,
+                    },
+                };
+            });
+
+            return { items: updatedItems };
+        }),
+
+    updateAnswerText: (answerId, text) =>
+        set((state) => {
+            const updatedItems = state.items.map((slide) => {
+                if (!slide.question || !slide.question.answers) return slide;
+
+                const updatedAnswers = slide.question.answers.map((ans) =>
+                    ans.id === answerId ? { ...ans, text: text } : ans,
+                );
+
+                return {
+                    ...slide,
+                    question: {
+                        ...slide.question,
+                        answers: updatedAnswers,
+                    },
+                };
+            });
+
+            return { items: updatedItems };
+        }),
 
     setEditor: (editorInstance) => set({ editor: editorInstance }),
 
@@ -31,7 +95,7 @@ const useStore = create((set) => ({
             elementId: elementId,
         })),
 
-    updateAnswerCorrect: (answerId) =>
+    updateAnswerCorrect: (answerId, isEmpty = false) =>
         set((state) => {
             const { items, selectedSlideId } = state;
 
@@ -42,10 +106,15 @@ const useStore = create((set) => ({
                 const currentAnswers = slide.question.answers;
 
                 if (isSingleMode) {
-                    const updatedAnswers = currentAnswers.map((ans) => ({
-                        ...ans,
-                        isCorrect: ans.id === answerId && !ans.isCorrect,
-                    }));
+                    const updatedAnswers = currentAnswers.map((ans) => {
+                        if (ans.id === answerId) {
+                            return {
+                                ...ans,
+                                isCorrect: isEmpty ? false : !ans.isCorrect,
+                            };
+                        }
+                        return { ...ans, isCorrect: false };
+                    });
 
                     return {
                         ...slide,
@@ -117,50 +186,43 @@ const useStore = create((set) => ({
             };
         }),
 
-    addNewAnswer: () =>
+    mouteAnswerDisplay: (answersTemplate) =>
         set((state) => {
-            const { items, selectedSlideId } = state;
-            const availableColors = ['blue', 'teal', 'yellow', 'red', 'purple'];
+            // answersTemplate is element of items was selected slide before
+            const { items } = state;
+            // console.log('Before', items);
+            for (let i = answersTemplate.length - 1; i >= 0; i--) {
+                if (answersTemplate[i].disable) {
+                    answersTemplate[i] = { ...answersTemplate[i], disable: false };
+                    break;
+                }
+            }
+            // console.log('After', items);
 
-            const updatedItems = items.map((slide) => {
-                if (slide.id !== selectedSlideId || !slide.question?.answers) return slide;
-
-                const usedColors = slide.question.answers.map((ans) => ans.color);
-                const remainingColor = availableColors.find((color) => !usedColors.includes(color));
-
-                if (!remainingColor) return slide;
-
-                const newAnswer = {
-                    id: uuidv4(),
-                    color: remainingColor,
-                    isCorrect: false,
-                    text: 'Type answer option here',
-                };
-
-                return {
-                    ...slide,
-                    question: {
-                        ...slide.question,
-                        answers: [...slide.question.answers, newAnswer],
-                    },
-                };
-            });
-
-            return {
-                items: updatedItems,
-            };
+            const updatedItems = items.map((slide) => slide);
+            return { items: updatedItems };
         }),
 
-    removeAnswer: (qaId) =>
+    unmouteAnswerDisplay: (qaId, isDisplay) =>
         set((state) => {
             const updatedItems = state.items.map((slide) => {
                 if (slide.id !== state.selectedSlideId) return slide;
 
+                const updatedAnswers = slide.question.answers.map((answer, index, arr) => {
+                    if (isDisplay === 'init' && index === arr.length - 1) {
+                        return { ...answer, disable: false };
+                    }
+                    if (answer.id === qaId) {
+                        return { ...answer, disable: !isDisplay };
+                    }
+                    return answer;
+                });
+
                 return {
                     ...slide,
                     question: {
                         ...slide.question,
-                        answers: slide.question.answers.filter((el) => el.id !== qaId),
+                        answers: updatedAnswers,
                     },
                 };
             });
@@ -316,6 +378,44 @@ const useStore = create((set) => ({
             return { items: updatedItems };
         }),
 
+    updateAnwserHtml: ({ qaId, html }) =>
+        set((state) => {
+            const updatedItems = state.items.map((slide) => {
+                if (!slide.question || !slide.question.answers) return slide;
+
+                const updatedAnswers = slide.question.answers.map((ans) =>
+                    ans.id === qaId ? { ...ans, text: html } : ans,
+                );
+
+                return {
+                    ...slide,
+                    question: {
+                        ...slide.question,
+                        answers: updatedAnswers,
+                    },
+                };
+            });
+
+            return { items: updatedItems };
+        }),
+
+    updateQuestionHtml: ({ qaId, html }) =>
+        set((state) => {
+            const updatedItems = state.items.map((slide) => {
+                if (!slide.question || slide.question.id !== qaId) return slide;
+
+                return {
+                    ...slide,
+                    question: {
+                        ...slide.question,
+                        question: html,
+                    },
+                };
+            });
+
+            return { items: updatedItems };
+        }),
+
     updateElementLock: (elementId, lock) =>
         set((state) => {
             const updatedItems = state.items.map((slide) => ({
@@ -446,6 +546,7 @@ const useStore = create((set) => ({
             return {
                 items: [...state.items, newSlide],
                 selectedSlideId: id,
+                addedState: true,
             };
         });
     },
@@ -468,20 +569,32 @@ const useStore = create((set) => ({
                     ...el,
                     id: uuidv4(),
                 })),
+                question: {
+                    ...slideCopied.question,
+                    id: uuidv4(),
+                    answers: slideCopied.question?.answers?.map((ans) => ({
+                        ...ans,
+                        id: uuidv4(),
+                    })),
+                },
             };
             const index = state.items.findIndex((s) => s.id === id); // find index inside items array
             const updatedItems = [...state.items.slice(0, index + 1), duplicateSlide, ...state.items.slice(index + 1)]; // index + 1 if = 2 get array -> last past
             return {
                 items: updatedItems,
                 selectedSlideId: newSlideId,
+                addedState: id,
             };
         }),
 
     removeSlide: (id) =>
         set((state) => {
+            const slideToRemove = state.items.find((s) => s.id === id);
+            if (!slideToRemove) return state;
+
             const updatedItems = state.items.filter((s) => s.id !== id);
-            const index = state.items.findIndex((s) => s.id === id); // current index of item remove
-            const isLastItemSelected = state.items[state.items.length - 1]?.id === id; // Check if the current element is last item in arr
+            const index = state.items.findIndex((s) => s.id === id);
+            const isLastItemSelected = state.items[state.items.length - 1]?.id === id;
             let targetSlide = state.selectedSlideId;
 
             if (state.items.length === 1) {
@@ -492,9 +605,22 @@ const useStore = create((set) => ({
                 targetSlide = state.items[index + 1]?.id || updatedItems[0]?.id;
             }
 
+            const editors = { ...state.editors };
+
+            if (slideToRemove.question?.id) {
+                delete editors[slideToRemove.question.id];
+            }
+
+            if (slideToRemove.question?.answers?.length) {
+                slideToRemove.question.answers.forEach((ans) => {
+                    delete editors[ans.id];
+                });
+            }
+
             return {
                 items: updatedItems,
                 selectedSlideId: targetSlide,
+                editors,
             };
         }),
 }));

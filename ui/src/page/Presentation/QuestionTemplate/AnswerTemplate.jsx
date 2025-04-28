@@ -1,68 +1,87 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styles from './QuestionTemplate.module.scss';
 import classNames from 'classnames/bind';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faTrash } from '@fortawesome/free-solid-svg-icons';
-import useStore from '~/features/store';
-import { EditorContent, useEditor } from '@tiptap/react';
-import { extensions } from '~/components/ElementTypes/ElementTypes';
+import { EditorContent } from '@tiptap/react';
+import Popper from '~/components/Popper';
 
 const cx = classNames.bind(styles);
 
-function AnswerTemplate({ ans, question }) {
-    const { updateAnswerCorrect, removeAnswer, registerEditor, editors } = useStore();
+function AnswerTemplate({ ans, index, question, updateAnswerCorrect, unmouteAnswerDisplay, editors }) {
     const currentMode = question.mode;
     const [active, setActive] = useState(false);
-    const editor = useEditor({
-        editable: true,
-        extensions: extensions,
-        onCreate: ({ editor }) => {
-            editor.commands.setTextAlign('center');
-            registerEditor(question.id, editor);
-        },
+    const [showTooltip, setShowTooltip] = useState(false);
 
-        onSelectionUpdate: ({ editor }) => {
-            if (editor.isEmpty) {
-                editor.commands.setTextAlign('center');
+    const editor = editors[ans.id];
+
+    const boxRef = useRef(null);
+
+    useEffect(() => {
+        function handleClickOutside(event) {
+            if (boxRef.current && !boxRef.current.contains(event.target)) {
+                setActive(false);
             }
-        },
-        onUpdate: ({ editor }) => {},
-        onFocus: () => {
-            setActive(true);
-        },
-        onBlur: () => {
-            setActive(false);
-        },
-    });
+        }
+
+        document.addEventListener('mousedown', handleClickOutside);
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
 
     const toggleCorrect = (id) => {
-        updateAnswerCorrect(id);
+        if (editor.isEmpty) {
+            setShowTooltip(true);
+        } else {
+            updateAnswerCorrect(id);
+        }
     };
 
     const handleRemoveAnswer = (id) => {
-        removeAnswer(id);
+        unmouteAnswerDisplay(id, false);
+        editor.commands.clearContent();
     };
 
+    const availableColors = ['blue', 'teal', 'yellow', 'red', 'purple'];
     return (
-        <div className={cx('answer-card', ans.color)}>
+        <div className={cx('answer-card', availableColors[index])}>
             <div className={cx('answers-event', { end: question.answers.length === 2 })}>
                 {question.answers.length > 2 && (
                     <button className={cx('delete-btn')} onClick={() => handleRemoveAnswer(ans.id)}>
                         <FontAwesomeIcon icon={faTrash} />
                     </button>
                 )}
-                <button
-                    type="checkbox"
-                    className={cx('check-btn', { [currentMode]: currentMode }, { correct: ans.isCorrect })}
-                    onClick={() => toggleCorrect(ans.id)}
+                <Popper
+                    show={showTooltip}
+                    offset={[0, 6]}
+                    placement="top"
+                    content="Please add text before check correct"
+                    valid
+                    color="#ec0b43"
+                    // className={cx('valid-preview')}
                 >
-                    <FontAwesomeIcon icon={faCheck} />
-                </button>
+                    <button
+                        className={cx('check-btn', { [currentMode]: currentMode }, { correct: ans.isCorrect })}
+                        onClick={() => toggleCorrect(ans.id)}
+                        onMouseLeave={() => setShowTooltip(false)}
+                    >
+                        <FontAwesomeIcon icon={faCheck} />
+                    </button>
+                </Popper>
             </div>
-            <div className={cx('answers-board-type', { active: active })} onClick={() => editor.commands.focus()}>
+            <div
+                ref={boxRef}
+                className={cx('answers-board-type', { active: active })}
+                onClick={() => {
+                    editor.commands.focus();
+                    setActive(true);
+                }}
+            >
                 <div className={cx('editor-wrapper')}>
-                    {editor.isEmpty && <p className={cx('answer-placeholder')}>Type answer option here...</p>}
-                    <EditorContent className="answer" editor={editor} />
+                    {editor?.isEmpty && <p className={cx('answer-placeholder')}>Type answer option here...</p>}
+                    <EditorContent editor={editor} />
                 </div>
             </div>
         </div>

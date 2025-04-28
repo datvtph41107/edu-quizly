@@ -1,21 +1,47 @@
 import styles from './SidebarPreview.module.scss';
 import classNames from 'classnames/bind';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPaste, faTrash } from '@fortawesome/free-solid-svg-icons';
-import DraggableView from '~/components/Dragable/DragableView';
+import { faCheck, faPaste, faTrash, faTriangleExclamation } from '@fortawesome/free-solid-svg-icons';
+import useStore from '~/features/store';
+import Popper from '~/components/Popper';
+import { useEffect, useRef, useState } from 'react';
+import { useEditorQuestion } from '~/hooks/useEditorInstance';
 
 const cx = classNames.bind(styles);
 
-function SidebarPreviewItemQuestion({ isSelected, countSlide, elements, onSelect, copyNewSlide, removeSlide }) {
-    const scale = 0.2;
+function SidebarPreviewItemQuestion({
+    isSelected,
+    countSlide,
+    question,
+    onSelect,
+    copyNewSlide,
+    removeSlide,
+    validateQuestionAndAnswers,
+    updateQuestionText,
+    updateAnswerText,
+}) {
+    const [showTooltip, setShowTooltip] = useState(false);
+    const btnRef = useRef(null);
+
+    const editor = useEditorQuestion(question.id, updateQuestionText); // init main editor question mark
+    // answers runner mark
+    Array.from({ length: 5 }).map((_, index) => {
+        const answerRunnerId = question.answers[index].id;
+        return useEditorQuestion(answerRunnerId, updateAnswerText);
+    });
+
+    const result = validateQuestionAndAnswers(question.id, question.answers);
+
+    const content = result.answers_empty
+        ? result.messages.answers
+        : result.question_empty
+        ? result.messages.question
+        : '';
 
     return (
         <div className={cx('side-preview-container')}>
-            <div
-                style={{ color: isSelected ? 'white' : 'black' }}
-                className={cx('side-preview-contain', { selected: isSelected, hold: !isSelected })}
-            >
-                <div className={cx('side-nav-contain')}>
+            <div className={cx('side-preview-contain', { selected: isSelected, hold: !isSelected })}>
+                <div className={cx('side-nav-contain')} style={{ color: isSelected ? 'white' : 'black' }}>
                     <div className={cx('side-nav-contain-count')}>{countSlide}</div>
                     <div className={cx('side-nav-contain-icon')} onClick={copyNewSlide}>
                         <FontAwesomeIcon icon={faPaste} />
@@ -25,13 +51,36 @@ function SidebarPreviewItemQuestion({ isSelected, countSlide, elements, onSelect
                     </div>
                 </div>
                 <div className={cx('side-main-contain')} onClick={onSelect}>
-                    <div className={cx('side-main-container')}>
+                    <div className={cx('side-main-container', 'qna')}>
                         <div className={cx('preview-item-wrapper')}>
-                            <div className={cx('preview-item-block')}>
-                                {elements.map((element, index) => (
-                                    <div></div>
-                                ))}
+                            <div className={cx('preview-head')}>
+                                <button className={cx('check-btn')}>
+                                    <FontAwesomeIcon icon={faCheck} />
+                                </button>
+                                {!result.isValid && (
+                                    <Popper
+                                        show={showTooltip}
+                                        offset={[0, 0]}
+                                        placement="right"
+                                        content={content}
+                                        valid
+                                        color="#ec0b43"
+                                    >
+                                        <button
+                                            ref={btnRef}
+                                            className={cx('valid-btn')}
+                                            onMouseEnter={() => setShowTooltip(true)}
+                                            onMouseLeave={() => setShowTooltip(false)}
+                                        >
+                                            <FontAwesomeIcon icon={faTriangleExclamation} />
+                                        </button>
+                                    </Popper>
+                                )}
                             </div>
+                            <div
+                                className={cx('preview-item-block-qa')}
+                                dangerouslySetInnerHTML={{ __html: editor.getHTML() || '' }}
+                            ></div>
                         </div>
                     </div>
                 </div>
