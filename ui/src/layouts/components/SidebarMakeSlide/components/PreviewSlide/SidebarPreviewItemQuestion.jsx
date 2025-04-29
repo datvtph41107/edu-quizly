@@ -2,10 +2,8 @@ import styles from './SidebarPreview.module.scss';
 import classNames from 'classnames/bind';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faPaste, faTrash, faTriangleExclamation } from '@fortawesome/free-solid-svg-icons';
-import useStore from '~/features/store';
 import Popper from '~/components/Popper';
-import { useEffect, useRef, useState } from 'react';
-import { useEditorQuestion } from '~/hooks/useEditorInstance';
+import { useRef, useState } from 'react';
 
 const cx = classNames.bind(styles);
 
@@ -17,18 +15,9 @@ function SidebarPreviewItemQuestion({
     copyNewSlide,
     removeSlide,
     validateQuestionAndAnswers,
-    updateQuestionText,
-    updateAnswerText,
 }) {
     const [showTooltip, setShowTooltip] = useState(false);
     const btnRef = useRef(null);
-
-    const editor = useEditorQuestion(question.id, updateQuestionText); // init main editor question mark
-    // answers runner mark
-    Array.from({ length: 5 }).map((_, index) => {
-        const answerRunnerId = question.answers[index].id;
-        return useEditorQuestion(answerRunnerId, updateAnswerText);
-    });
 
     const result = validateQuestionAndAnswers(question.id, question.answers);
 
@@ -79,7 +68,7 @@ function SidebarPreviewItemQuestion({
                             </div>
                             <div
                                 className={cx('preview-item-block-qa')}
-                                dangerouslySetInnerHTML={{ __html: editor.getHTML() || '' }}
+                                dangerouslySetInnerHTML={{ __html: question.text || '' }}
                             ></div>
                         </div>
                     </div>

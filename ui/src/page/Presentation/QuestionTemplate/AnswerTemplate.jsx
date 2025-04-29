@@ -5,15 +5,24 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { EditorContent } from '@tiptap/react';
 import Popper from '~/components/Popper';
+import { useEditorQuestion } from '~/hooks/useEditorInstance';
 
 const cx = classNames.bind(styles);
 
-function AnswerTemplate({ ans, index, question, updateAnswerCorrect, unmouteAnswerDisplay, editors }) {
+function AnswerTemplate({
+    ans,
+    index,
+    question,
+    updateAnswerCorrect,
+    unmouteAnswerDisplay,
+    answersCount,
+    updateAnswerText,
+}) {
     const currentMode = question.mode;
     const [active, setActive] = useState(false);
     const [showTooltip, setShowTooltip] = useState(false);
 
-    const editor = editors[ans.id];
+    const editor = useEditorQuestion(ans, updateAnswerText);
 
     const boxRef = useRef(null);
 
@@ -47,8 +56,8 @@ function AnswerTemplate({ ans, index, question, updateAnswerCorrect, unmouteAnsw
     const availableColors = ['blue', 'teal', 'yellow', 'red', 'purple'];
     return (
         <div className={cx('answer-card', availableColors[index])}>
-            <div className={cx('answers-event', { end: question.answers.length === 2 })}>
-                {question.answers.length > 2 && (
+            <div className={cx('answers-event', { end: answersCount === 2 })}>
+                {answersCount > 2 && (
                     <button className={cx('delete-btn')} onClick={() => handleRemoveAnswer(ans.id)}>
                         <FontAwesomeIcon icon={faTrash} />
                     </button>
@@ -80,7 +89,15 @@ function AnswerTemplate({ ans, index, question, updateAnswerCorrect, unmouteAnsw
                 }}
             >
                 <div className={cx('editor-wrapper')}>
-                    {editor?.isEmpty && <p className={cx('answer-placeholder')}>Type answer option here...</p>}
+                    {editor?.isEmpty && (
+                        <p
+                            className={cx('answer-placeholder', {
+                                top: answersCount >= 4,
+                            })}
+                        >
+                            Type answer option here...
+                        </p>
+                    )}
                     <EditorContent editor={editor} />
                 </div>
             </div>
