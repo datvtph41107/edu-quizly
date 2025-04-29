@@ -21,14 +21,14 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: white;
+    border: 3px solid white;
     border-radius: 16px;
     height: 225px;
     position: relative;
     transition: background-color 0.3s ease;
     cursor: text;
     &.active {
-        background-color: #f1fdf1; // màu nền mờ hơn
+        background-color: rgba(255, 255, 255, 0.3);
 
         &::after {
             content: '';
@@ -48,7 +48,7 @@
         transform: translate(-50%, -50%);
         font-size: 22px;
         font-family: monospace;
-        color: #797878a8;
+        color: #fff9f9e1;
     }
 
     .question-box-content {
@@ -65,8 +65,6 @@
         justify-content: center;
         text-align: center;
         width: 100%;
-        caret-color: black;
-        color: black;
     }
     .question-input {
         width: 100%;
@@ -216,7 +214,7 @@
     transform: translate(-50%, -50%);
     font-size: 20px;
     width: 100%;
-    color: #fffcfcd8;
+    color: #fff9f9e1;
 }
 
 .answer-mode {

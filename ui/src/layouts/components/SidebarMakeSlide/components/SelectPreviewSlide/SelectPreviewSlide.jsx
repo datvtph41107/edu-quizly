@@ -2,8 +2,6 @@ import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import styles from './SelectPreviewSlide.module.scss';
 import classNames from 'classnames/bind';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import useStore from '~/features/store';
-import { useStateContext } from '~/context/ContextProvider';
 import QaSlide from './QaSlide';
 import TpSlide from './TpSlide';
 

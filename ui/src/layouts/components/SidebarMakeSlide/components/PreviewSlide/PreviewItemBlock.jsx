@@ -8,9 +8,18 @@ import SidebarPreviewItemQuestion from './SidebarPreviewItemQuestion';
 const cx = classNames.bind(styles);
 
 function PreviewItemBlock() {
-    const { selectedSlideId, setSelectedSlide, items, copyNewSlide, removeSlide } = useStore();
+    const {
+        selectedSlideId,
+        setSelectedSlide,
+        items,
+        copyNewSlide,
+        removeSlide,
+        updateEditorText,
+        validateQuestionAndAnswers,
+        updateQuestionText,
+        updateAnswerText,
+    } = useStore();
 
-    console.log(items);
     return (
         <>
             <div className={cx('side-preview')}>
@@ -20,11 +29,16 @@ function PreviewItemBlock() {
                             <SidebarPreviewItemQuestion
                                 key={index}
                                 countSlide={index + 1}
-                                elements={item.elements}
+                                items={items}
+                                question={item.question}
                                 isSelected={selectedSlideId === item.id}
                                 onSelect={() => setSelectedSlide(item.id)}
                                 copyNewSlide={() => copyNewSlide(item.id)}
                                 removeSlide={() => removeSlide(item.id)}
+                                updateEditorText={updateEditorText}
+                                validateQuestionAndAnswers={validateQuestionAndAnswers}
+                                updateQuestionText={updateQuestionText}
+                                updateAnswerText={updateAnswerText}
                             />
                         ) : (
                             <SidebarPreviewItem

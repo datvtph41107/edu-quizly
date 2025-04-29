@@ -1,63 +1,83 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styles from './QuestionTemplate.module.scss';
 import classNames from 'classnames/bind';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCheck, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
-import useStore from '~/features/store';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { EditorContent, useEditor } from '@tiptap/react';
-import { extensions } from '~/components/ElementTypes/ElementTypes';
 import AnswerTemplate from './AnswerTemplate';
 
 const cx = classNames.bind(styles);
 
-function QuestionTemplate({ selectedSlide }) {
-    const { addNewAnswer, changeModeSetting, registerEditor } = useStore();
+function QuestionTemplate({
+    selectedSlide,
+    mouteAnswerDisplay,
+    changeModeSetting,
+    registerEditor,
+    updateEditorText,
+    unmouteAnswerDisplay,
+    updateAnswerCorrect,
+    editors,
+}) {
     const { question } = selectedSlide;
     const currentMode = question.mode;
+    const editor = editors[question.id] || null;
     const [active, setActive] = useState(false);
 
-    const editor = useEditor({
-        editable: true,
-        extensions: extensions,
-        onCreate: ({ editor }) => {
-            editor.commands.setTextAlign('center');
-            registerEditor(question.id, editor);
-        },
+    const boxRef = useRef(null);
 
-        onSelectionUpdate: ({ editor }) => {
-            console.log(112233);
-            if (editor.isEmpty) {
-                editor.commands.setTextAlign('center');
+    useEffect(() => {
+        function handleClickOutside(event) {
+            if (boxRef.current && !boxRef.current.contains(event.target)) {
+                setActive(false);
             }
-        },
-        onUpdate: ({ editor }) => {},
-        onFocus: () => {
-            setActive(true);
-        },
-        onBlur: () => {
-            setActive(false);
-        },
-    });
+        }
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
 
     const handleAddNewAnswer = () => {
-        addNewAnswer();
+        mouteAnswerDisplay(question.answers);
     };
 
     return (
         <div className={cx('wrapper')}>
             <div className={cx('container')}>
-                <div className={cx('question-box', { active: active })} onClick={() => editor.commands.focus()}>
+                <div
+                    ref={boxRef}
+                    onClick={() => {
+                        editor.commands.focus();
+                        setActive(true);
+                    }}
+                    className={cx('question-box', {
+                        active: active,
+                    })}
+                >
                     <div className={cx('question-box-content')}>
-                        {editor.isEmpty && <p className={cx('question-placeholder')}>Type question here...</p>}
+                        {editor?.isEmpty && <p className={cx('question-placeholder')}>Type question here...</p>}
                         <EditorContent editor={editor} />
                     </div>
                 </div>
 
                 <div className={cx('answers')}>
-                    {question.answers.map((ans, i) => (
-                        <AnswerTemplate key={i} ans={ans} question={question} />
-                    ))}
-                    {question.answers.length < 5 && (
+                    {question.answers
+                        .filter((ans) => !ans.disable)
+                        .map((ans, i) => (
+                            <AnswerTemplate
+                                key={i}
+                                index={i}
+                                ans={ans}
+                                question={question}
+                                updateAnswerCorrect={updateAnswerCorrect}
+                                unmouteAnswerDisplay={unmouteAnswerDisplay}
+                                registerEditor={registerEditor}
+                                updateEditorText={updateEditorText}
+                                editors={editors}
+                            />
+                        ))}
+                    {question.answers.filter((ans) => !ans.disable).length < 5 && (
                         <div className={cx('answer-plus')} onClick={handleAddNewAnswer}>
                             <FontAwesomeIcon icon={faPlus} />
                         </div>
