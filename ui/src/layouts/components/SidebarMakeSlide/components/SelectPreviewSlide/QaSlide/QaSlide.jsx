@@ -15,18 +15,18 @@ function QaSlide() {
     const slideTypeActions = {
         QaMultipleChoice: (type) => {
             const defaultTemplate = [
-                { id: uuidv4(), color: 'blue', text: 'Type answer option here', isCorrect: false, disable: false },
-                { id: uuidv4(), color: 'teal', text: 'Type answer option here', isCorrect: false, disable: false },
-                { id: uuidv4(), color: 'yellow', text: 'Type answer option here', isCorrect: false, disable: false },
-                { id: uuidv4(), color: 'red', text: 'Type answer option here', isCorrect: false, disable: false },
-                { id: uuidv4(), color: 'purple', text: 'Type answer option here', isCorrect: false, disable: true },
+                { id: uuidv4(), color: 'blue', text: '', isCorrect: false, disable: false },
+                { id: uuidv4(), color: 'teal', text: '', isCorrect: false, disable: false },
+                { id: uuidv4(), color: 'yellow', text: '', isCorrect: false, disable: false },
+                { id: uuidv4(), color: 'red', text: '', isCorrect: false, disable: false },
+                { id: uuidv4(), color: 'purple', text: '', isCorrect: false, disable: true },
             ];
             addNewSlide({
                 type: type,
                 tab: TAB_QUESTION,
                 question: {
                     id: uuidv4(),
-                    question: '',
+                    text: '',
                     mode: 'single', // multiple
                     answers: defaultTemplate,
                 },

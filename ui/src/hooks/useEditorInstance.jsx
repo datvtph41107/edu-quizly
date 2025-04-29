@@ -3,22 +3,23 @@ import StarterKit from '@tiptap/starter-kit';
 import TextAlign from '@tiptap/extension-text-align';
 import useStore from '~/features/store';
 
-export function useEditorQuestion(id, updateEditorContent = () => {}) {
+export function useEditorQuestion(query = null, updateEditorContent = () => {}) {
+    console.log(query);
+
     const { registerEditor } = useStore();
     const editor = useEditor(
         {
             editable: true,
             extensions: [StarterKit, TextAlign],
-            content: '',
+            content: query?.text || '',
             editorProps: {
                 attributes: {
-                    id: id,
+                    id: query.id,
                 },
             },
             onCreate: ({ editor }) => {
                 console.log('REGISTER');
-
-                registerEditor(id, editor);
+                registerEditor(query.id, editor);
                 editor.commands.setTextAlign('center');
             },
             onSelectionUpdate: ({ editor }) => {
@@ -27,8 +28,7 @@ export function useEditorQuestion(id, updateEditorContent = () => {}) {
                 }
             },
             onUpdate: ({ editor }) => {
-                updateEditorContent(id, editor.getHTML());
-                // Có thể truyền thêm hàm update ở đây nếu cần
+                updateEditorContent(query.id, editor.getHTML(), editor.isEmpty);
             },
             onFocus: () => {
                 // setActive(true);
