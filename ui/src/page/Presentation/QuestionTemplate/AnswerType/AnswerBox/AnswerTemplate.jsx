@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import styles from './QuestionTemplate.module.scss';
+import styles from './AnswerBox.module.scss';
 import classNames from 'classnames/bind';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faTrash } from '@fortawesome/free-solid-svg-icons';
@@ -17,13 +17,12 @@ function AnswerTemplate({
     unmouteAnswerDisplay,
     answersCount,
     updateAnswerText,
+    isPoll,
 }) {
     const currentMode = question.mode;
     const [active, setActive] = useState(false);
     const [showTooltip, setShowTooltip] = useState(false);
-
     const editor = useEditorQuestion(ans, updateAnswerText);
-
     const boxRef = useRef(null);
 
     useEffect(() => {
@@ -55,30 +54,32 @@ function AnswerTemplate({
 
     const availableColors = ['blue', 'teal', 'yellow', 'red', 'purple'];
     return (
-        <div className={cx('answer-card', availableColors[index])}>
+        <div className={cx('answer-card', { [availableColors[index]]: !isPoll })}>
             <div className={cx('answers-event', { end: answersCount === 2 })}>
                 {answersCount > 2 && (
                     <button className={cx('delete-btn')} onClick={() => handleRemoveAnswer(ans.id)}>
                         <FontAwesomeIcon icon={faTrash} />
                     </button>
                 )}
-                <Popper
-                    show={showTooltip}
-                    offset={[0, 6]}
-                    placement="top"
-                    content="Please add text before check correct"
-                    valid
-                    color="#ec0b43"
-                    // className={cx('valid-preview')}
-                >
-                    <button
-                        className={cx('check-btn', { [currentMode]: currentMode }, { correct: ans.isCorrect })}
-                        onClick={() => toggleCorrect(ans.id)}
-                        onMouseLeave={() => setShowTooltip(false)}
+                {!isPoll && (
+                    <Popper
+                        show={showTooltip}
+                        offset={[0, 6]}
+                        placement="top"
+                        content="Please add text before check correct"
+                        valid
+                        color="#ec0b43"
+                        // className={cx('valid-preview')}
                     >
-                        <FontAwesomeIcon icon={faCheck} />
-                    </button>
-                </Popper>
+                        <button
+                            className={cx('check-btn', { [currentMode]: currentMode }, { correct: ans.isCorrect })}
+                            onClick={() => toggleCorrect(ans.id)}
+                            onMouseLeave={() => setShowTooltip(false)}
+                        >
+                            <FontAwesomeIcon icon={faCheck} />
+                        </button>
+                    </Popper>
+                )}
             </div>
             <div
                 ref={boxRef}
@@ -92,10 +93,10 @@ function AnswerTemplate({
                     {editor?.isEmpty && (
                         <p
                             className={cx('answer-placeholder', {
-                                top: answersCount >= 4,
+                                top: answersCount && !isPoll >= 4,
                             })}
                         >
-                            Type answer option here...
+                            {isPoll ? 'Type poll option here' : 'Type answer option here...'}
                         </p>
                     )}
                     <EditorContent editor={editor} />

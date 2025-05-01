@@ -16,6 +16,11 @@ const useStore = create((set, get) => ({
     items: [],
     addedState: false,
 
+    getSelectedPreviewItem: () => {
+        const { selectedSlideId, items } = get();
+        return items.find((slide) => slide.id === selectedSlideId) || null;
+    },
+
     setSelectedSlide: (id) =>
         set(() => ({
             selectedSlideId: id,
@@ -120,6 +125,7 @@ const useStore = create((set, get) => ({
         }),
 
     // **** START - QUESTION ANSWERS SLIDE STATE
+
     validateQuestionAndAnswers: (questionId, answers) => {
         const { errors } = get();
 
@@ -360,8 +366,6 @@ const useStore = create((set, get) => ({
 
     addElementIntoSlide: ({ slideId, element }) =>
         set((state) => {
-            console.log(element.html);
-
             const updatedItems = state.items.map((slide) => {
                 if (slide.id === slideId) {
                     const nextZIndex = slide.elements.length;

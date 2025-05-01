@@ -15,17 +15,88 @@ function QaSlide() {
     const slideTypeActions = {
         QaMultipleChoice: (type) => {
             const defaultTemplate = [
-                { id: uuidv4(), color: 'blue', text: '', isCorrect: false, disable: false },
-                { id: uuidv4(), color: 'teal', text: '', isCorrect: false, disable: false },
-                { id: uuidv4(), color: 'yellow', text: '', isCorrect: false, disable: false },
-                { id: uuidv4(), color: 'red', text: '', isCorrect: false, disable: false },
-                { id: uuidv4(), color: 'purple', text: '', isCorrect: false, disable: true },
+                { id: uuidv4(), text: '', isCorrect: false, disable: false },
+                { id: uuidv4(), text: '', isCorrect: false, disable: false },
+                { id: uuidv4(), text: '', isCorrect: false, disable: false },
+                { id: uuidv4(), text: '', isCorrect: false, disable: false },
+                { id: uuidv4(), text: '', isCorrect: false, disable: true },
             ];
             addNewSlide({
-                type: type,
                 tab: TAB_QUESTION,
                 question: {
                     id: uuidv4(),
+                    type: type,
+                    text: '',
+                    mode: 'single', // multiple
+                    answers: defaultTemplate,
+                },
+            });
+            setOpenSlide({
+                open: false,
+                back: false,
+            });
+        },
+        QaInputBlank: (type) => {
+            // (Trả lời câu hỏi gõ chữ)
+            const defaultTemplate = [
+                {
+                    id: uuidv4(),
+                    hint: '',
+                    text: '',
+                    isCorrect: false,
+                    disable: false,
+                },
+            ];
+
+            addNewSlide({
+                tab: TAB_QUESTION,
+                question: {
+                    id: uuidv4(),
+                    type: type,
+                    text: '',
+                    mode: 'single-field', //separate-box
+                    answers: defaultTemplate,
+                },
+            });
+            setOpenSlide({
+                open: false,
+                back: false,
+            });
+        },
+        QaEndedOpen: (type) => {
+            // (Tự luận / Mở)
+            const defaultTemplate = [];
+
+            addNewSlide({
+                tab: TAB_QUESTION,
+                question: {
+                    id: uuidv4(),
+                    type: type,
+                    text: '',
+                    mode: '', //separate-box
+                    answers: defaultTemplate,
+                },
+            });
+            setOpenSlide({
+                open: false,
+                back: false,
+            });
+        },
+        QaPoll: (type) => {
+            // (Tự luận / Mở)
+            const defaultTemplate = [
+                { id: uuidv4(), text: '', isCorrect: false, disable: false },
+                { id: uuidv4(), text: '', isCorrect: false, disable: false },
+                { id: uuidv4(), text: '', isCorrect: false, disable: false },
+                { id: uuidv4(), text: '', isCorrect: false, disable: false },
+                { id: uuidv4(), text: '', isCorrect: false, disable: true },
+            ];
+
+            addNewSlide({
+                tab: TAB_QUESTION,
+                question: {
+                    id: uuidv4(),
+                    type: type,
                     text: '',
                     mode: 'single', // multiple
                     answers: defaultTemplate,
@@ -39,8 +110,6 @@ function QaSlide() {
     };
 
     const handleSelectSlideType = (type) => {
-        console.log('cliecked');
-
         const action = slideTypeActions[type];
         if (action) {
             action(type);
@@ -48,8 +117,6 @@ function QaSlide() {
             console.warn(`Unknown slide type: ${type}`);
         }
     };
-
-    console.log('temp');
 
     return (
         <div className={cx('slide-creator-section')}>

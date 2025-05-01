@@ -4,6 +4,7 @@ import { EditorContent } from '@tiptap/react';
 import './customStyle.css';
 import { TYPE_TABLE, TYPE_TEXT_TAG, TYPE_TEXT_TAG_BODY } from '~/utils/Const';
 import React, { useEffect, useRef, useState } from 'react';
+import { isContentEmpty } from '~/utils/Utils';
 
 const cx = classNames.bind(styles);
 
@@ -14,7 +15,7 @@ function ContentText({ editor, element, onResizeContent }) {
 
     const isTable = element.type === TYPE_TABLE;
     const isTextTag = element.type === TYPE_TEXT_TAG || element.type === TYPE_TEXT_TAG_BODY;
-
+    const isEmpty = isContentEmpty(editor);
     useEffect(() => {
         if (!ref.current || !onResizeContent) return;
 
@@ -34,18 +35,6 @@ function ContentText({ editor, element, onResizeContent }) {
         };
     }, [ref.current]);
 
-    const isContentEmpty = (editor) => {
-        if (editor.isEmpty) return false;
-
-        const html = editor.getHTML();
-        const tempDiv = document.createElement('div');
-        tempDiv.innerHTML = html;
-
-        const text = tempDiv.textContent?.replace(/\u200B/g, '').trim();
-
-        return !text;
-    };
-
     useEffect(() => {
         if (!editor) return;
 
@@ -56,7 +45,7 @@ function ContentText({ editor, element, onResizeContent }) {
         };
 
         const handleBlur = () => {
-            if (isTextTag && isContentEmpty(editor)) {
+            if (isTextTag && isEmpty) {
                 setHasFocusedOnce(false);
             }
         };
@@ -82,7 +71,7 @@ function ContentText({ editor, element, onResizeContent }) {
 
     return (
         <div ref={ref} className={containerClassName}>
-            {showPlaceholder && element.placeholder && !isTable && (
+            {showPlaceholder && isEmpty && element.placeholder && !isTable && (
                 <div className={cx('placeholder', { [element.tab]: [element.tab] })}>{element.placeholder}</div>
             )}
             {!element.lock && <EditorContent className="inherit" editor={editor} />}

@@ -1,0 +1,122 @@
+.section-type {
+    position: relative;
+    width: 240px;
+    height: 32px;
+    margin-right: 8px;
+
+    &:hover {
+        background-color: #ffffff0d;
+    }
+}
+
+.section-label {
+    width: 0;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    position: absolute;
+    overflow: hidden;
+}
+
+.section-wrap {
+    border-radius: 4px;
+    display: flex;
+    position: relative;
+
+    .section-dropdown {
+        color: black;
+        font-size: 12px;
+        line-height: 1rem;
+        border: 1px solid rgb(221 220 220);
+        border-radius: 4px;
+        background-color: white;
+        white-space: nowrap;
+        align-items: center;
+        width: 100%;
+        cursor: pointer;
+        display: flex;
+        padding: 8px;
+        height: 32.4px;
+    }
+
+    .section-dropdown-node {
+        justify-content: center;
+        align-items: center;
+        display: flex;
+        margin-left: auto;
+        width: 16px;
+        height: 16px;
+        transition: transform 0.3s ease;
+
+        &.open {
+            transform: rotate(180deg);
+        }
+    }
+
+    .dropdown-options {
+        position: absolute;
+        top: 40px;
+        left: 0;
+        color: black;
+        background-color: white;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        z-index: 10;
+        width: 100%;
+        max-height: 240px;
+        overflow-y: auto;
+
+        .dropdown-item {
+            padding: 10px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.2s ease;
+            display: flex;
+            align-items: center;
+
+            &:hover {
+                background-color: #f0f0f0;
+            }
+
+            &.selected {
+                background-color: #ddd;
+            }
+        }
+
+        .box {
+            background-color: #2d9da6;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 12px;
+            border-radius: 4px;
+            font-size: 8px;
+        }
+
+        .blank {
+            border: 2px solid white;
+            width: 16px;
+            height: 8px;
+        }
+    }
+    .box {
+        background-color: #2d9da6;
+        width: 22px;
+        height: 21px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-right: 12px;
+        border-radius: 4px;
+        font-size: 8px;
+    }
+    .text {
+        font-weight: normal;
+    }
+}

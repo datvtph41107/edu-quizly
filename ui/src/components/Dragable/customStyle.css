@@ -33,11 +33,11 @@
 
 /* tiptap */
 
-.inherit.tiptap.ProseMirror.ProseMirror-focused {
+.inherit .tiptap.ProseMirror.ProseMirror-focused {
     opacity: 1;
 }
 
-.inherit.tiptap.ProseMirror {
+.inherit .tiptap.ProseMirror {
     opacity: 0;
 }
 

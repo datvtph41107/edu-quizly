@@ -3,6 +3,7 @@ import styles from './ContentTextView.module.scss';
 import React, { useState } from 'react';
 import { TYPE_SHAPE, TYPE_TABLE, TYPE_TEXT_TAG, TYPE_TEXT_TAG_BODY } from '~/utils/Const';
 import './customStyle.css';
+import { isContentEmpty } from '~/utils/Utils';
 
 const cx = classNames.bind(styles);
 
@@ -13,16 +14,7 @@ function ContentTextView({ editor, element, scale = 1, isPreview = false }) {
     const isTable = element.type === TYPE_TABLE;
     const isTextTag = element.type === TYPE_TEXT_TAG || element.type === TYPE_TEXT_TAG_BODY;
 
-    const isContentEmpty = (editor) => {
-        if (editor.isEmpty) return false;
-
-        const html = editor.getHTML();
-        const tempDiv = document.createElement('div');
-        tempDiv.innerHTML = html;
-
-        const text = tempDiv.textContent?.replace(/\u200B/g, '').trim();
-        return !text;
-    };
+    const isEmpty = isContentEmpty(editor);
 
     const containerClassName = isTable
         ? cx('table-tiptap')
@@ -56,7 +48,7 @@ function ContentTextView({ editor, element, scale = 1, isPreview = false }) {
     const showPlaceholder = !hasFocusedOnce;
 
     const content =
-        showPlaceholder && isTextTag && isContentEmpty(editor) && element.placeholder ? (
+        showPlaceholder && isTextTag && isEmpty && element.placeholder ? (
             <div style={containerStyle} className={containerClassName}>
                 <div className={cx('placeholder', { [element.tab]: [element.tab] })}>{element.placeholder}</div>
             </div>

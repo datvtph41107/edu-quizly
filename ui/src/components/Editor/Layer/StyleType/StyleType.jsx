@@ -15,10 +15,11 @@ import {
 import { useStateContext } from '~/context/ContextProvider';
 import { handleChangeTypeEditor } from '~/components/ElementTypes/ElementTypes';
 import ModalLink from './ModalLink';
+import { TAB_QUESTION } from '~/utils/Const';
 
 const cx = classNames.bind(styles);
 
-function StyleType({ editor }) {
+function StyleType({ editor, tab }) {
     const { setChangeEditorType, changeEditorType } = useStateContext();
     const [isModalOpen, setIsModalOpen] = useState(false);
     // console.log(changeEditorType);
@@ -161,25 +162,34 @@ function StyleType({ editor }) {
                     </div>
                 </button>
             </div>
-            <div style={{ position: 'relative', marginLeft: '2px' }}>
-                {/* Link Button */}
-                <button className={cx('box-btn')} onClick={handleOpenLink}>
-                    <div className={cx('box-btn-grap')}>
-                        <FontAwesomeIcon icon={faLink} />
+
+            {tab !== TAB_QUESTION && (
+                <>
+                    <div style={{ position: 'relative', marginLeft: '2px' }}>
+                        {/* Link Button */}
+                        <button className={cx('box-btn')} onClick={handleOpenLink}>
+                            <div className={cx('box-btn-grap')}>
+                                <FontAwesomeIcon icon={faLink} />
+                            </div>
+                        </button>
                     </div>
-                </button>
-            </div>
-            {/* START Modal */}
-            <ModalLink isOpen={isModalOpen} onRequestClose={() => setIsModalOpen(false)} onSave={handleSaveLink} />
-            {/* END Modal */}
-            <div style={{ position: 'relative', marginLeft: '2px' }}>
-                {/* Florin Button */}
-                <button className={cx('box-btn')}>
-                    <div className={cx('box-btn-grap')}>
-                        <FontAwesomeIcon icon={faFlorinSign} />
+                    {/* START Modal */}
+                    <ModalLink
+                        isOpen={isModalOpen}
+                        onRequestClose={() => setIsModalOpen(false)}
+                        onSave={handleSaveLink}
+                    />
+                    {/* END Modal */}
+                    <div style={{ position: 'relative', marginLeft: '2px' }}>
+                        {/* Florin Button */}
+                        <button className={cx('box-btn')}>
+                            <div className={cx('box-btn-grap')}>
+                                <FontAwesomeIcon icon={faFlorinSign} />
+                            </div>
+                        </button>
                     </div>
-                </button>
-            </div>
+                </>
+            )}
         </>
     );
 }

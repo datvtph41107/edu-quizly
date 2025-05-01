@@ -8,7 +8,7 @@ import HiddenQuestionTemplate from './QuestionTemplate/HiddenQuestionTemplate';
 function Presentation() {
     const { selectedSlideId, items, editors, registerEditor } = useStore();
 
-    console.log(editors, items);
+    // console.log(editors, items, selectedSlideId);
 
     return (
         <div style={{ position: 'relative', width: '100%', height: '100%' }}>
@@ -32,10 +32,6 @@ function Presentation() {
                                         selectedSlide={slide}
                                         editors={editors}
                                         registerEditor={registerEditor}
-                                        // unmouteAnswerDisplay={unmouteAnswerDisplay}
-                                        // mouteAnswerDisplay={mouteAnswerDisplay}
-                                        // updateAnswerCorrect={updateAnswerCorrect}
-                                        // changeModeSetting={changeModeSetting}
                                     />
                                 ) : (
                                     <SlideTemplate selectedSlide={slide} />

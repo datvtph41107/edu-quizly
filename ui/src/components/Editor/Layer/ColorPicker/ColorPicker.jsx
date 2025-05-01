@@ -7,8 +7,9 @@ import ColorPickerOption from '../ColorPickerOption';
 
 const cx = classNames.bind(styles);
 
-function ColorPicker({ editor, elementId, fn }) {
+function ColorPicker({ editor, tab }) {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    console.log(editor);
 
     const toggleDropdown = () => {
         editor.commands.focus();
@@ -34,7 +35,7 @@ function ColorPicker({ editor, elementId, fn }) {
                 </div>
             </button>
 
-            {isDropdownOpen && <ColorPickerOption fn={handleColorChange} />}
+            {isDropdownOpen && <ColorPickerOption fn={handleColorChange} tab={tab} />}
         </div>
     );
 }

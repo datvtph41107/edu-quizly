@@ -2,15 +2,16 @@ import { useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import TextAlign from '@tiptap/extension-text-align';
 import useStore from '~/features/store';
+import TextStyle from '@tiptap/extension-text-style';
+import Color from '@tiptap/extension-color';
 
 export function useEditorQuestion(query = null, updateEditorContent = () => {}) {
-    console.log(query);
-
     const { registerEditor } = useStore();
+
     const editor = useEditor(
         {
             editable: true,
-            extensions: [StarterKit, TextAlign],
+            extensions: [StarterKit, TextAlign, TextStyle, Color],
             content: query?.text || '',
             editorProps: {
                 attributes: {
@@ -18,9 +19,7 @@ export function useEditorQuestion(query = null, updateEditorContent = () => {}) 
                 },
             },
             onCreate: ({ editor }) => {
-                console.log('REGISTER');
                 registerEditor(query.id, editor);
-                editor.commands.setTextAlign('center');
             },
             onSelectionUpdate: ({ editor }) => {
                 if (editor.isEmpty) {

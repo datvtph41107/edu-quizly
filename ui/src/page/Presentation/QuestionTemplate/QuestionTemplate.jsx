@@ -1,30 +1,24 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styles from './QuestionTemplate.module.scss';
 import classNames from 'classnames/bind';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { EditorContent } from '@tiptap/react';
-import AnswerTemplate from './AnswerTemplate';
 import { useEditorQuestion } from '~/hooks/useEditorInstance';
 import useStore from '~/features/store';
+import AnswerBox from './AnswerType/AnswerBox/AnswerBox';
+import { QA_ENDED_OPEN, QA_INPUT_BLANK, QA_MULTIPLE_CHOICE, QA_POLL } from '~/utils/Const';
+import AnswerInput from './AnswerType/AnswerInput/AnswerInput';
+import AnswerEndedOpen from './AnswerType/AnswerEndedOpen/AnswerEndedOpen';
+import AnswerPoll from './AnswerType/AnswerPoll/AnswerPoll';
 
 const cx = classNames.bind(styles);
 
-function QuestionTemplate({ selectedSlide, editors }) {
-    const { mouteAnswerDisplay, unmouteAnswerDisplay, updateAnswerCorrect, updateQuestionText, updateAnswerText } =
-        useStore();
-    const { question } = selectedSlide;
-    const currentMode = question.mode;
-    // const editor = editors[question.id] || null;
+function QuestionTemplate({ selectedSlide }) {
+    const { updateQuestionText } = useStore();
     const [active, setActive] = useState(false);
+    const { question } = selectedSlide;
     const boxRef = useRef(null);
-    const answersCount = question.answers.filter((ans) => !ans.disable).length;
+
     const editor = useEditorQuestion(question, updateQuestionText); // init main editor question mark
-    // // answers runner mark
-    // Array.from({ length: 5 }).map((_, index) => {
-    //     const answerRunnerId = question.answers[index].id;
-    //     return useEditorQuestion(answerRunnerId, updateAnswerText);
-    // });
 
     useEffect(() => {
         function handleClickOutside(event) {
@@ -39,8 +33,24 @@ function QuestionTemplate({ selectedSlide, editors }) {
         };
     }, []);
 
-    const handleAddNewAnswer = () => {
-        mouteAnswerDisplay(question.answers);
+    const renderAnswerContent = () => {
+        console.log(question);
+
+        switch (question.type) {
+            case QA_MULTIPLE_CHOICE:
+                return <AnswerBox question={question} />;
+
+            case QA_INPUT_BLANK:
+                return <AnswerInput />;
+
+            case QA_ENDED_OPEN:
+                return <AnswerEndedOpen />;
+
+            case QA_POLL:
+                return <AnswerBox question={question} isPoll />;
+            default:
+                break;
+        }
     };
 
     return (
@@ -62,49 +72,7 @@ function QuestionTemplate({ selectedSlide, editors }) {
                     </div>
                 </div>
 
-                <div className={cx('answers')}>
-                    {question.answers
-                        .filter((ans) => !ans.disable)
-                        .map((ans, i) => (
-                            <AnswerTemplate
-                                key={i}
-                                index={i}
-                                ans={ans}
-                                question={question}
-                                updateAnswerCorrect={updateAnswerCorrect}
-                                unmouteAnswerDisplay={unmouteAnswerDisplay}
-                                editors={editors}
-                                answersCount={answersCount}
-                                updateAnswerText={updateAnswerText}
-                            />
-                        ))}
-                    {answersCount < 5 && (
-                        <div className={cx('answer-plus')} onClick={handleAddNewAnswer}>
-                            <FontAwesomeIcon icon={faPlus} />
-                        </div>
-                    )}
-                </div>
-
-                <div className={cx('answer-mode')}>
-                    <div className={cx('answer-mode-block')}>
-                        <button
-                            className={cx('single', { active: currentMode === 'single' })}
-                            onClick={() => {
-                                if (currentMode !== 'single') changeModeSetting('single');
-                            }}
-                        >
-                            Single correct answer
-                        </button>
-                        <button
-                            className={cx('multiple', { active: currentMode === 'multiple' })}
-                            onClick={() => {
-                                if (currentMode !== 'multiple') changeModeSetting('multiple');
-                            }}
-                        >
-                            Multiple correct answers
-                        </button>
-                    </div>
-                </div>
+                {renderAnswerContent()}
             </div>
         </div>
     );

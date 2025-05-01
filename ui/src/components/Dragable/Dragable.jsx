@@ -31,9 +31,9 @@ import './drag.css';
 import {
     createCustomTable,
     defaultHeadingContent,
-    defaultParagraph,
     defaultParagraphBody,
     createList,
+    defaultParagraphSHAPE,
 } from '~/utils/Utils';
 
 const cx = classNames.bind(styles);
@@ -49,18 +49,24 @@ function DraggableElement({
     onSelect,
     setisDraggingToSelect,
 }) {
-    const { registerEditor, updateElementHtml, updateElementSize, removeElement, updateElementLock, duplicateElement } =
-        useStore();
+    const {
+        editors,
+        registerEditor,
+        updateElementHtml,
+        updateElementSize,
+        removeElement,
+        updateElementLock,
+        duplicateElement,
+    } = useStore();
     const { setChangeEditorType, changeEditorType, setFillSetting, setBorderColorSetting } = useStateContext();
     const [htmlValue, setHtmlValue] = useState('');
 
     const isSelectDisplay = selectedElements?.element?.id === element.id;
-
     const editor = useEditor(
         {
             editable: true,
             extensions: extensions,
-            // content: element.placeholder,
+            // content: '<p>That right</p>',
             onCreate: ({ editor }) => {
                 registerEditor(element.id, editor);
                 if (element.type === TYPE_TABLE) {
@@ -73,8 +79,14 @@ function DraggableElement({
                 }
 
                 if (element.tab === TYPE_SHAPE) {
-                    editor.commands.setContent({ type: 'doc', content: [defaultParagraph] });
-                    editor.commands.setTextAlign('center');
+                    const rawHTML = element.data.html;
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(rawHTML, 'text/html');
+                    const extractedText = doc.querySelector('span')?.textContent || '';
+
+                    const history = defaultParagraphSHAPE(extractedText);
+                    editor.commands.setContent({ type: 'doc', content: [history] });
+                    // editor.commands.setTextAlign('center');
                 }
 
                 if (element.tab === TYPE_TEXT_BODY) {
@@ -123,7 +135,7 @@ function DraggableElement({
             },
             onUpdate: ({ editor }) => {
                 const html = editor.getHTML();
-                setHtmlValue(html);
+                setHtmlValue(html); // DEBOUNCE START
 
                 if (editor.isEmpty) {
                     isActiveTypeState({ editor, changeEditorType });
@@ -133,8 +145,7 @@ function DraggableElement({
         [],
     );
 
-    const debouncedHTML = useDebounce(htmlValue, 3000);
-
+    const debouncedHTML = useDebounce(htmlValue, 100);
     useEffect(() => {
         if (!editor || !debouncedHTML) return;
 

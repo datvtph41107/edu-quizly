@@ -1,0 +1,42 @@
+.wrapper {
+    border-radius: 12px;
+    width: 100%;
+    margin-top: 12px;
+}
+
+.student-view {
+    width: 100%;
+    background-color: rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
+    padding: 104px 24px;
+    text-align: center;
+    color: white;
+    font-size: 18px;
+    font-weight: 600;
+    position: relative;
+    min-height: 160px;
+}
+
+.placeholder {
+    margin: 0;
+    opacity: 0.8;
+}
+
+.cursor {
+    width: 20px;
+    height: 2px;
+    background-color: white;
+    margin: 20px auto 0;
+    animation: blink 1s infinite;
+    border-radius: 1px;
+}
+
+@keyframes blink {
+    0%,
+    100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0;
+    }
+}

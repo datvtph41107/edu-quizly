@@ -5,7 +5,7 @@ import React from 'react';
 const cx = classNames.bind(styles);
 
 const Input = React.forwardRef(
-    ({ label, name, classes, classNameLabel, type = 'input', placeholder = '', ...rest }, ref) => {
+    ({ label, name, classes, classNameLabel, type = 'text', placeholder = '', ...rest }, ref) => {
         return (
             <div className={cx('wrapper')}>
                 <label htmlFor={name} className={classNameLabel}>

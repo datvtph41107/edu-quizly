@@ -1,7 +1,16 @@
 import { faAlignLeft, faPencil, faSquareCheck, faSquarePollVertical } from '@fortawesome/free-solid-svg-icons';
-import { QA_MULTIPLE_CHOICE } from './Const';
+import { QA_ENDED_OPEN, QA_INPUT_BLANK, QA_MULTIPLE_CHOICE, QA_POLL } from './Const';
 
 export class Utils {
+    static COLOR_QUESTION_OPTIONS = [
+        'rgb(224, 82, 94)',
+        'rgb(204, 119, 0)',
+        'rgb(31, 147, 80)',
+        'rgb(45, 157, 166)',
+        'rgb(92, 154, 214)',
+        'rgb(255, 255, 255)',
+    ];
+
     static COLOR_OPTIONS = [
         'rgb(126, 27, 27)',
         'rgb(149, 77, 4)',
@@ -123,6 +132,7 @@ export class Utils {
             bgClass: 'section-manualy-bg',
             overlayClass: 'section-overlay',
             blank: true,
+            type: QA_INPUT_BLANK,
         },
         {
             icon: faAlignLeft,
@@ -130,6 +140,7 @@ export class Utils {
             iconStyle: { fontSize: '18px', color: 'white' },
             bgClass: 'section-manualy-bg',
             overlayClass: 'section-overlay',
+            type: QA_ENDED_OPEN,
         },
         {
             icon: faSquarePollVertical,
@@ -137,6 +148,7 @@ export class Utils {
             iconStyle: { fontSize: '18px', color: 'white' },
             bgClass: 'section-manualy-bg',
             overlayClass: 'section-overlay',
+            type: QA_POLL,
         },
         {
             icon: faPencil,
@@ -149,6 +161,17 @@ export class Utils {
 
     static FONT_SIZE_OPTIONS = ['12', '14', '16', '18', '20', '24', '32', '48', '64'];
 }
+
+export const isContentEmpty = (editor) => {
+    if (editor.isEmpty) return false;
+
+    const html = editor.getHTML();
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = html;
+
+    const text = tempDiv.textContent?.replace(/\u200B/g, '').trim();
+    return !text;
+};
 
 export const createCustomTable = (rows, cols) => {
     const defaultSpan = {
@@ -234,23 +257,30 @@ export const createList = (items = 3, listType) => {
     return listNode;
 };
 
-export const defaultParagraph = {
-    type: 'paragraph',
-    content: [
-        {
-            type: 'text',
-            text: '\u200B',
-            marks: [
-                {
-                    type: 'textStyle',
-                    attrs: {
-                        fontSize: '16',
-                        lineHeight: '1.5em',
-                    },
-                },
-            ],
+export const defaultParagraphSHAPE = (text) => {
+    const defaultParagraph = {
+        type: 'paragraph',
+        attrs: {
+            textAlign: 'center',
         },
-    ],
+        content: [
+            {
+                type: 'text',
+                text: text || '\u200B',
+                marks: [
+                    {
+                        type: 'textStyle',
+                        attrs: {
+                            fontSize: '16',
+                            lineHeight: '1.5em',
+                        },
+                    },
+                ],
+            },
+        ],
+    };
+
+    return defaultParagraph;
 };
 
 export const defaultParagraphBody = {

@@ -24,3 +24,6 @@ export const SLIDE_PRESENTATION = 'presentation';
 export const TAB_SLIDE = 'slide';
 export const TAB_QUESTION = 'question';
 export const QA_MULTIPLE_CHOICE = 'QaMultipleChoice';
+export const QA_INPUT_BLANK = 'QaInputBlank';
+export const QA_ENDED_OPEN = 'QaEndedOpen';
+export const QA_POLL = 'QaPoll';

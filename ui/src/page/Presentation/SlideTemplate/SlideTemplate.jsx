@@ -145,6 +145,8 @@ function SlideTemplate({ selectedSlide }) {
         };
     }, [isDraggingToSelect]);
 
+    console.log('SLIDETEMPLATE: ', elements);
+
     return (
         // ON MOUSE DOWN
         <div
