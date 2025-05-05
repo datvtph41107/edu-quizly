@@ -29,6 +29,10 @@ function QaSlide() {
                     text: '',
                     mode: 'single', // multiple
                     answers: defaultTemplate,
+                    explain: {
+                        id: uuidv4(),
+                        text: '',
+                    },
                 },
             });
             setOpenSlide({
@@ -56,6 +60,10 @@ function QaSlide() {
                     text: '',
                     mode: 'single-field', //separate-box
                     answers: defaultTemplate,
+                    explain: {
+                        id: uuidv4(),
+                        text: '',
+                    },
                 },
             });
             setOpenSlide({
@@ -75,6 +83,10 @@ function QaSlide() {
                     text: '',
                     mode: '', //separate-box
                     answers: defaultTemplate,
+                    explain: {
+                        id: uuidv4(),
+                        text: '',
+                    },
                 },
             });
             setOpenSlide({
@@ -100,6 +112,10 @@ function QaSlide() {
                     text: '',
                     mode: 'single', // multiple
                     answers: defaultTemplate,
+                    explain: {
+                        id: uuidv4(),
+                        text: '',
+                    },
                 },
             });
             setOpenSlide({

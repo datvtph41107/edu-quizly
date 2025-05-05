@@ -9,7 +9,6 @@ const cx = classNames.bind(styles);
 
 function ColorPicker({ editor, tab }) {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-    console.log(editor);
 
     const toggleDropdown = () => {
         editor.commands.focus();

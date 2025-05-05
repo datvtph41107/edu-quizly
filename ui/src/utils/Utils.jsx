@@ -5,10 +5,12 @@ export class Utils {
     static COLOR_QUESTION_OPTIONS = [
         'rgb(224, 82, 94)',
         'rgb(204, 119, 0)',
-        'rgb(31, 147, 80)',
-        'rgb(45, 157, 166)',
+        'rgb(173, 31, 54)',
+        'rgb(239, 169, 41)',
         'rgb(92, 154, 214)',
-        'rgb(255, 255, 255)',
+        'rgb(213, 84, 109)',
+        'rgb(19, 64, 108)',
+        'rgb(126, 54, 114)',
     ];
 
     static COLOR_OPTIONS = [

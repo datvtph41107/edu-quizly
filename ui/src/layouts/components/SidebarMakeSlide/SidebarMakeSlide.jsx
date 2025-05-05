@@ -11,7 +11,6 @@ const cx = classNames.bind(styles);
 
 function SidebarMakeSlide({ openSlide }) {
     const { items, getSelectedPreviewItem } = useStore();
-    // console.log(getSelectedPreviewItem());
     const previewItem = getSelectedPreviewItem();
     const sideLists = [
         {

@@ -89,7 +89,7 @@ function StyleType({ editor, tab }) {
             <div style={{ position: 'relative' }}>
                 {/* Bold Button */}
                 <button
-                    className={cx('box-btn', { active: changeEditorType['bold']?.active ?? editor.isActive('bold') })}
+                    className={cx('box-btn', { active: editor.isActive('bold') ?? changeEditorType['bold']?.active })}
                     onClick={handleBoldClick}
                 >
                     <div className={cx('box-btn-grap')}>
@@ -101,7 +101,7 @@ function StyleType({ editor, tab }) {
                 {/* Italic Button */}
                 <button
                     className={cx('box-btn', {
-                        active: changeEditorType['italic']?.active ?? editor.isActive('italic'),
+                        active: editor.isActive('italic') ?? changeEditorType['italic']?.active,
                     })}
                     onClick={handleItalicClick}
                 >
@@ -114,7 +114,7 @@ function StyleType({ editor, tab }) {
                 {/* Underline Button */}
                 <button
                     className={cx('box-btn', {
-                        active: changeEditorType['underline']?.active ?? editor.isActive('underline'),
+                        active: editor.isActive('underline') ?? changeEditorType['underline']?.active,
                     })}
                     onClick={handleUnderlineClick}
                 >
@@ -127,7 +127,7 @@ function StyleType({ editor, tab }) {
                 {/* Strikethrough Button */}
                 <button
                     className={cx('box-btn', {
-                        active: changeEditorType['strike']?.active ?? editor.isActive('strike'),
+                        active: editor.isActive('strike') ?? changeEditorType['strike']?.active,
                     })}
                     onClick={handleStrikethroughClick}
                 >
@@ -140,7 +140,7 @@ function StyleType({ editor, tab }) {
                 {/* Superscript Button */}
                 <button
                     className={cx('box-btn', {
-                        active: changeEditorType['superscript']?.active ?? editor.isActive('superscript'),
+                        active: editor.isActive('superscript') ?? changeEditorType['superscript']?.active,
                     })}
                     onClick={handleSuperscriptClick}
                 >
@@ -153,7 +153,7 @@ function StyleType({ editor, tab }) {
                 {/* Subscript Button */}
                 <button
                     className={cx('box-btn', {
-                        active: changeEditorType['subscript']?.active ?? editor.isActive('subscript'),
+                        active: editor.isActive('subscript') ?? changeEditorType['subscript']?.active,
                     })}
                     onClick={handleSubscriptClick}
                 >

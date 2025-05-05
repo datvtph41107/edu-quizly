@@ -15,6 +15,9 @@ const useStore = create((set, get) => ({
     selectedSlideId: slideDefault,
     items: [],
     addedState: false,
+    answerExplainOpen: false,
+
+    setAnswerExplainOpen: (isOpen) => set(() => ({ answerExplainOpen: isOpen })),
 
     getSelectedPreviewItem: () => {
         const { selectedSlideId, items } = get();
@@ -48,6 +51,24 @@ const useStore = create((set, get) => ({
                 selectedSlideId: id,
                 addedState: true,
             };
+        });
+    },
+
+    changeQuestionMode: (type, idx) => {
+        set((state) => {
+            const updatedItems = state.items.map((slide) => {
+                if (slide.id !== state.selectedSlideId || !slide.question) return slide;
+
+                return {
+                    ...slide,
+                    question: {
+                        ...slide.question,
+                        type: type,
+                    },
+                };
+            });
+
+            return { items: updatedItems };
         });
     },
 
@@ -186,6 +207,35 @@ const useStore = create((set, get) => ({
                     question: {
                         ...slide.question,
                         answers: updatedAnswers,
+                    },
+                };
+            });
+
+            return {
+                items: updatedItems,
+                errors: {
+                    ...state.errors,
+                    answers: {
+                        ...state.errors.answers,
+                        [answerId]: isEmpty,
+                    },
+                },
+            };
+        }),
+
+    updateExplainText: (answerId, text, isEmpty) =>
+        set((state) => {
+            const updatedItems = state.items.map((slide) => {
+                if (!slide.question || slide.question.explain?.id !== answerId) return slide;
+
+                return {
+                    ...slide,
+                    question: {
+                        ...slide.question,
+                        explain: {
+                            ...slide.question.explain,
+                            text,
+                        },
                     },
                 };
             });

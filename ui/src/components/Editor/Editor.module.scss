@@ -14,6 +14,16 @@
 }
 
 .toolbar {
+    &::before {
+        content: '';
+        position: absolute;
+        height: 28px;
+        right: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 1px;
+        background-color: rgba(185, 182, 182, 0.308);
+    }
     flex: 1;
     height: 100%;
     position: relative;

@@ -30,3 +30,21 @@
         }
     }
 }
+
+.color-option-qa {
+    overflow: hidden;
+    display: flex;
+    gap: 4px;
+    cursor: pointer;
+
+    .color-option-item-qa {
+        width: 36px;
+        height: 36px;
+        border-radius: 4px;
+        border: 2px solid rgba(141, 139, 139, 0.829);
+        &:hover {
+            border-color: rgb(105, 105, 105);
+            z-index: 50;
+        }
+    }
+}

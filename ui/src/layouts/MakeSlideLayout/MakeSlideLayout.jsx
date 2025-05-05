@@ -27,7 +27,7 @@ function MakeSlideLayout({ children }) {
                 </div>
                 <div className={cx('contain')}>
                     <div className={cx('head', { edit: selectedElements.element })}>
-                        {selectedElements.element && <Editor />}
+                        {selectedElements.element && selectedSlideItem?.tab !== TAB_QUESTION && <Editor />}
                         {selectedSlideItem?.tab === TAB_QUESTION && (
                             <EditorQuestion selectedSlideItem={selectedSlideItem} />
                         )}

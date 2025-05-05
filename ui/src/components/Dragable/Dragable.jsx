@@ -270,19 +270,9 @@ function DraggableElement({
         const widthTerm = 20.23076923076923;
         const BUFFER = 24;
         const length = editor.getText().trim().length - 1;
-        // let flag = 1;
-
-        // console.log('length', length);
-        // console.log('new', widthTerm * length + BUFFER);
-        // console.log('old', oldWidth);
-        // console.log('new height', newHeight);
-        // console.log(oldHeight);
-
         const shouldUpdate = widthTerm * length + BUFFER > oldWidth;
 
         if (shouldUpdate) {
-            // flag += 1;
-
             updateElementSize({
                 elementId: element.id,
                 size: {

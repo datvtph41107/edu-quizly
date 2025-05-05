@@ -8,7 +8,6 @@ import AnswerBox from './AnswerType/AnswerBox/AnswerBox';
 import { QA_ENDED_OPEN, QA_INPUT_BLANK, QA_MULTIPLE_CHOICE, QA_POLL } from '~/utils/Const';
 import AnswerInput from './AnswerType/AnswerInput/AnswerInput';
 import AnswerEndedOpen from './AnswerType/AnswerEndedOpen/AnswerEndedOpen';
-import AnswerPoll from './AnswerType/AnswerPoll/AnswerPoll';
 
 const cx = classNames.bind(styles);
 
@@ -34,8 +33,6 @@ function QuestionTemplate({ selectedSlide }) {
     }, []);
 
     const renderAnswerContent = () => {
-        console.log(question);
-
         switch (question.type) {
             case QA_MULTIPLE_CHOICE:
                 return <AnswerBox question={question} />;
